@@ -22,6 +22,9 @@ func validateTransportExperiment(value string) error {
 }
 
 func negotiateTransportExperiment(ctx context.Context, connection net.Conn, config, mode string) error {
+	if usesLegacyTransport(config, mode) {
+		return nil
+	}
 	capability, marker := "", multipathRelayHello
 	switch mode {
 	case experimentUplink:
@@ -63,6 +66,10 @@ func negotiateTransportExperiment(ctx context.Context, connection net.Conn, conf
 		}
 		return fmt.Errorf("FATAL_TRANSPORT: сервер прислал неверное подтверждение транспорта")
 	}
+}
+
+func usesLegacyTransport(config, mode string) bool {
+	return mode == experimentStandard && !supportsAdaptiveTransport(config)
 }
 
 func (d *Dispatcher) isUserPacket(p []byte) bool { return isWireGuardUserDataPacket(p) }

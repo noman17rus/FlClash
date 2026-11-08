@@ -40,35 +40,8 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     ref.read(updatingActionProvider.notifier);
     // A rejected profile stays selected on purpose: silently reverting to
     // the previous one hides the error and looks like the switch was lost.
-    ref.listenManual(
-      currentProfileIdProvider,
-      (prev, next) {
-        if (next == null) return;
-        final profile = ref.read(profilesProvider).getProfile(next);
-        if (profile != null && profile.url.isWdttLink) {
-          final parts = parseWdttLink(profile.url);
-          if (parts != null) {
-            unawaited(wdttTunnelManager.start(parts));
-          }
-        }
-      },
-      fireImmediately: true,
-    );
-
     ref.listenManual(currentProfileIdProvider, (prev, next) {
       if (prev == next) return;
-      final profiles = ref.read(profilesProvider);
-      final previousProfile = profiles.getProfile(prev);
-      if (previousProfile != null && previousProfile.url.isWdttLink) {
-        unawaited(wdttTunnelManager.stop());
-      }
-      final nextProfile = profiles.getProfile(next);
-      if (nextProfile != null && nextProfile.url.isWdttLink) {
-        final parts = parseWdttLink(nextProfile.url);
-        if (parts != null) {
-          unawaited(wdttTunnelManager.start(parts));
-        }
-      }
       runAfterFrame(() {
         unawaited(ref.read(setupActionProvider.notifier).fullSetup());
       });

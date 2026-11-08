@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/base64"
+	"net/netip"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -14,7 +16,7 @@ func TestParseWgQuickConfigForUserspaceTunnel(t *testing.T) {
 	raw := `[Interface]
 PrivateKey = ` + testWireGuardKey(1) + `
 Address = 10.66.66.2/32
-DNS = 1.1.1.1
+DNS = corp.example, 9.9.9.9 # use the tunnel resolver
 MTU = 1280
 
 [Peer]
@@ -32,6 +34,16 @@ PersistentKeepalive = 25`
 	}
 	if got := config.allowedIPs[0].String(); got != "0.0.0.0/0" {
 		t.Fatalf("allowed IP = %s", got)
+	}
+	if !slices.Equal(config.dns, []netip.Addr{netip.MustParseAddr("9.9.9.9")}) {
+		t.Fatalf("DNS = %v, want [9.9.9.9]", config.dns)
+	}
+	fallback, err := parseWgQuickConfig(strings.Replace(raw, "corp.example, 9.9.9.9", "corp.example", 1))
+	if err != nil {
+		t.Fatalf("parse configuration with search domains only: %v", err)
+	}
+	if !slices.Equal(fallback.dns, []netip.Addr{netip.MustParseAddr("1.1.1.1")}) {
+		t.Fatalf("fallback DNS = %v, want [1.1.1.1]", fallback.dns)
 	}
 	request := config.ipcRequest()
 	for _, required := range []string{"private_key=", "public_key=", "endpoint=127.0.0.1:9000", "allowed_ip=0.0.0.0/0"} {

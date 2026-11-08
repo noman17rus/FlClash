@@ -42,6 +42,7 @@ Future<List<NamedUrl>?> showNamedUrlsForm(
   FormFieldValidator<String>? urlValidator,
   Set<String> existingUrls = const {},
   bool withAgeSecretKey = false,
+  bool withWdttFallback = false,
 }) {
   return showFormSheet<List<NamedUrl>>(
     context: context,
@@ -54,11 +55,12 @@ Future<List<NamedUrl>?> showNamedUrlsForm(
       batch: true,
       existingUrls: existingUrls,
       withAgeSecretKey: withAgeSecretKey,
+      withWdttFallback: withWdttFallback,
     ),
   );
 }
 
-enum _NamedUrlField { label, url }
+enum _NamedUrlField { label, url, wdtt }
 
 /// The url below the name holds the focus, as the one field that must be filled.
 /// Pops a list so a single url and a batch return through the same path.
@@ -73,6 +75,7 @@ class NamedUrlForm extends StatefulWidget {
   final bool batch;
   final Set<String> existingUrls;
   final bool withAgeSecretKey;
+  final bool withWdttFallback;
 
   const NamedUrlForm({
     super.key,
@@ -86,6 +89,7 @@ class NamedUrlForm extends StatefulWidget {
     this.batch = false,
     this.existingUrls = const {},
     this.withAgeSecretKey = false,
+    this.withWdttFallback = false,
   });
 
   @override
@@ -99,6 +103,7 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
   late final TextEditingController _urlController;
   final _ageSecretKeyController = TextEditingController();
   final _batchController = TextEditingController();
+  final _wdttController = TextEditingController();
   bool _isBatch = false;
   bool _attempted = false;
   ParsedInput<String>? _parsed;
@@ -134,6 +139,7 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
     _urlController.dispose();
     _ageSecretKeyController.dispose();
     _batchController.dispose();
+    _wdttController.dispose();
     super.dispose();
   }
 
@@ -170,6 +176,16 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
     if (urlError != null) {
       return (field: _NamedUrlField.url, message: urlError);
     }
+    final wdtt = _wdttController.text.trim();
+    if (widget.withWdttFallback &&
+        wdtt.isNotEmpty &&
+        ((!_urlController.text.isVlessLink && !_urlController.text.isUrl) ||
+            !wdtt.isWdttLink)) {
+      return (
+        field: _NamedUrlField.wdtt,
+        message: context.appLocalizations.invalidLinkTip,
+      );
+    }
     return null;
   }
 
@@ -178,7 +194,10 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
       _isBatch = !_isBatch;
       _attempted = false;
       if (_isBatch && _batchController.text.isEmpty) {
-        _batchController.text = _urlController.text.trim();
+        _batchController.text = [
+          _urlController.text.trim(),
+          _wdttController.text.trim(),
+        ].where((link) => link.isNotEmpty).join('\n');
       }
       if (_isBatch) {
         _parsed = _batchInput.parse(_batchController.text);
@@ -225,6 +244,8 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
         url: _urlController.text.trim(),
         ageSecretKey: _ageSecretKeyController.text.trim(),
       ),
+      if (widget.withWdttFallback && _wdttController.text.trim().isNotEmpty)
+        (label: '', url: _wdttController.text.trim(), ageSecretKey: ''),
     ]);
   }
 
@@ -308,6 +329,20 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
             },
           ),
         ),
+        if (widget.withWdttFallback)
+          FormRow(
+            title: 'WDTT',
+            invalid: invalid == _NamedUrlField.wdtt,
+            trailing: FormRowTextField(
+              controller: _wdttController,
+              hintText: appLocalizations.optional,
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+              onChanged: _handleChanged,
+              onFieldSubmitted: (_) => _handleSubmit(),
+            ),
+          ),
         if (widget.withAgeSecretKey)
           FormRow(
             title: appLocalizations.ageSecretKey,

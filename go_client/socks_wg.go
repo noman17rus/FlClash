@@ -44,8 +44,9 @@ func parseWgQuickConfig(rawConfig string) (*wgQuickConfig, error) {
 	peerCount := 0
 
 	for lineNumber, rawLine := range strings.Split(rawConfig, "\n") {
-		line := strings.TrimSpace(rawLine)
-		if line == "" || strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") {
+		line, _, _ := strings.Cut(rawLine, "#")
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, ";") {
 			continue
 		}
 		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
@@ -84,11 +85,11 @@ func parseWgQuickConfig(rawConfig string) (*wgQuickConfig, error) {
 				}
 			case "dns":
 				for _, part := range strings.Split(value, ",") {
-					address, err := netip.ParseAddr(strings.TrimSpace(part))
-					if err != nil {
-						return nil, fmt.Errorf("DNS %q: нужен IP-адрес", part)
+					// wg-quick also accepts search domains here. The
+					// SOCKS netstack only takes resolver IP addresses.
+					if address, err := netip.ParseAddr(strings.TrimSpace(part)); err == nil {
+						config.dns = append(config.dns, address)
 					}
-					config.dns = append(config.dns, address)
 				}
 			case "mtu":
 				mtu, err := strconv.Atoi(value)

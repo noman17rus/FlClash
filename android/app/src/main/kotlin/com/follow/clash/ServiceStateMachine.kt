@@ -134,13 +134,41 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
     }
 
     fun syncSharedState(state: SharedState) {
+        val previous = sharedState.vpnOptions
         sharedState = state
         applySharedState()
+        val next = state.vpnOptions
+        if (isRunRequested && next != null &&
+            (previous?.wdttLink != next.wdttLink || previous?.wdttFallback != next.wdttFallback)
+        ) {
+            val request = captureRequestToken()
+            host.scope.launch { applyWdttChange(request) }
+        }
     }
 
     // No new request for a settled run: one refused at a prompt would take the service down.
     private fun isStartedAs(options: VpnOptions?): Boolean =
-        runState.value == RunState.STARTED && host.runtime?.vpn == options?.enable
+        runState.value == RunState.STARTED && options != null &&
+            host.runtime?.let { it.vpn == options.enable && it.matchesWdtt(options) } == true
+
+    private suspend fun applyWdttChange(request: RunRequest) {
+        val applied = transitionLock.withLock {
+            val runtime = host.runtime ?: return
+            val options = sharedState.vpnOptions ?: return
+            if (!isCurrent(request) || runtime.matchesWdtt(options)) return
+            transitioning(RunState.STARTING) {
+                try {
+                    host.startService(withLocalNetworkFallback(options.copy(enable = runtime.vpn)))
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (error: Exception) {
+                    host.log("Unable to switch WDTT profile: $error")
+                    false
+                }
+            }
+        }
+        if (!applied) abandon(request)
+    }
 
     // The intent is claimed before the Core is set up, so a second action that lands meanwhile
     // toggles this start off instead of racing a second setup against it.
@@ -247,11 +275,16 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
             return false
         }
         return transitionLock.withLock {
+            val latest = sharedState.vpnOptions
+            val currentOptions = options.copy(
+                wdttLink = latest?.wdttLink,
+                wdttFallback = latest?.wdttFallback ?: false,
+            )
             when {
                 !isCurrent(request) -> false
-                host.runtime?.vpn == options.enable -> true
+                host.runtime?.let { it.vpn == currentOptions.enable && it.matchesWdtt(currentOptions) } == true -> true
                 else -> transitioning(RunState.STARTING) {
-                    host.startService(withLocalNetworkFallback(options)) && isCurrent(request)
+                    host.startService(withLocalNetworkFallback(currentOptions)) && isCurrent(request)
                 }
             }
         }

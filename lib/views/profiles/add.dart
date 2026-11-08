@@ -61,6 +61,7 @@ class AddProfileMenu extends ConsumerWidget {
           if (profile.url.isNotEmpty) profile.url,
       },
       withAgeSecretKey: true,
+      withWdttFallback: system.isAndroid,
     );
     switch (res) {
       case null:
@@ -71,6 +72,17 @@ class AddProfileMenu extends ConsumerWidget {
             single.url,
             label: single.label,
             ageSecretKey: single.ageSecretKey,
+          ),
+        );
+      case [final primary, final backup]
+          when system.isAndroid &&
+              (primary.url.isVlessLink || primary.url.isUrl) &&
+              backup.url.isWdttLink:
+        unawaited(
+          profilesAction.addProfileFromLink(
+            primary.url,
+            label: primary.label,
+            wdttFallbackLink: backup.url,
           ),
         );
       default:

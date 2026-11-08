@@ -247,10 +247,6 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 GlobalState.lastExitInfo()
             }
 
-            "getNativeLibraryDir" -> result.success(
-                GlobalState.application.applicationInfo.nativeLibraryDir,
-            )
-
             "locateCaCertificate" -> reply(result) {
                 SystemCaStore.locate(requireNotNull(call.argument<ByteArray>("der")))
             }

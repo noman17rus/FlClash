@@ -8,6 +8,18 @@ import (
 	"time"
 )
 
+func TestLegacyTransportDoesNotSendAnUnsupportedNegotiationFrame(t *testing.T) {
+	client, server := net.Pipe()
+	defer client.Close()
+	server.Close()
+	if err := negotiateTransportExperiment(context.Background(), client, "[Interface]\n", experimentStandard); err != nil {
+		t.Fatalf("legacy setup unexpectedly wrote a negotiation frame: %v", err)
+	}
+	if err := negotiateTransportExperiment(context.Background(), client, "# WDTT_TRANSPORTS=uplink2\n", experimentStandard); err == nil {
+		t.Fatal("capable server setup skipped the negotiation frame")
+	}
+}
+
 func TestParseConfigResponseWorkerPolicyLimit(t *testing.T) {
 	config, err := parseConfigResponse("POLICY:max_workers=12")
 	if config != "" {

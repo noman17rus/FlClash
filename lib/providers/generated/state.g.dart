@@ -555,7 +555,7 @@ final class VpnOptionsProvider
   }
 }
 
-String _$vpnOptionsHash() => r'c00e87278b32dd8977ed136aace10dccfe05508d';
+String _$vpnOptionsHash() => r'b7c73181c86511e85fc44ee10011a6178034065e';
 
 @ProviderFor(AccessControlState)
 final accessControlStateProvider = AccessControlStateProvider._();
@@ -3659,7 +3659,7 @@ final class SetupStateProvider
   }
 }
 
-String _$setupStateHash() => r'4cfdb0a779dc8097c8c1027b73252f19f925a3ad';
+String _$setupStateHash() => r'f89af6a6eebe36099bbe6a4337ef811463e237b2';
 
 final class SetupStateFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<SetupState>, int?> {

@@ -73,14 +73,17 @@ class LinkManager {
   }
 
   void _handle(Uri uri, Function(String url) installConfigCallBack) {
+    if (uri.scheme == 'wdtt') {
+      final link = uri.toString();
+      if (link.isWdttLink) {
+        installConfigCallBack(link);
+      }
+      return;
+    }
     commonPrint.log('onAppLink: $uri');
     final url = _installConfigUrl(uri);
     if (url != null) {
       installConfigCallBack(url);
-      return;
-    }
-    if (uri.scheme.toLowerCase() == 'wdtt') {
-      installConfigCallBack(uri.toString());
     }
   }
 

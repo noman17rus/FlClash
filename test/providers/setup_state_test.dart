@@ -22,6 +22,31 @@ void main() {
     await testDatabase.close();
   });
 
+  testWidgets('a subscription carries its WDTT fallback into core setup', (
+    tester,
+  ) async {
+    const link =
+        'wdtt://connect?v=1&host=example.com&dtls=1&wg=2&local=3&password=p&hashes=h';
+    final profile = Profile.normal(
+      url: 'https://example.com/sub',
+    ).copyWith(overrides: const ProfileOverrides(wdttFallbackLink: link));
+    final container = ProviderContainer(
+      overrides: [
+        profilesProvider.overrideWith(() => TestProfiles([profile])),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const SizedBox.shrink(),
+      ),
+    );
+
+    final state = await container.read(setupStateProvider(profile.id).future);
+    expect(state.overrides.wdttFallbackLink, link);
+  });
+
   testWidgets('a custom setup disposed before its queries return resolves', (
     tester,
   ) async {

@@ -230,16 +230,33 @@ class VpnService : SystemVpnService(), ManagedService {
 
     private fun Builder.configureAccessControl(options: VpnOptions) {
         val accessControl = options.accessControlProps
-        if (!accessControl.enable) return
+        val bypassOwnApp = options.wdttLink != null
+        if (!accessControl.enable) {
+            if (bypassOwnApp) addDisallowedApplication(packageName)
+            return
+        }
         when (accessControl.mode) {
             AccessControlMode.ACCEPT_SELECTED -> {
-                (accessControl.acceptList + packageName).forEach { name ->
+                val packages = if (bypassOwnApp) {
+                    accessControl.acceptList - packageName
+                } else {
+                    accessControl.acceptList + packageName
+                }
+                val added = packages.map { name ->
                     addApplication(name, ::addAllowedApplication)
+                }
+                check(!bypassOwnApp || added.any { it }) {
+                    "WDTT needs an installed app in the VPN allowlist"
                 }
             }
 
             AccessControlMode.REJECT_SELECTED -> {
-                (accessControl.rejectList - packageName).forEach { name ->
+                val packages = if (bypassOwnApp) {
+                    (accessControl.rejectList + packageName).distinct()
+                } else {
+                    accessControl.rejectList - packageName
+                }
+                packages.forEach { name ->
                     addApplication(name, ::addDisallowedApplication)
                 }
             }
@@ -247,12 +264,12 @@ class VpnService : SystemVpnService(), ManagedService {
     }
 
     // A selected package that was uninstalled since must not veto the whole tunnel.
-    private fun addApplication(name: String, add: (String) -> Builder) {
-        try {
-            add(name)
-        } catch (_: PackageManager.NameNotFoundException) {
-            GlobalState.log("Access control skipped an uninstalled package: $name")
-        }
+    private fun addApplication(name: String, add: (String) -> Builder): Boolean = try {
+        add(name)
+        true
+    } catch (_: PackageManager.NameNotFoundException) {
+        GlobalState.log("Access control skipped an uninstalled package: $name")
+        false
     }
 
     override fun start() {

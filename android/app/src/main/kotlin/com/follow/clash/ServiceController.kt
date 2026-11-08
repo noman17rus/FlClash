@@ -17,6 +17,9 @@ import com.follow.clash.service.ServiceConfig
 import com.follow.clash.service.VpnService
 import com.follow.clash.service.models.VpnOptions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -30,6 +33,8 @@ import kotlin.coroutines.resume
 
 object ServiceController {
     private val lock = Mutex()
+    private val wdtt = WdttTunnel(::handleWdttFailure)
+    private var wdttRetry: Job? = null
     private var binding: ManagedServiceBinding? = null
 
     @Volatile
@@ -71,6 +76,8 @@ object ServiceController {
     }
 
     suspend fun start(options: VpnOptions): Boolean = lock.withLock {
+        val replaceTunnel = runtime?.let { it.vpn == options.enable && it.matchesWdtt(options) } != true
+        if (replaceTunnel) stopWdtt()
         ServiceConfig.updateVpnOptions(options)
         val nextIntent = if (options.enable) {
             VpnService::class.intent
@@ -95,7 +102,16 @@ object ServiceController {
         }
 
         val currentBinding = binding ?: return@withLock false
-        val result = currentBinding.useService { service -> service.start() }
+        val result = currentBinding.useService<Unit> { service ->
+            service.start()
+            if (replaceTunnel) options.wdttLink?.let { link ->
+                if (options.wdttFallback) {
+                    startWdttFallback(link)
+                } else {
+                    wdtt.start(link, allowManualCaptcha = true)
+                }
+            }
+        }
         if (result.isFailure) {
             GlobalState.log("Unable to start background service: ${result.exceptionOrNull()}")
             currentBinding.stopIfConnected()
@@ -110,6 +126,8 @@ object ServiceController {
         runtime = ServiceRuntime(
             vpn = options.enable,
             startedAtMillis = runtime?.startedAtMillis ?: System.currentTimeMillis(),
+            wdttLink = options.wdttLink,
+            wdttFallback = options.wdttFallback,
         )
         true
     }
@@ -120,12 +138,57 @@ object ServiceController {
     }
 
     private suspend fun tearDownServices() {
+        stopWdtt()
         binding?.useService { service -> service.stop() }
             ?.onFailure { error ->
                 GlobalState.log("Unable to stop background service: $error")
             }
         clearBinding()
         stopServices()
+    }
+
+    private suspend fun stopWdtt() {
+        wdttRetry?.cancel()
+        wdttRetry = null
+        wdtt.stop()
+    }
+
+    private suspend fun startWdttFallback(link: String) {
+        try {
+            wdtt.start(link, allowManualCaptcha = false)
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: Exception) {
+            GlobalState.log("WDTT backup could not start")
+        }
+    }
+
+    private suspend fun handleWdttFailure(client: Process, message: String, retryable: Boolean) {
+        val token = lock.withLock {
+            val active = runtime ?: return
+            if (!wdtt.owns(client)) return
+            GlobalState.log(message)
+            if (active.wdttFallback) {
+                stopWdtt()
+                val link = active.wdttLink
+                if (retryable && link != null) {
+                    wdttRetry = GlobalState.launch {
+                        delay(60_000)
+                        lock.withLock {
+                            wdttRetry = null
+                            if (runtime === active) startWdttFallback(link)
+                        }
+                    }
+                }
+                return
+            }
+            val token = ServiceState.captureRequestToken()
+            GlobalState.application.showToast(message)
+            tearDownServices()
+            release()
+            token
+        }
+        ServiceState.handleServiceLost(token)
     }
 
     // A service the system started itself — always-on VPN, or the sticky restart
@@ -150,6 +213,7 @@ object ServiceController {
                 if (binding !== disconnectedBinding) {
                     return@withLock false
                 }
+                stopWdtt()
                 GlobalState.log("Background service disconnected: $message")
                 release()
                 true

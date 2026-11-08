@@ -60,6 +60,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
       : ref.watch(
           patchClashConfigProvider.select(
             (state) => ProfileOverrides(
+              wdttFallbackLink: profile?.overrides.wdttFallbackLink ?? '',
               dns: state.dns,
               dnsOverrideKeys: state.dnsOverrideKeys.intersection(
                 DnsOverrideKey.normalProfileKeys,

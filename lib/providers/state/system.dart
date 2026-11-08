@@ -263,6 +263,17 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final safeMode = ref.watch(safeModeProvider);
+  final (profileUrl, fallbackLink) = ref.watch(
+    currentProfileProvider.select(
+      (p) => (p?.url ?? '', p?.overrides.wdttFallbackLink ?? ''),
+    ),
+  );
+  final wdttFallback = system.isAndroid && !safeMode && fallbackLink.isWdttLink;
+  final wdttLink = wdttFallback
+      ? extractWdttLink(fallbackLink)
+      : system.isAndroid && !safeMode && profileUrl.isWdttLink
+      ? extractWdttLink(profileUrl)
+      : null;
   final routeAddress = ref.watch(vpnRouteAddressProvider.future);
   final tun = clashConfig.tun;
   return VpnOptions(
@@ -281,6 +292,8 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
     routeAddress: await routeAddress,
     mtu: tun.mtu,
     congestionController: tun.congestionController,
+    wdttLink: wdttLink,
+    wdttFallback: wdttFallback,
   );
 }
 

@@ -19,7 +19,12 @@ import kotlinx.coroutines.CoroutineScope
 internal data class ServiceRuntime(
     val vpn: Boolean,
     val startedAtMillis: Long,
+    val wdttLink: String? = null,
+    val wdttFallback: Boolean = false,
 )
+
+internal fun ServiceRuntime.matchesWdtt(options: VpnOptions): Boolean =
+    wdttLink == options.wdttLink && wdttFallback == options.wdttFallback
 
 /**
  * The machine owns the arbitration and the transitions; this is only the part that cannot run on a

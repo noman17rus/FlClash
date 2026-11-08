@@ -504,7 +504,9 @@ class SetupAction extends _$SetupAction {
         ? await setupState.script?.content
         : null;
     final hasScript = scriptContent?.isNotEmpty == true;
-    final profileBase = !isCustom && !hasScript
+    final withWdttFallback =
+        system.isAndroid && setupState.overrides.wdttFallbackLink.isWdttLink;
+    final profileBase = !isCustom && !hasScript && !withWdttFallback
         ? await _core.getProfileBase(profileId)
         : null;
     Map<String, dynamic> rawConfig = isCustom
@@ -521,6 +523,34 @@ class SetupAction extends _$SetupAction {
     if (hasScript) {
       rawConfig = await handleEvaluate(scriptContent!, rawConfig);
     }
+    if (withWdttFallback) {
+      final proxies = [
+        if (rawConfig['proxies'] case final List entries)
+          for (final entry in entries)
+            if (entry is Map) Map<String, dynamic>.from(entry),
+      ];
+      if (!proxies.any((proxy) => proxy['type'] == 'vless')) {
+        throw MessageException(currentAppLocalizations.shareLinksInvalid);
+      }
+      final groups = rawConfig['proxy-groups'] as List? ?? const [];
+      final taken = {
+        ...reservedCustomProxyNames,
+        for (final item in [...proxies, ...groups])
+          if (item is Map && item['name'] is String) item['name'] as String,
+      };
+      if (taken.contains(wdttRouteGroupName(profileId)) ||
+          WdttRouteMode.values.any(
+            (mode) => taken.contains(mode.proxyName(profileId)),
+          )) {
+        throw MessageException(currentAppLocalizations.shareLinksInvalid);
+      }
+      final fallback = wdttFallbackConfig(proxies, profileId);
+      rawConfig = {
+        ...rawConfig,
+        ...fallback,
+        'proxy-groups': [...fallback['proxy-groups'] as List, ...groups],
+      };
+    }
     final directory = await appPath.profilesPath;
     final injected = await _resolveInjectedProviders(
       setupState,
@@ -536,7 +566,9 @@ class SetupAction extends _$SetupAction {
         profilesPath: directory,
         profileId: profileId,
         rawConfig: rawConfig,
-        realPatchConfig: patchConfig,
+        realPatchConfig: withWdttFallback
+            ? patchConfig.copyWith(mode: Mode.rule)
+            : patchConfig,
         overrides: setupState.overrides,
         bypassPrivateRoute: networkSetting.bypassPrivateRoute,
         keepEmptyDnsOverrides: setupState.profileType != ProfileType.custom,
@@ -638,6 +670,15 @@ class SetupAction extends _$SetupAction {
   }
 
   PatchClashConfig _effectivePatchConfig(PatchClashConfig patchConfig) {
+    if (system.isAndroid &&
+        ref
+                .read(currentProfileProvider)
+                ?.overrides
+                .wdttFallbackLink
+                .isWdttLink ==
+            true) {
+      patchConfig = patchConfig.copyWith(mode: Mode.rule);
+    }
     if (ref.read(safeModeProvider)) {
       return patchConfig.copyWith(
         tun: patchConfig.tun.copyWith(enable: false),

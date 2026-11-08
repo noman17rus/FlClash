@@ -353,6 +353,7 @@ class ProfilesAction extends _$ProfilesAction {
     String link, {
     String? label,
     String ageSecretKey = '',
+    String wdttFallbackLink = '',
   }) async {
     _showProfiles();
     final profile = await globalState.loadingRun(
@@ -360,12 +361,16 @@ class ProfilesAction extends _$ProfilesAction {
       () => link.isWdttLink
           ? _fromWdttLink(Profile.normal(label: label), link)
           : link.isShareLink
-          ? _fromShareLinks(Profile.normal(label: label), [link])
+          ? _fromShareLinks(Profile.normal(label: label), [
+              link,
+            ], wdttFallbackLink: wdttFallbackLink)
           : _withAgeSecretKey(
-              Profile.normal(
-                label: label,
-                url: link,
-              ).copyWith(ageSecretKey: ageSecretKey),
+              Profile.normal(label: label, url: link).copyWith(
+                ageSecretKey: ageSecretKey,
+                overrides: ProfileOverrides(
+                  wdttFallbackLink: _checkedWdttFallbackLink(wdttFallbackLink),
+                ),
+              ),
               _download,
             ),
       title: currentAppLocalizations.addProfile,
@@ -378,14 +383,30 @@ class ProfilesAction extends _$ProfilesAction {
   /// Ids are taken up front so the list keeps the order of [links]; the share
   /// links among them make up one profile, in the place of the first.
   Future<void> addProfilesFromLinks(List<String> links) async {
+    if (system.isAndroid && links.length == 2) {
+      final subscription = links.where((link) => link.isUrl).firstOrNull;
+      final backup = links.where((link) => link.isWdttLink).firstOrNull;
+      if (subscription != null && backup != null) {
+        await addProfileFromLink(subscription, wdttFallbackLink: backup);
+        return;
+      }
+    }
     _showProfiles();
     final shareLinks = [
       for (final link in links)
         if (link.isShareLink) link,
     ];
+    final wdttLinks = links.where((link) => link.isWdttLink).toList();
+    final fallbackLink =
+        system.isAndroid &&
+            wdttLinks.length == 1 &&
+            shareLinks.isNotEmpty &&
+            shareLinks.every((link) => link.isVlessLink)
+        ? wdttLinks.single
+        : '';
     await globalState.batchRun(
       [
-        for (final link in links)
+        for (final link in links.where((link) => link != fallbackLink))
           if (link.isWdttLink)
             (
               profile: Profile.normal(),
@@ -399,18 +420,18 @@ class ProfilesAction extends _$ProfilesAction {
               wdttLink: null,
             )
           else if (link == shareLinks.first)
-            (
-              profile: Profile.normal(),
-              shareLinks: shareLinks,
-              wdttLink: null,
-            ),
+            (profile: Profile.normal(), shareLinks: shareLinks, wdttLink: null),
       ],
       (item) async => putProfile(
         await (item.wdttLink != null
             ? _fromWdttLink(item.profile, item.wdttLink!)
             : item.shareLinks.isEmpty
             ? _download(item.profile)
-            : _fromShareLinks(item.profile, item.shareLinks)),
+            : _fromShareLinks(
+                item.profile,
+                item.shareLinks,
+                wdttFallbackLink: fallbackLink,
+              )),
       ),
       label: (item) => item.shareLinks.firstOrNull ?? item.profile.url,
       concurrency: maxConcurrentImports,
@@ -422,6 +443,14 @@ class ProfilesAction extends _$ProfilesAction {
     return profile.update(
       validate: (path, key) => _core.validateProfile(path, key),
     );
+  }
+
+  String _checkedWdttFallbackLink(String link) {
+    if (link.isEmpty) return '';
+    if (!link.isWdttLink) {
+      throw MessageException(currentAppLocalizations.shareLinksInvalid);
+    }
+    return extractWdttLink(link)!;
   }
 
   Future<Profile> _withAgeSecretKey(
@@ -439,7 +468,11 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
-  Future<Profile> _fromShareLinks(Profile profile, List<String> links) async {
+  Future<Profile> _fromShareLinks(
+    Profile profile,
+    List<String> links, {
+    String wdttFallbackLink = '',
+  }) async {
     final appLocalizations = currentAppLocalizations;
     final decoded = await _core.decodeShareLinks(links);
     final taken = {...reservedCustomProxyNames};
@@ -461,6 +494,16 @@ class ProfilesAction extends _$ProfilesAction {
     final label = proxies.length == 1
         ? first
         : appLocalizations.proxiesProfileLabel(first, proxies.length);
+    if (wdttFallbackLink.isNotEmpty) {
+      if (proxies.any((proxy) => proxy['type'] != 'vless')) {
+        throw MessageException(appLocalizations.shareLinksInvalid);
+      }
+      profile = profile.copyWith(
+        overrides: profile.overrides.copyWith(
+          wdttFallbackLink: _checkedWdttFallbackLink(wdttFallbackLink),
+        ),
+      );
+    }
     final config = await encodeYamlTask({'proxies': proxies});
     return profile
         .copyWith(label: profile.label.takeFirstValid([label]))
@@ -473,27 +516,18 @@ class ProfilesAction extends _$ProfilesAction {
   Future<Profile> _fromWdttLink(Profile profile, String link) async {
     final appLocalizations = currentAppLocalizations;
     final parts = parseWdttLink(link);
-    if (parts == null || !parts.isValid) {
+    if (parts == null) {
       throw MessageException(appLocalizations.shareLinksInvalid);
     }
-    final proxyName = parts.profileName.trim().isNotEmpty
-        ? parts.profileName.trim()
-        : 'WDTT';
-    final groupName = '$proxyName Group';
+    const proxyName = 'WDTT';
+    const groupName = 'WDTT Group';
     final config = await encodeYamlTask({
-      'proxies': [
-        {
-          'name': proxyName,
-          'type': 'socks5',
-          'server': localhost,
-          'port': 1080,
-        },
-      ],
+      'proxies': [wdttProxyConfig(proxyName)],
       'proxy-groups': [
         {
           'name': groupName,
           'type': 'select',
-          'proxies': [proxyName, 'DIRECT'],
+          'proxies': [proxyName],
         },
       ],
       'rules': ['MATCH,$groupName'],
@@ -502,7 +536,10 @@ class ProfilesAction extends _$ProfilesAction {
         ? parts.profileName.trim()
         : appLocalizations.proxiesProfileLabel(proxyName, 1);
     return profile
-        .copyWith(label: profile.label.takeFirstValid([label]), url: link)
+        .copyWith(
+          label: profile.label.takeFirstValid([label]),
+          url: extractWdttLink(link)!,
+        )
         .saveFile(
           utf8.encode(config),
           validate: (path, _) => _core.validateConfig(path),

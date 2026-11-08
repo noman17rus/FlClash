@@ -158,7 +158,12 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
         if (!startSucceeds) {
             return false
         }
-        runtime = ServiceRuntime(vpn = runsAsVpn ?: options.enable, startedAtMillis = STARTED_AT)
+        runtime = ServiceRuntime(
+            vpn = runsAsVpn ?: options.enable,
+            startedAtMillis = STARTED_AT,
+            wdttLink = options.wdttLink,
+            wdttFallback = options.wdttFallback,
+        )
         return true
     }
 
@@ -170,6 +175,27 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServiceStateMachineTest {
+
+    @Test
+    fun switchingWdttProfilesReconfiguresOnlyAnActiveRun() = runTest {
+        val host = FakeHost(this)
+        val machine = ServiceStateMachine(host)
+        val ordinary = configuredState()
+        val wdtt = ordinary.copy(vpnOptions = vpnOptions().copy(wdttLink = "wdtt://connect?test"))
+
+        machine.syncSharedState(wdtt)
+        testScheduler.runCurrent()
+        assertEquals(0, host.startCalls)
+
+        assertTrue(machine.requestStart().await())
+        assertEquals(wdtt.vpnOptions, host.lastStartOptions)
+        machine.syncSharedState(ordinary)
+        testScheduler.runCurrent()
+
+        assertEquals(2, host.startCalls)
+        assertEquals(ordinary.vpnOptions, host.lastStartOptions)
+        assertEquals(RunState.STARTED, machine.runState.value)
+    }
 
     @Test
     fun `initParams spells the keys the Go wrapper expects`() {

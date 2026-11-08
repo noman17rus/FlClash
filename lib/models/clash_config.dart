@@ -1646,6 +1646,7 @@ Map<String, Object?> _withLegacyTunOverride(Map<String, Object?> json) {
 @freezed
 abstract class ProfileOverrides with _$ProfileOverrides {
   const factory ProfileOverrides({
+    @Default('') String wdttFallbackLink,
     @Default(defaultDns) @JsonKey(fromJson: Dns.safeDnsFromJson) Dns dns,
     @Default({})
     @JsonKey(name: _dnsOverrideKeysJsonKey, fromJson: _dnsOverrideKeysFromJson)

@@ -860,6 +860,7 @@ func RunSession(
 	defer stopDTLS()
 
 	transportMode := tp.Experiment
+	legacyTransport := false
 	// Запрос конфига
 	{ // Every worker must authenticate its device before joining the relay.
 		if autoLease != nil {
@@ -889,6 +890,7 @@ func RunSession(
 			return false, fmt.Errorf("сервер ещё не выдал конфигурацию")
 		}
 		transportMode = d.resolveTransport(conf)
+		legacyTransport = usesLegacyTransport(conf, transportMode)
 		if autoLease != nil {
 			autoLease.setStage("protocol")
 		}
@@ -896,9 +898,11 @@ func RunSession(
 			return false, err
 		}
 		if autoLease != nil {
-			autoLease.setStage("confirmation")
-			if err := confirmConnectionPath(sessCtx, dtlsConn); err != nil {
-				return false, err
+			if !legacyTransport {
+				autoLease.setStage("confirmation")
+				if err := confirmConnectionPath(sessCtx, dtlsConn); err != nil {
+					return false, err
+				}
 			}
 			if !startupTimer.Stop() || ctx.Err() != nil {
 				return false, context.DeadlineExceeded
@@ -1009,7 +1013,7 @@ func RunSession(
 		defer sessCancel()
 		// Проверяем каждый новый канал сразу, чтобы Android получил раннее
 		// подтверждение, что новый процесс действительно видит сервер.
-		if !writeKeepalive(time.Now()) {
+		if !legacyTransport && !writeKeepalive(time.Now()) {
 			return
 		}
 		t := time.NewTicker(keepaliveInterval)

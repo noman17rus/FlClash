@@ -295,11 +295,6 @@ class App {
     });
   }
 
-  Future<String?> getNativeLibraryDir() async {
-    if (!Platform.isAndroid) return null;
-    return methodChannel.invokeMethod<String>('getNativeLibraryDir');
-  }
-
   Future<AppExitInfo?> getLastExitInfo() async {
     try {
       final raw = await methodChannel
