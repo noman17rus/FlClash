@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -112,6 +113,13 @@ bool _isTextFieldFocused() {
 }
 
 void main() {
+  const wdtt =
+      'wdtt://connect?v=1&host=example.com&dtls=56000&wg=56001&local=9000&password=p&hashes=h';
+
+  Finder wdttField() => find.descendant(
+    of: find.widgetWithText(FormRow, 'WDTT'),
+    matching: find.byType(TextField),
+  );
   late Directory tempDir;
 
   setUpAll(() async {
@@ -197,4 +205,74 @@ void main() {
     expect(saved.autoUpdate, isFalse);
     expect(saved.autoUpdateDuration, profile.autoUpdateDuration);
   });
+
+  for (final replacement in [
+    '',
+    wdtt.replaceFirst('example.com', 'new.example.com'),
+  ]) {
+    testWidgets(
+      'editing WDTT backup saves "$replacement" without changing subscription',
+      (tester) async {
+        final profile = _urlProfile().copyWith(
+          overrides: const ProfileOverrides(wdttFallbackLink: wdtt),
+        );
+        await pumpEditProfile(
+          tester,
+          profile: profile,
+          overrides: [
+            profilesProvider.overrideWith(() => TestProfiles([profile])),
+          ],
+        );
+        await tester.enterText(wdttField(), replacement);
+        await tester.tap(find.byTooltip('Save'));
+        await tester.pump();
+        final saved = globalState.container.read(profilesProvider).single;
+        expect(saved.url, profile.url);
+        expect(saved.overrides.wdttFallbackLink, replacement);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets('invalid WDTT backup does not save', (tester) async {
+    final profile = _urlProfile().copyWith(
+      overrides: const ProfileOverrides(wdttFallbackLink: wdtt),
+    );
+    await pumpEditProfile(
+      tester,
+      profile: profile,
+      overrides: [
+        profilesProvider.overrideWith(() => TestProfiles([profile])),
+      ],
+    );
+    await tester.enterText(wdttField(), 'wdtt://connect?host=missing-fields');
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pump();
+    expect(globalState.container.read(profilesProvider).single, profile);
+    await tester.pumpAndSettle();
+    expect(find.text(currentAppLocalizations.invalidLinkTip), findsOneWidget);
+  });
+
+  testWidgets(
+    'standalone WDTT link can be edited without subscription download',
+    (tester) async {
+      final profile = Profile.normal(label: 'Tunnel').copyWith(url: wdtt);
+      final replacement = wdtt.replaceFirst('example.com', 'new.example.com');
+      await pumpEditProfile(
+        tester,
+        profile: profile,
+        overrides: [
+          profilesProvider.overrideWith(() => TestProfiles([profile])),
+        ],
+      );
+      await tester.enterText(wdttField(), replacement);
+      await tester.tap(find.byTooltip('Save'));
+      await tester.pump();
+      expect(
+        globalState.container.read(profilesProvider).single.url,
+        replacement,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

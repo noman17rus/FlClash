@@ -16,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum _ProfileField { label, url, autoUpdateInterval }
+enum _ProfileField { label, url, wdtt, autoUpdateInterval }
 
 class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
@@ -30,6 +30,7 @@ class EditProfileView extends ConsumerStatefulWidget {
 class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _labelController;
   late final TextEditingController _urlController;
+  late final TextEditingController _wdttController;
   late final TextEditingController _ageSecretKeyController;
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
@@ -44,6 +45,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     super.initState();
     _labelController = TextEditingController(text: widget.profile.label);
     _urlController = TextEditingController(text: widget.profile.url);
+    _wdttController = TextEditingController(
+      text: widget.profile.overrides.wdttFallbackLink,
+    );
     _ageSecretKeyController = TextEditingController(
       text: widget.profile.ageSecretKey,
     );
@@ -73,6 +77,21 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     if (labelError != null) {
       return (field: _ProfileField.label, message: labelError);
+    }
+    final wdtt = _wdttController.text.trim();
+    if (wdtt.isNotEmpty && !wdtt.isWdttLink) {
+      return (
+        field: _ProfileField.wdtt,
+        message: appLocalizations.invalidLinkTip,
+      );
+    }
+    if (widget.profile.url.isWdttLink) {
+      return _urlController.text.trim().isWdttLink
+          ? null
+          : (
+              field: _ProfileField.url,
+              message: appLocalizations.invalidLinkTip,
+            );
     }
     if (widget.profile.type != ProfileType.url) {
       return null;
@@ -128,7 +147,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         widget.profile;
     final interval = int.tryParse(_autoUpdateDurationController.text);
     var profile = current.copyWith(
-      url: _urlController.text,
+      url: widget.profile.url.isWdttLink
+          ? extractWdttLink(_urlController.text.trim())!
+          : _urlController.text.trim(),
+      overrides: current.overrides.copyWith(
+        wdttFallbackLink: _wdttController.text.trim().isEmpty
+            ? ''
+            : extractWdttLink(_wdttController.text.trim())!,
+      ),
       ageSecretKey: _ageSecretKeyController.text.trim(),
       label: _labelController.text,
       autoUpdate: _autoUpdate,
@@ -139,8 +165,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     final profilesAction = ref.read(profilesActionProvider.notifier);
     final appLocalizations = context.appLocalizations;
     final hasUpdate =
-        current.url != profile.url ||
-        current.ageSecretKey != profile.ageSecretKey;
+        profile.type == ProfileType.url &&
+        (current.url != profile.url ||
+            current.ageSecretKey != profile.ageSecretKey);
     if (_fileData != null) {
       if (profile.type == ProfileType.url && _autoUpdate) {
         final res = await dialogs.showMessage(
@@ -289,6 +316,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   void dispose() {
     _labelController.dispose();
     _urlController.dispose();
+    _wdttController.dispose();
     _ageSecretKeyController.dispose();
     _fileInfoNotifier.dispose();
     _autoUpdateDurationController.dispose();
@@ -300,6 +328,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     final isUrl = widget.profile.type == ProfileType.url;
+    final isWdtt = widget.profile.url.isWdttLink;
     final issue = _attempted ? _issue(appLocalizations) : null;
     final sections = [
       generateSection(
@@ -309,10 +338,19 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             invalid: issue?.field == _ProfileField.label,
             onChanged: _handleChanged,
           ),
-          if (isUrl)
+          if (isUrl || isWdtt)
             _ProfileUrlField(
+              title: isWdtt ? 'WDTT' : null,
               controller: _urlController,
               invalid: issue?.field == _ProfileField.url,
+              onChanged: _handleChanged,
+            ),
+          if (!isWdtt && (system.isAndroid || _wdttController.text.isNotEmpty))
+            _ProfileUrlField(
+              title: 'WDTT',
+              optional: true,
+              controller: _wdttController,
+              invalid: issue?.field == _ProfileField.wdtt,
               onChanged: _handleChanged,
             ),
           _AgeSecretKeyField(controller: _ageSecretKeyController),
@@ -444,21 +482,27 @@ class _ProfileUrlField extends StatelessWidget {
     required this.controller,
     required this.invalid,
     required this.onChanged,
+    this.title,
+    this.optional = false,
   });
 
   final TextEditingController controller;
   final bool invalid;
   final ValueChanged<String> onChanged;
+  final String? title;
+  final bool optional;
 
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     return FormRow(
-      title: appLocalizations.url,
+      title: title ?? appLocalizations.url,
       invalid: invalid,
       trailing: FormRowTextField(
         controller: controller,
-        hintText: appLocalizations.required,
+        hintText: optional
+            ? appLocalizations.optional
+            : appLocalizations.required,
         keyboardType: TextInputType.url,
         textInputAction: TextInputAction.next,
         autocorrect: false,
