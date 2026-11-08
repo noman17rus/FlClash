@@ -114,6 +114,9 @@ object ServiceController {
         }
         if (result.isFailure) {
             GlobalState.log("Unable to start background service: ${result.exceptionOrNull()}")
+            if (options.wdttLink != null) {
+                GlobalState.application.showToast(GlobalState.application.getString(R.string.wdtt_failed))
+            }
             currentBinding.stopIfConnected()
                 .onFailure { error ->
                     GlobalState.log("Unable to clean up failed background service start: $error")
@@ -160,6 +163,7 @@ object ServiceController {
             throw error
         } catch (_: Exception) {
             GlobalState.log("WDTT backup could not start")
+            GlobalState.application.showToast(GlobalState.application.getString(R.string.wdtt_failed))
         }
     }
 
@@ -168,6 +172,9 @@ object ServiceController {
             val active = runtime ?: return
             if (!wdtt.owns(client)) return
             GlobalState.log(message)
+            GlobalState.application.showToast(GlobalState.application.getString(
+                if (active.wdttFallback && retryable) R.string.wdtt_retry else R.string.wdtt_failed,
+            ))
             if (active.wdttFallback) {
                 stopWdtt()
                 val link = active.wdttLink
@@ -183,7 +190,6 @@ object ServiceController {
                 return
             }
             val token = ServiceState.captureRequestToken()
-            GlobalState.application.showToast(message)
             tearDownServices()
             release()
             token

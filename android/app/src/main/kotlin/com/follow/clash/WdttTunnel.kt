@@ -20,6 +20,9 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
     @Volatile
     private var process: Process? = null
 
+    @Volatile
+    private var stopping = false
+
     fun owns(client: Process) = process === client
 
     suspend fun start(link: String, allowManualCaptcha: Boolean): Unit = withContext(Dispatchers.IO) {
@@ -51,6 +54,17 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
             "-captcha-mode", "auto",
         ).directory(context.cacheDir).redirectErrorStream(true).start()
         process = client
+        stopping = false
+
+        var progress = WdttProgress.STARTING
+        fun reportProgress(next: WdttProgress) {
+            if (!owns(client) || stopping || next.ordinal <= progress.ordinal) return
+            progress = next
+            val message = context.getString(next.message)
+            GlobalState.log(message)
+            context.showToast(message)
+        }
+        context.showToast(context.getString(R.string.wdtt_starting))
 
         val input = client.outputStream.bufferedWriter(Charsets.UTF_8)
         try {
@@ -79,6 +93,7 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
             }
         }
         GlobalState.launch(Dispatchers.IO) {
+            val captchaNotices = mutableSetOf<Int>()
             var lastFailure: String? = null
             var phase = "launch"
             var portInUse = false
@@ -86,6 +101,8 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
             runCatching {
                 client.inputStream.bufferedReader(Charsets.UTF_8).useLines { lines ->
                     lines.forEach { line ->
+                        if (!owns(client) || stopping) return@forEach
+                        WdttProgress.fromLog(line)?.let(::reportProgress)
                         phase = when {
                             line.contains("Конфиг получен") -> "WireGuard configuration"
                             line.contains("[DTLS] Соединение установлено") -> "DTLS established"
@@ -97,6 +114,17 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
                         if (line.startsWith("CAPTCHA_SOLVE|")) {
                             val request = line.split('|', limit = 5)
                             if (request.size != 5) return@forEach
+                            val captchaMessage = if (request[2] == "auto") {
+                                R.string.wdtt_captcha_auto
+                            } else {
+                                R.string.wdtt_captcha_manual
+                            }
+                            if (progress != WdttProgress.CONNECTED &&
+                                (request[2] == "auto" || allowManualCaptcha) &&
+                                captchaNotices.add(captchaMessage)
+                            ) {
+                                context.showToast(context.getString(captchaMessage))
+                            }
                             val result = if (request[2] == "auto") {
                                 try {
                                     WdttCaptcha.solveAutomatically(request[3]).also {
@@ -182,6 +210,7 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
 
     suspend fun stop() = withContext(Dispatchers.IO) {
         val client = process ?: return@withContext
+        stopping = true
         WdttCaptcha.cancel()
         client.destroy()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -1,0 +1,13 @@
+<resources>
+    <string name="wdtt_starting">WDTT: starting connection…</string>
+    <string name="wdtt_credentials">WDTT: requesting connection credentials…</string>
+    <string name="wdtt_relay">WDTT: TURN relay is ready…</string>
+    <string name="wdtt_handshake">WDTT: establishing a secure channel…</string>
+    <string name="wdtt_secure_channel">WDTT: secure channel established…</string>
+    <string name="wdtt_configuration">WDTT: configuration received, starting tunnel…</string>
+    <string name="wdtt_connected">WDTT: connected, tunnel is ready</string>
+    <string name="wdtt_captcha_auto">WDTT: checking CAPTCHA automatically…</string>
+    <string name="wdtt_captcha_manual">WDTT: complete CAPTCHA to continue</string>
+    <string name="wdtt_failed">WDTT: connection failed. See logs for details.</string>
+    <string name="wdtt_retry">WDTT: backup unavailable, retrying in one minute</string>
+</resources>

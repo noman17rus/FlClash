@@ -1,0 +1,13 @@
+<resources>
+    <string name="wdtt_starting">WDTT: начинаем подключение…</string>
+    <string name="wdtt_credentials">WDTT: получаем данные подключения…</string>
+    <string name="wdtt_relay">WDTT: ретранслятор TURN готов…</string>
+    <string name="wdtt_handshake">WDTT: устанавливаем защищённый канал…</string>
+    <string name="wdtt_secure_channel">WDTT: защищённый канал установлен…</string>
+    <string name="wdtt_configuration">WDTT: конфигурация получена, запускаем туннель…</string>
+    <string name="wdtt_connected">WDTT: соединение установлено, туннель готов</string>
+    <string name="wdtt_captcha_auto">WDTT: автоматически проверяем капчу…</string>
+    <string name="wdtt_captcha_manual">WDTT: пройдите капчу для подключения</string>
+    <string name="wdtt_failed">WDTT: не удалось подключиться. Подробности в журнале.</string>
+    <string name="wdtt_retry">WDTT: резерв недоступен, повтор через минуту</string>
+</resources>
