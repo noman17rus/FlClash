@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'print.dart';
 import 'protocol.dart';
 import 'string.dart';
+import 'wdtt_link.dart';
 
 String? profileUrlFromQrCodes(Iterable<String?> values) {
   for (final value in values) {
@@ -13,7 +14,7 @@ String? profileUrlFromQrCodes(Iterable<String?> values) {
     if (text == null || text.isEmpty) {
       continue;
     }
-    if (text.isUrl || text.isShareLink) {
+    if (text.isUrl || text.isShareLink || text.isWdttLink) {
       return text;
     }
     final uri = Uri.tryParse(text);
@@ -76,6 +77,10 @@ class LinkManager {
     final url = _installConfigUrl(uri);
     if (url != null) {
       installConfigCallBack(url);
+      return;
+    }
+    if (uri.scheme.toLowerCase() == 'wdtt') {
+      installConfigCallBack(uri.toString());
     }
   }
 

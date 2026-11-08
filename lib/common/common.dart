@@ -50,4 +50,6 @@ export 'system_fonts.dart';
 export 'task.dart';
 export 'task_pool.dart';
 export 'webdav.dart';
+export 'wdtt_link.dart';
+export 'wdtt_tunnel.dart';
 export 'yaml.dart';

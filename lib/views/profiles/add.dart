@@ -51,7 +51,7 @@ class AddProfileMenu extends ConsumerWidget {
         if (value == null || value.isEmpty) {
           return appLocalizations.emptyTip(appLocalizations.link);
         }
-        if (!value.isUrl && !value.isShareLink) {
+        if (!value.isUrl && !value.isShareLink && !value.isWdttLink) {
           return appLocalizations.invalidLinkTip;
         }
         return null;

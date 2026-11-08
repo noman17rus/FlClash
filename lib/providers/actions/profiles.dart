@@ -357,7 +357,9 @@ class ProfilesAction extends _$ProfilesAction {
     _showProfiles();
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
-      () => link.isShareLink
+      () => link.isWdttLink
+          ? _fromWdttLink(Profile.normal(label: label), link)
+          : link.isShareLink
           ? _fromShareLinks(Profile.normal(label: label), [link])
           : _withAgeSecretKey(
               Profile.normal(
@@ -384,13 +386,29 @@ class ProfilesAction extends _$ProfilesAction {
     await globalState.batchRun(
       [
         for (final link in links)
-          if (!link.isShareLink)
-            (profile: Profile.normal(url: link), shareLinks: const <String>[])
+          if (link.isWdttLink)
+            (
+              profile: Profile.normal(),
+              shareLinks: const <String>[],
+              wdttLink: link,
+            )
+          else if (!link.isShareLink)
+            (
+              profile: Profile.normal(url: link),
+              shareLinks: const <String>[],
+              wdttLink: null,
+            )
           else if (link == shareLinks.first)
-            (profile: Profile.normal(), shareLinks: shareLinks),
+            (
+              profile: Profile.normal(),
+              shareLinks: shareLinks,
+              wdttLink: null,
+            ),
       ],
       (item) async => putProfile(
-        await (item.shareLinks.isEmpty
+        await (item.wdttLink != null
+            ? _fromWdttLink(item.profile, item.wdttLink!)
+            : item.shareLinks.isEmpty
             ? _download(item.profile)
             : _fromShareLinks(item.profile, item.shareLinks)),
       ),
@@ -446,6 +464,45 @@ class ProfilesAction extends _$ProfilesAction {
     final config = await encodeYamlTask({'proxies': proxies});
     return profile
         .copyWith(label: profile.label.takeFirstValid([label]))
+        .saveFile(
+          utf8.encode(config),
+          validate: (path, _) => _core.validateConfig(path),
+        );
+  }
+
+  Future<Profile> _fromWdttLink(Profile profile, String link) async {
+    final appLocalizations = currentAppLocalizations;
+    final parts = parseWdttLink(link);
+    if (parts == null || !parts.isValid) {
+      throw MessageException(appLocalizations.shareLinksInvalid);
+    }
+    final proxyName = parts.profileName.trim().isNotEmpty
+        ? parts.profileName.trim()
+        : 'WDTT';
+    final groupName = '$proxyName Group';
+    final config = await encodeYamlTask({
+      'proxies': [
+        {
+          'name': proxyName,
+          'type': 'socks5',
+          'server': localhost,
+          'port': 1080,
+        },
+      ],
+      'proxy-groups': [
+        {
+          'name': groupName,
+          'type': 'select',
+          'proxies': [proxyName, 'DIRECT'],
+        },
+      ],
+      'rules': ['MATCH,$groupName'],
+    });
+    final label = parts.profileName.trim().isNotEmpty
+        ? parts.profileName.trim()
+        : appLocalizations.proxiesProfileLabel(proxyName, 1);
+    return profile
+        .copyWith(label: profile.label.takeFirstValid([label]), url: link)
         .saveFile(
           utf8.encode(config),
           validate: (path, _) => _core.validateConfig(path),
