@@ -314,6 +314,12 @@ Android deliberately keeps Flutter requests optimistic and the native layer auth
   both open the ports before any service exists, so a start that ends without a `runtime`, refused or cancelled, stops
   the empty service once more, without passing through `STOPPING`. Flutter may be gone by then and never see the
   `stopped` report.
+- Combined VLESS/WDTT profiles use an Auto selector controlled by `WdttFailover` under `ServiceController`.
+  WDTT starts only after repeated primary failures spanning eight seconds, and Auto selects it only once SOCKS5 is ready.
+  Two successful primary probes restore VLESS and stop WDTT; switching closes existing Core connections.
+  Network revisions invalidate in-flight probes and allow four seconds to stabilize. Offline periods pause probes and
+  retries, preserving WDTT for fifteen seconds before stopping it. A changed network restarts a needed WDTT client once.
+  Repeat starts of the same runtime preserve its identity and failover job. Core RPC failures never count as proxy failures.
 - A start that does not bring the service up gives its intent back and takes down whatever it left running, unless a
   newer request has claimed the service. A failed start therefore always ends in `STOPPED`, whichever step refused it.
   The one start that mints no request is a repeat on a settled run of the same kind, which Flutter sends every time it

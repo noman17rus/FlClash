@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.intent
 import com.follow.clash.core.Core
@@ -19,7 +20,6 @@ import com.follow.clash.service.models.VpnOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -34,7 +34,8 @@ import kotlin.coroutines.resume
 object ServiceController {
     private val lock = Mutex()
     private val wdtt = WdttTunnel(::handleWdttFailure)
-    private var wdttRetry: Job? = null
+    private var failoverJob: Job? = null
+    private var wdttRetryAt = 0L
     private var binding: ManagedServiceBinding? = null
 
     @Volatile
@@ -105,14 +106,13 @@ object ServiceController {
         val result = currentBinding.useService<Unit> { service ->
             service.start()
             if (replaceTunnel) options.wdttLink?.let { link ->
-                if (options.wdttFallback) {
-                    startWdttFallback(link)
-                } else {
+                if (!options.wdttFallback) {
                     wdtt.start(link, allowManualCaptcha = true)
                 }
             }
         }
         if (result.isFailure) {
+            stopWdtt()
             GlobalState.log("Unable to start background service: ${result.exceptionOrNull()}")
             if (options.wdttLink != null) {
                 GlobalState.application.showToast(GlobalState.application.getString(R.string.wdtt_failed))
@@ -126,12 +126,15 @@ object ServiceController {
         }
 
         Core.startListener()
-        runtime = ServiceRuntime(
+        runtime = if (!replaceTunnel) runtime else ServiceRuntime(
             vpn = options.enable,
             startedAtMillis = runtime?.startedAtMillis ?: System.currentTimeMillis(),
             wdttLink = options.wdttLink,
             wdttFallback = options.wdttFallback,
         )
+        if (replaceTunnel && options.wdttFallback && options.wdttLink != null) {
+            startFailover(requireNotNull(runtime), requireNotNull(options.wdttLink))
+        }
         true
     }
 
@@ -151,9 +154,29 @@ object ServiceController {
     }
 
     private suspend fun stopWdtt() {
-        wdttRetry?.cancel()
-        wdttRetry = null
+        failoverJob?.cancel()
+        failoverJob = null
+        wdttRetryAt = 0
         wdtt.stop()
+    }
+
+    private fun startFailover(active: ServiceRuntime, link: String) {
+        failoverJob = GlobalState.launch {
+            WdttFailover(reconcile = { needed, networkChanged ->
+                lock.withLock {
+                    if (runtime !== active) return@withLock false
+                    if (!needed || networkChanged) {
+                        wdtt.stop()
+                        if (networkChanged && wdttRetryAt != Long.MAX_VALUE) wdttRetryAt = 0
+                    }
+                    if (needed && !wdtt.isRunning && SystemClock.elapsedRealtime() >= wdttRetryAt) {
+                        wdttRetryAt = SystemClock.elapsedRealtime() + 60_000
+                        startWdttFallback(link)
+                    }
+                    wdtt.isReady
+                }
+            }).run()
+        }
     }
 
     private suspend fun startWdttFallback(link: String) {
@@ -176,17 +199,8 @@ object ServiceController {
                 if (active.wdttFallback && retryable) R.string.wdtt_retry else R.string.wdtt_failed,
             ))
             if (active.wdttFallback) {
-                stopWdtt()
-                val link = active.wdttLink
-                if (retryable && link != null) {
-                    wdttRetry = GlobalState.launch {
-                        delay(60_000)
-                        lock.withLock {
-                            wdttRetry = null
-                            if (runtime === active) startWdttFallback(link)
-                        }
-                    }
-                }
+                wdtt.stop()
+                wdttRetryAt = if (retryable) SystemClock.elapsedRealtime() + 60_000 else Long.MAX_VALUE
                 return
             }
             val token = ServiceState.captureRequestToken()

@@ -17,6 +17,10 @@ import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetAddress
 import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+data class UnderlyingNetworkState(val id: Long? = null, val revision: Long = 0)
 
 private data class NetworkInfo(
     @Volatile var losingUntilMillis: Long = 0,
@@ -29,6 +33,8 @@ private data class NetworkInfo(
 // Outlives every service run: the Core also tests delays and updates providers
 // while stopped, and a `system` nameserver has no upstream until DNS arrives here.
 object NetworkObserver {
+    private val mutableState = MutableStateFlow(UnderlyingNetworkState())
+    val state = mutableState.asStateFlow()
 
     private val networkInfos = ConcurrentHashMap<Network, NetworkInfo>()
     private val connectivity by lazy {
@@ -78,6 +84,10 @@ object NetworkObserver {
             networkInfos[network]?.dnsList = linkProperties.dnsServers
             scheduleUpdateDns()
         }
+
+        override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+            scheduleUpdateDns()
+        }
     }
 
     private val updateDnsTask = Runnable(::updateDns)
@@ -113,12 +123,15 @@ object NetworkObserver {
                 capabilities.hasTransport(TRANSPORT_SATELLITE) -> 5
 
             else -> 20
-        } + entry.value.priorityPenalty
+        } + entry.value.priorityPenalty + if (
+            capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+        ) 0 else 30
     }
 
     @Synchronized
     private fun updateDns() {
-        val preferred = networkInfos.entries.minByOrNull(::networkPriority)
+        val preferred = networkInfos.entries.filter { it.value.dnsList.isNotEmpty() }
+            .minByOrNull(::networkPriority)
         val dnsList = preferred
             ?.value
             ?.dnsList
@@ -129,10 +142,13 @@ object NetworkObserver {
             currentDnsList = dnsList
             Core.updateDNS(dnsList.joinToString(","))
         }
-        val network = preferred?.key ?: return
+        val network = preferred?.key
+        if (currentNetwork != network) {
+            mutableState.value = UnderlyingNetworkState(network?.networkHandle, mutableState.value.revision + 1)
+        }
         // Sockets protected onto the network we left stay bound to it; closing
         // them makes apps reconnect now instead of after a TCP timeout.
-        if (currentNetwork != null && currentNetwork != network) {
+        if (network != null && currentNetwork != network) {
             Core.resetNetwork()
         }
         currentNetwork = network

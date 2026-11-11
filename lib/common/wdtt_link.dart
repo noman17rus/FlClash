@@ -37,9 +37,9 @@ Map<String, dynamic> wdttFallbackConfig(
     'proxies': members,
     'url': defaultTestUrl,
     'expected-status': '204',
-    'interval': 15,
+    'interval': 30,
     'timeout': 5000,
-    'lazy': false,
+    'lazy': true,
   };
   return {
     'proxies': [...proxies, wdttProxyConfig(wdtt)],
@@ -52,7 +52,12 @@ Map<String, dynamic> wdttFallbackConfig(
           for (final mode in WdttRouteMode.values) mode.proxyName(profileId),
         ],
       },
-      fallback(WdttRouteMode.automatic, [...primary, wdtt]),
+      {
+        'name': WdttRouteMode.automatic.proxyName(profileId),
+        'type': 'select',
+        'hidden': true,
+        'proxies': [WdttRouteMode.vless.proxyName(profileId), wdtt],
+      },
       fallback(WdttRouteMode.vless, primary),
     ],
     'rules': ['MATCH,$route'],

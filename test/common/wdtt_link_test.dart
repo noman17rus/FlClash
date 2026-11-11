@@ -2,7 +2,7 @@ import 'package:fl_clash/common/wdtt_link.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('keeps VLESS ahead of WDTT in the health-checked fallback group', () {
+  test('leaves exclusive automatic selection to the Android service', () {
     final config = wdttFallbackConfig([
       {'name': 'Primary', 'type': 'vless'},
       {'name': 'Second', 'type': 'vless'},
@@ -12,11 +12,12 @@ void main() {
         .cast<Map>();
     expect(route['type'], 'select');
     expect(route['proxies'], ['Auto [17]', 'VLESS [17]', 'WDTT [17]']);
-    expect(automatic['type'], 'fallback');
-    expect(automatic['proxies'], ['Primary', 'Second', 'WDTT [17]']);
-    expect(automatic['lazy'], isFalse);
+    expect(automatic['type'], 'select');
+    expect(automatic['proxies'], ['VLESS [17]', 'WDTT [17]']);
+    expect(automatic.containsKey('url'), isFalse);
     expect(vless['type'], 'fallback');
     expect(vless['proxies'], ['Primary', 'Second']);
+    expect(vless['lazy'], isTrue);
     expect(config['rules'], ['MATCH,VLESS / WDTT [17]']);
   });
 

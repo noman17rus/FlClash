@@ -23,6 +23,12 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
     @Volatile
     private var stopping = false
 
+    @Volatile
+    var isReady = false
+        private set
+
+    val isRunning: Boolean get() = process != null && !stopping
+
     fun owns(client: Process) = process === client
 
     suspend fun start(link: String, allowManualCaptcha: Boolean): Unit = withContext(Dispatchers.IO) {
@@ -55,6 +61,7 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
         ).directory(context.cacheDir).redirectErrorStream(true).start()
         process = client
         stopping = false
+        isReady = false
 
         var progress = WdttProgress.STARTING
         fun reportProgress(next: WdttProgress) {
@@ -144,6 +151,7 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
                             input.write("CAPTCHA_RESULT|${request[1]}|$result\n")
                             input.flush()
                         } else if (line.contains("PROXY_READY|socks5|")) {
+                            isReady = true
                             ready.complete(true)
                             GlobalState.log("WDTT SOCKS5 is ready")
                         } else if (line.contains("PROXY_ERROR|port_in_use|")) {
@@ -211,6 +219,7 @@ internal class WdttTunnel(private val onFailure: suspend (Process, String, Boole
     suspend fun stop() = withContext(Dispatchers.IO) {
         val client = process ?: return@withContext
         stopping = true
+        isReady = false
         WdttCaptcha.cancel()
         client.destroy()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
