@@ -9,6 +9,7 @@ import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/core.dart';
 import 'package:fl_clash/providers/database.dart';
+import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -36,7 +37,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
   late bool _googleByeDpi;
-  late String _byeDpiStrategy;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -56,7 +56,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     _autoUpdate = widget.profile.autoUpdate;
     _googleByeDpi = widget.profile.overrides.googleByeDpi;
-    _byeDpiStrategy = widget.profile.overrides.byeDpiStrategy;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -157,7 +156,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           : _urlController.text.trim(),
       overrides: current.overrides.copyWith(
         googleByeDpi: _googleByeDpi,
-        byeDpiStrategy: _byeDpiStrategy,
         wdttFallbackLink: _wdttController.text.trim().isEmpty
             ? ''
             : extractWdttLink(_wdttController.text.trim())!,
@@ -331,6 +329,41 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _setupAction.autoApplyProfile();
   }
 
+  Widget _buildByeDpiStrategy() {
+    final byeDpiStrategy = ref.watch(
+      profileProvider(widget.profile.id).select(
+        (profile) =>
+            profile?.overrides.byeDpiStrategy ??
+            widget.profile.overrides.byeDpiStrategy,
+      ),
+    );
+    return ListItem(
+      title: Text(context.appLocalizations.byeDpiChoose),
+      subtitle: Text(
+        byeDpiStrategy,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: const DisclosureIndicator(),
+      onTap: () async {
+        final line = await BaseNavigator.push<String>(
+          context,
+          ByeDpiView(selected: byeDpiStrategy),
+        );
+        if (line != null && mounted) {
+          ref
+              .read(profilesProvider.notifier)
+              .updateProfile(
+                widget.profile.id,
+                (profile) => profile.copyWith(
+                  overrides: profile.overrides.copyWith(byeDpiStrategy: line),
+                ),
+              );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
@@ -372,24 +405,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                     : null,
               ),
             ),
-            ListItem(
-              title: Text(appLocalizations.byeDpiChoose),
-              subtitle: Text(
-                _byeDpiStrategy,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: const DisclosureIndicator(),
-              onTap: () async {
-                final line = await BaseNavigator.push<String>(
-                  context,
-                  ByeDpiView(selected: _byeDpiStrategy),
-                );
-                if (line != null && mounted) {
-                  setState(() => _byeDpiStrategy = line);
-                }
-              },
-            ),
+            _buildByeDpiStrategy(),
           ],
           _AgeSecretKeyField(controller: _ageSecretKeyController),
         ],

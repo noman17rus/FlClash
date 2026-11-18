@@ -497,6 +497,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage(
       "Route inconnue",
     ),
+    "byeDpiTestStrategy": MessageLookupByLibrary.simpleMessage(
+      "Tester la stratégie",
+    ),
     "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
       "Test non concluant",
     ),

@@ -1135,6 +1135,7 @@
   "byeDpiAddress": "Con ByeDPI, los servicios ven la IP pública de esta red.",
   "byeDpiRequiresWdtt": "Añada arriba un enlace de respaldo WDTT para activar Google y YouTube mediante ByeDPI.",
   "byeDpiAutoSelect": "Buscar estrategias automáticamente",
+  "byeDpiTestStrategy": "Probar estrategia",
   "byeDpiYouTubeAvailable": "Sitio de YouTube accesible",
   "byeDpiYouTubeUnconfirmed": "YouTube · prueba no concluyente",
   "byeDpiNotTested": "Sin probar",

@@ -393,6 +393,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "현재 프로필의 활성 연결 경로와 수신 데이터를 표시합니다. 기존 연결은 이전 경로를 사용할 수 있습니다.",
     ),
     "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("알 수 없는 경로"),
+    "byeDpiTestStrategy": MessageLookupByLibrary.simpleMessage("전략 테스트"),
     "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("확인되지 않음"),
     "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("전략 목록 업데이트"),
     "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 동영상"),

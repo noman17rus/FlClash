@@ -462,6 +462,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Shows active connection chains in the current profile and received data. Existing connections may still use an earlier route.",
     ),
     "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("Route unknown"),
+    "byeDpiTestStrategy": MessageLookupByLibrary.simpleMessage("Test strategy"),
     "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
       "Check inconclusive",
     ),

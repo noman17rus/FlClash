@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/ui/ui.dart';
@@ -21,6 +22,7 @@ class _ByeDpiViewState extends State<ByeDpiView> {
   final _service = Service();
   final _results = <String, Map<String, Object?>>{};
   List<String> _catalog = [];
+  List<String> _ranked = [];
   late String _selected = widget.selected;
   DateTime? _updated;
   String? _error;
@@ -28,6 +30,7 @@ class _ByeDpiViewState extends State<ByeDpiView> {
   bool _validating = false;
   bool _scanning = false;
   int _generation = 0;
+  int? _resultsRevision;
   String? _testing;
   Map<Object?, Object?>? _routes;
   Timer? _routeTimer;
@@ -113,17 +116,28 @@ class _ByeDpiViewState extends State<ByeDpiView> {
         .compareTo(second.fold<int>(0, (x, y) => x + y));
   }
 
-  Future<void> _scan() async {
+  Future<void> _scan({String? strategy}) async {
+    if (_scanning || _validating) return;
     final generation = ++_generation;
-    final choices = _choices;
+    final choices = strategy == null ? _choices : [strategy];
     setState(() {
-      _results.clear();
+      if (strategy == null) {
+        _results.clear();
+        _ranked = [];
+      }
       _scanning = true;
+      _testing = strategy;
       _error = null;
     });
     bool current() => mounted && _generation == generation;
     try {
       final revision = await _service.byeDpiNetwork();
+      if (!current()) return;
+      if (_resultsRevision != revision) {
+        _results.clear();
+        _ranked = [];
+        _resultsRevision = revision;
+      }
       for (final line in choices) {
         if (!current()) return;
         setState(() => _testing = line);
@@ -137,16 +151,21 @@ class _ByeDpiViewState extends State<ByeDpiView> {
         if (!current()) return;
         setState(() => _results[line] = result);
       }
-      if (current()) {
-        final best = (choices..sort(_compare)).first;
-        if (_results[best]?['YouTube'] != null) {
-          setState(() => _selected = best);
-        }
+      if (strategy == null && current()) {
+        setState(() {
+          mergeSort(choices, compare: _compare);
+          _ranked = choices;
+          final best = _ranked.first;
+          if (_results[best]?['YouTube'] != null) _selected = best;
+        });
       }
     } on PlatformException catch (e) {
       if (current()) {
         setState(() {
-          if (e.code == 'NETWORK_CHANGED') _results.clear();
+          if (e.code == 'NETWORK_CHANGED') {
+            _results.clear();
+            _ranked = [];
+          }
           _error = e.code == 'NETWORK_CHANGED'
               ? context.appLocalizations.byeDpiNetworkChanged
               : e.message;
@@ -192,14 +211,17 @@ class _ByeDpiViewState extends State<ByeDpiView> {
     }
   }
 
-  Future<void> _apply() async {
+  Future<void> _apply(String line) async {
+    if (_scanning || _validating) return;
     setState(() {
       _validating = true;
       _error = null;
     });
     try {
-      await _service.validateByeDpi(_selected);
-      if (mounted) Navigator.of(context).pop(_selected);
+      await _service.validateByeDpi(line);
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        Navigator.of(context).pop(line);
+      }
     } on PlatformException catch (e) {
       if (mounted) {
         setState(() => _error = e.message ?? context.appLocalizations.error);
@@ -212,12 +234,11 @@ class _ByeDpiViewState extends State<ByeDpiView> {
   @override
   Widget build(BuildContext context) {
     final l = context.appLocalizations;
-    final choices = _choices;
-    final order = {for (final (index, line) in choices.indexed) line: index};
-    choices.sort((a, b) {
-      final score = _compare(a, b);
-      return score == 0 ? order[a]!.compareTo(order[b]!) : score;
-    });
+    final available = _choices.toSet();
+    final choices = {
+      ..._ranked.where(available.contains),
+      ...available,
+    }.toList();
     final busy = _scanning || _validating;
     final date = _updated?.toLocal().toString().split('.').first;
     final actions = [
@@ -259,7 +280,7 @@ class _ByeDpiViewState extends State<ByeDpiView> {
       ListItem(
         title: Text(l.applyNow),
         subtitle: Text(_selected),
-        onTap: busy ? null : _apply,
+        onTap: busy ? null : () => _apply(_selected),
       ),
     ];
     return BaseScaffold(
@@ -292,6 +313,7 @@ class _ByeDpiViewState extends State<ByeDpiView> {
               ? context.colorScheme.warning
               : context.colorScheme.onSurfaceVariant;
           return ListItem(
+            key: ValueKey(line),
             leading: GlyphIcon(
               youtube != null
                   ? AppGlyphs.checkCircle
@@ -317,8 +339,22 @@ class _ByeDpiViewState extends State<ByeDpiView> {
                 Text(line, maxLines: 2, overflow: TextOverflow.ellipsis),
               ],
             ),
-            trailing: _selected == line ? const SelectionCheck() : null,
-            onTap: busy ? null : () => setState(() => _selected = line),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_selected == line) const SelectionCheck(),
+                IconButton(
+                  tooltip: checking ? l.cancel : l.byeDpiTestStrategy,
+                  icon: GlyphIcon(checking ? AppGlyphs.close : AppGlyphs.speed),
+                  onPressed: checking
+                      ? _cancel
+                      : busy
+                      ? null
+                      : () => _scan(strategy: line),
+                ),
+              ],
+            ),
+            onTap: busy ? null : () => _apply(line),
           );
         },
       ),

@@ -381,6 +381,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "显示当前配置的活跃连接路径及已接收数据。现有连接可能仍使用之前的路由。",
     ),
     "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("路由未知"),
+    "byeDpiTestStrategy": MessageLookupByLibrary.simpleMessage("测试策略"),
     "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("检查未确认"),
     "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("更新策略列表"),
     "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 视频"),

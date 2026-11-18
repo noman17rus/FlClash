@@ -1135,6 +1135,7 @@
   "byeDpiAddress": "При работе через ByeDPI сервисы видят внешний IP этой сети.",
   "byeDpiRequiresWdtt": "Чтобы включить Google и YouTube через ByeDPI, добавьте ссылку резервного WDTT в поле выше.",
   "byeDpiAutoSelect": "Автоподбор стратегий",
+  "byeDpiTestStrategy": "Проверить стратегию",
   "byeDpiYouTubeAvailable": "Сайт YouTube доступен",
   "byeDpiYouTubeUnconfirmed": "YouTube · проверка не пройдена",
   "byeDpiNotTested": "Ещё не проверено",

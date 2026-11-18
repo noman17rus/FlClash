@@ -9642,6 +9642,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Test strategy`
+  String get byeDpiTestStrategy {
+    return Intl.message(
+      'Test strategy',
+      name: 'byeDpiTestStrategy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `YouTube website reachable`
   String get byeDpiYouTubeAvailable {
     return Intl.message(

@@ -397,6 +397,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "現在のプロファイルの接続経路と受信データ量を表示します。既存の接続は以前の経路を使用する場合があります。",
     ),
     "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("経路不明"),
+    "byeDpiTestStrategy": MessageLookupByLibrary.simpleMessage("戦略をテスト"),
     "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("確認できませんでした"),
     "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("戦略リストを更新"),
     "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 動画"),

@@ -120,4 +120,69 @@ void main() {
     expect(find.textContaining('10 ms'), findsNothing);
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('a manual check probes only its row and a row tap applies it', (
+    tester,
+  ) async {
+    final probes = <String>[];
+    final validated = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      switch (call.method) {
+        case 'byeDpiCatalog':
+          return {
+            'strategies': ['-o2'],
+            'updated': 0,
+          };
+        case 'byeDpiNetwork':
+          return 3;
+        case 'byeDpiProbe':
+          expect(call.arguments['revision'], 3);
+          probes.add(call.arguments['strategy'] as String);
+          return {'Google': 12, 'YouTube': 25};
+        case 'byeDpiValidate':
+          validated.add(call.arguments['strategy'] as String);
+      }
+      return null;
+    });
+    await tester.pumpWidget(
+      const TestApp(
+        wrapInProviderScope: true,
+        locale: Locale('ru'),
+        child: SizedBox(),
+      ),
+    );
+    final route = HostPageRoute<String>(
+      builder: (_) => const ByeDpiView(selected: '-d1'),
+    );
+    final result = tester
+        .state<NavigatorState>(find.byType(Navigator).first)
+        .push(route);
+    await tester.pumpAndSettle();
+    for (final line in ['-d1', '-o2']) {
+      final row = find.byKey(ValueKey(line));
+      await tester.scrollUntilVisible(row, 200);
+      final button = find.descendant(
+        of: row,
+        matching: find.byType(IconButton),
+      );
+      await tester.ensureVisible(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: row,
+          matching: find.text('Сайт YouTube доступен · 25 ms'),
+        ),
+        findsOneWidget,
+      );
+    }
+    expect(probes, ['-d1', '-o2']);
+    expect(validated, isEmpty);
+    final strategy = find.text('-o2');
+    await tester.ensureVisible(strategy);
+    await tester.tap(strategy);
+    await tester.pumpAndSettle();
+    expect(validated, ['-o2']);
+    expect(await result, '-o2');
+  });
 }

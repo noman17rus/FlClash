@@ -1135,6 +1135,7 @@
   "byeDpiAddress": "ByeDPI를 사용하면 서비스에 이 네트워크의 공인 IP가 표시됩니다.",
   "byeDpiRequiresWdtt": "Google 및 YouTube에 ByeDPI를 사용하려면 위에 WDTT 백업 링크를 추가하세요.",
   "byeDpiAutoSelect": "전략 자동 검색",
+  "byeDpiTestStrategy": "전략 테스트",
   "byeDpiYouTubeAvailable": "YouTube 사이트 연결 가능",
   "byeDpiYouTubeUnconfirmed": "YouTube · 확인되지 않음",
   "byeDpiNotTested": "아직 검사하지 않음",
