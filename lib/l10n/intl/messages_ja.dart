@@ -242,9 +242,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m99(date) => "有効期限 ${date}";
 
-  static String m100(count) => "${count} 年前";
+  static String m100(time) => "切替時刻：${time}";
 
   static String m101(count) => "${count} 年前";
+
+  static String m102(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -450,6 +452,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "connected": MessageLookupByLibrary.simpleMessage("接続済み"),
     "connecting": MessageLookupByLibrary.simpleMessage("接続中…"),
     "connection": MessageLookupByLibrary.simpleMessage("接続"),
+    "connectionBalance": MessageLookupByLibrary.simpleMessage("速度とバッテリーのバランス"),
+    "connectionBalanceDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS 確認と WDTT 再接続を制御。端末に保存、VPN 再起動不要。間隔は確認完了後から計測。ネットワーク変更時は再確認。手動 WDTT は VLESS 確認を停止。復帰に最低3回の成功が必要。帯域幅ではなく復旧速度を変更。",
+    ),
+    "connectionBalanced": MessageLookupByLibrary.simpleMessage("バランス"),
+    "connectionBalancedDescription": MessageLookupByLibrary.simpleMessage(
+      "標準。 VLESS：15秒ごと。WDTT 使用中：30秒ごと。確認間隔：5秒。最低8秒の障害で予備へ、30秒の安定後に復帰。WDTT 再試行：60秒後。",
+    ),
+    "connectionEconomical": MessageLookupByLibrary.simpleMessage("省電力"),
+    "connectionEconomicalDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS：60秒ごと。WDTT 使用中：120秒ごと。確認間隔：15秒。最低15秒の障害で予備へ、60秒の安定後に復帰。WDTT 再試行：180秒後。 起動回数は少なく、反応は遅くなります。",
+    ),
+    "connectionFastRecovery": MessageLookupByLibrary.simpleMessage("高速復旧"),
+    "connectionFastRecoveryDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS：5秒ごと。WDTT 使用中：10秒ごと。確認間隔：2秒。最低4秒の障害で予備へ、10秒の安定後に復帰。WDTT 再試行：15秒後。 電池消費が増える場合があります。",
+    ),
+    "connectionModeError": MessageLookupByLibrary.simpleMessage(
+      "読み込みまたは保存に失敗。タップして再読み込み。",
+    ),
     "connectionStats": MessageLookupByLibrary.simpleMessage("接続統計"),
     "connectionStatsDesc": MessageLookupByLibrary.simpleMessage(
       "ライブ接続、最近のリクエスト、DNS クエリ",
@@ -549,6 +570,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "開発者モードが有効になりました。",
     ),
+    "diagnosticAuthAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT サーバーが端末またはパスワードを拒否しました。アクセス権を確認して新しいリンクをインポートしてください。",
+    ),
+    "diagnosticBlocked": MessageLookupByLibrary.simpleMessage("前の段階により実行不可"),
+    "diagnosticCaptcha": MessageLookupByLibrary.simpleMessage("CAPTCHA が必要"),
+    "diagnosticCaptchaAction": MessageLookupByLibrary.simpleMessage(
+      "通常の WDTT 接続で CAPTCHA を完了して再試行してください。",
+    ),
+    "diagnosticDnsAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 経由の 1.1.1.1 への TCP DNS とフィルタリングを確認してください。",
+    ),
+    "diagnosticDtlsAction": MessageLookupByLibrary.simpleMessage(
+      "UDP、サーバー、DTLS 証明書の指紋を確認してください。",
+    ),
+    "diagnosticError": MessageLookupByLibrary.simpleMessage(
+      "操作に失敗しました。再試行してください。",
+    ),
+    "diagnosticExport": MessageLookupByLibrary.simpleMessage("安全なレポートをエクスポート"),
+    "diagnosticFailed": MessageLookupByLibrary.simpleMessage("失敗"),
+    "diagnosticInternet": MessageLookupByLibrary.simpleMessage("インターネット接続"),
+    "diagnosticInternetAction": MessageLookupByLibrary.simpleMessage(
+      "インターネットと HTTPS を確認してください。有効な証明書と gstatic の HTTP 204 が必要です。",
+    ),
+    "diagnosticPassed": MessageLookupByLibrary.simpleMessage("成功"),
+    "diagnosticPending": MessageLookupByLibrary.simpleMessage("待機中"),
+    "diagnosticPrivacy": MessageLookupByLibrary.simpleMessage(
+      "リンク、アドレス、端末 ID、ログ、認証情報はレポートに含まれません。",
+    ),
+    "diagnosticRunning": MessageLookupByLibrary.simpleMessage("確認中…"),
+    "diagnosticScope": MessageLookupByLibrary.simpleMessage(
+      "VLESS は稼働中のプロファイル、WDTT は独立した一時接続で検証します。WireGuard は IP への TCP、DNS は WDTT 経由の 1.1.1.1 を使用します。インターネットは選択中の経路に関係なく WDTT 経由で検証します。最大約3分です。",
+    ),
+    "diagnosticSetupAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT バックアップ付きの VLESS プロファイルを選択して接続してください。",
+    ),
+    "diagnosticStart": MessageLookupByLibrary.simpleMessage("診断を開始"),
+    "diagnosticTurn": MessageLookupByLibrary.simpleMessage("TURN アクセス"),
+    "diagnosticTurnAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 招待と VK へのアクセスを確認してください。",
+    ),
+    "diagnosticUnavailable": MessageLookupByLibrary.simpleMessage("利用不可"),
+    "diagnosticVlessAction": MessageLookupByLibrary.simpleMessage(
+      "VLESS サーバーと認証情報を確認してください。",
+    ),
+    "diagnosticWireguardAction": MessageLookupByLibrary.simpleMessage(
+      "WireGuard の鍵、設定とサーバーの外部接続を確認してください。",
+    ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("接続診断"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("ダイヤラープロキシ"),
     "dialerProxyLoopStopped": m25,
     "dialog": MessageLookupByLibrary.simpleMessage("ダイアログ"),
@@ -1841,14 +1910,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
       "VPN関連の設定が変更されました。タップして再起動",
     ),
+    "wdttCheckError": MessageLookupByLibrary.simpleMessage("確認失敗 — 再試行します"),
+    "wdttChecking": MessageLookupByLibrary.simpleMessage("VLESS の接続を確認中…"),
+    "wdttHistory": MessageLookupByLibrary.simpleMessage("最近の接続イベント"),
+    "wdttManual": MessageLookupByLibrary.simpleMessage("WDTT — 手動選択"),
+    "wdttManualVless": MessageLookupByLibrary.simpleMessage("VLESS — 手動選択"),
+    "wdttOffline": MessageLookupByLibrary.simpleMessage("ネットワーク接続なし"),
+    "wdttPrimary": MessageLookupByLibrary.simpleMessage("VLESS — 利用可能"),
+    "wdttRecoveryConfirming": MessageLookupByLibrary.simpleMessage(
+      "復旧：VLESS の安定性を確認中",
+    ),
+    "wdttRecoveryManual": MessageLookupByLibrary.simpleMessage(
+      "手動モードでは自動復旧を停止",
+    ),
+    "wdttRecoveryOffline": MessageLookupByLibrary.simpleMessage(
+      "ネットワーク復帰まで復旧を停止",
+    ),
+    "wdttRecoveryReady": MessageLookupByLibrary.simpleMessage(
+      "VLESS は正常 — 自動監視中",
+    ),
+    "wdttRecoveryWaiting": MessageLookupByLibrary.simpleMessage(
+      "復旧：VLESS の接続待ち",
+    ),
+    "wdttStartingBackup": MessageLookupByLibrary.simpleMessage(
+      "VLESS 利用不可 — WDTT に接続中",
+    ),
+    "wdttStartingManual": MessageLookupByLibrary.simpleMessage(
+      "WDTT に接続中 — 手動選択",
+    ),
+    "wdttSwitchedAt": m100,
+    "wdttUnavailable": MessageLookupByLibrary.simpleMessage(
+      "WDTT — VLESS 利用不可",
+    ),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("システムに書き込む"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "システムに書き込むを有効にするとシステムクロックも設定します。Android では無視されます。",
     ),
-    "yearsAgo": m100,
-    "yearsAgoShort": m101,
+    "yearsAgo": m101,
+    "yearsAgoShort": m102,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };

@@ -24,7 +24,9 @@ internal class WdttFailover(
     private val networkState: () -> UnderlyingNetworkState = { NetworkObserver.state.value },
     private val clock: () -> Long = { SystemClock.elapsedRealtime() },
     private val rpc: suspend (String, Map<String, Any>) -> JsonElement = ::invokeFailoverMethod,
+    private val connectionMode: () -> ConnectionMode = { ConnectionMode.balanced },
 ) {
+    val status = WdttFailoverStatus()
     private val policy = WdttFailoverPolicy()
     private var revision = -1L
     private var nextProbe = 0L
@@ -37,19 +39,27 @@ internal class WdttFailover(
             try {
                 tick()
             } catch (_: TimeoutCancellationException) {
+                status.update(phase = "error")
                 GlobalState.log("Tunnel failover check did not receive a Core response")
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Exception) {
+                status.update(phase = "error")
                 GlobalState.log("Tunnel failover check failed: ${error.javaClass.simpleName}")
             }
-            delay(2_000)
+            delay(connectionMode().pollInterval)
         }
     }
 
     internal suspend fun tick() {
         val network = networkState()
         val now = clock()
+        val modeSetting = connectionMode()
+        if (policy.mode != modeSetting) {
+            policy.mode = modeSetting
+            policy.networkChanged(now)
+            nextProbe = 0
+        }
         if (revision != network.revision) {
             restart = revision >= 0
             revision = network.revision
@@ -57,12 +67,16 @@ internal class WdttFailover(
             nextProbe = 0
         }
         if (network.id == null) {
+            status.update(phase = "offline")
             val since = offlineSince ?: now.also { offlineSince = it }
             if (now - since >= 15_000) reconcile(false, false)
             return
         }
         offlineSince = null
-        if (!policy.canProbe(now)) return
+        if (!policy.canProbe(now)) {
+            status.update(phase = "checking")
+            return
+        }
         val proxies = call("proxy.list").asJsonObject.getAsJsonObject("proxies")
         val route = proxies.keySet().singleOrNull { it.startsWith("VLESS / WDTT [") } ?: return
         val suffix = route.removePrefix("VLESS / WDTT ")
@@ -77,24 +91,42 @@ internal class WdttFailover(
         }
         if (mode == primary) {
             reconcile(false, false)
+            if (now >= nextProbe && policy.canProbe(now)) {
+                val group = proxies.getAsJsonObject(primary)
+                try {
+                    probe(primary, group.getAsJsonArray("all").map { it.asString }, group.get("testUrl").asString) {
+                        networkState() == network && connectionMode() == modeSetting
+                    }
+                } finally {
+                    nextProbe = clock() + modeSetting.primaryInterval
+                }
+            }
+            status.update(route, "manualVless", "VLESS")
             return
         }
         var needed = mode == backup
         if (mode == automatic) {
             if (now >= nextProbe && policy.canProbe(now)) {
+                nextProbe = clock() + modeSetting.confirmationInterval
                 val primaryGroup = proxies.getAsJsonObject(primary)
                 val members = primaryGroup.getAsJsonArray("all").map { it.asString }
                 val testUrl = primaryGroup.get("testUrl").asString
-                val healthy = probe(members, testUrl) { networkState() == network }
+                val healthy = try {
+                    probe(primary, members, testUrl) { networkState() == network }
+                } catch (error: Exception) {
+                    policy.sample(null, clock())
+                    nextProbe = clock() + modeSetting.confirmationInterval
+                    throw error
+                }
                 val latest = networkState()
-                if (latest != network) return
+                if (latest != network || connectionMode() != modeSetting) return
                 val current = call("proxy.list").asJsonObject.getAsJsonObject("proxies")
                 if (networkState() != network || current.getAsJsonObject(route)?.get("now")?.asString != mode) return
                 policy.sample(healthy, clock())
                 nextProbe = clock() + when {
-                    policy.backup && !healthy -> 30_000
-                    !policy.backup && healthy -> 15_000
-                    else -> 5_000
+                    policy.backup && !healthy -> modeSetting.backupInterval
+                    !policy.backup && healthy -> modeSetting.primaryInterval
+                    else -> modeSetting.confirmationInterval
                 }
             }
             needed = policy.backup
@@ -102,20 +134,41 @@ internal class WdttFailover(
         if (mode != automatic && mode != backup) return
         if (networkState() != network) return
         val selected = proxies.getAsJsonObject(automatic).get("now").asString
-        if (!needed && mode == automatic && selected != primary) select(automatic, primary)
+        if (!needed && mode == automatic && selected != primary) select(automatic, primary, selected)
         val ready = reconcile(needed, restart)
         restart = false
-        if (mode == automatic && needed && ready && selected != backup) select(automatic, backup)
+        if (mode == automatic && needed && ready && selected != backup) select(automatic, backup, selected)
+        status.update(
+            route,
+            when {
+                needed && !ready -> if (mode == backup) "startingManual" else "starting"
+                mode == backup -> "manualWdtt"
+                policy.recovering -> "recovering"
+                needed -> "backup"
+                else -> "primary"
+            },
+            if (needed && ready) "WDTT" else if (!needed) "VLESS" else null,
+        )
     }
 
-    private suspend fun probe(members: List<String>, testUrl: String, current: () -> Boolean): Boolean {
-        for (chunk in members.chunked(4)) {
+    private suspend fun probe(primary: String, members: List<String>, testUrl: String, current: () -> Boolean): Boolean {
+        val alternateUrls = listOf(
+            "https://www.gstatic.com/generate_204",
+            "https://cp.cloudflare.com/generate_204",
+            "https://www.apple.com/library/test/success.html",
+        ).filter { it != testUrl }
+        // Alternate URLs must test the group's actual route, not an unselected member.
+        val batches = members.map { it to testUrl }.chunked(4) +
+            alternateUrls.map { primary to it }.chunked(4)
+        var unmeasured = members.isEmpty()
+        for (batch in batches) {
+            if (!current()) return false
             val results = coroutineScope {
-                chunk.map { name ->
+                batch.map { (name, url) ->
                     async {
                         val result = call("proxy.testDelay", mapOf(
                             "proxy-name" to name,
-                            "test-url" to testUrl,
+                            "test-url" to url,
                             "timeout" to 5_000,
                         ))
                         result.takeUnless { it.isJsonNull }?.asJsonObject?.get("value")?.asInt?.let { it > 0 }
@@ -124,22 +177,33 @@ internal class WdttFailover(
             }
             if (!current()) return false
             if (results.any { it == true }) return true
-            check(results.none { it == null }) { "Core did not measure a primary proxy" }
+            unmeasured = unmeasured || results.any { it == null }
         }
+        check(!unmeasured) { "Core did not measure a primary proxy" }
         return false
     }
 
-    private suspend fun select(group: String, proxy: String) {
+    private suspend fun select(group: String, proxy: String, previous: String) {
+        val connections = call("connection.list").asJsonObject.get("connections")
+            ?.takeUnless { it.isJsonNull }?.asJsonArray
+        val affected = connections?.mapNotNull { entry ->
+            val connection = entry.asJsonObject
+            val chains = connection.get("chains")?.takeUnless { it.isJsonNull }
+                ?.asJsonArray?.map { it.asString }.orEmpty()
+            connection.get("id")?.asString?.takeIf { group in chains && previous in chains }
+        }.orEmpty()
         val result = call("proxy.select", mapOf("group-name" to group, "proxy-name" to proxy)).asJsonObject
         check(result.get("message")?.asString.orEmpty().isEmpty()) { "Core refused tunnel selection" }
-        if (result.get("changed")?.asBoolean == true) call("connection.closeAll")
+        if (result.get("changed")?.asBoolean == true) {
+            for (id in affected) call("connection.close", mapOf("id" to id))
+        }
     }
 
     private suspend fun call(method: String, arguments: Map<String, Any> = emptyMap()): JsonElement =
         rpc(method, arguments)
 }
 
-private suspend fun invokeFailoverMethod(method: String, arguments: Map<String, Any>): JsonElement {
+internal suspend fun invokeFailoverMethod(method: String, arguments: Map<String, Any>): JsonElement {
     val request = com.google.gson.Gson().toJson(mapOf("method" to method, "arguments" to arguments))
     val bytes = withTimeout(15_000) {
         suspendCancellableCoroutine<ByteArray> { continuation ->

@@ -33,8 +33,27 @@ import kotlin.coroutines.resume
 
 object ServiceController {
     private val lock = Mutex()
+    private val connectionPreferences by lazy {
+        GlobalState.application.getSharedPreferences("connection_policy", Context.MODE_PRIVATE)
+    }
+    @Volatile
+    private var selectedConnectionMode: ConnectionMode? = null
+    internal val connectionMode: ConnectionMode
+        get() = selectedConnectionMode ?: ConnectionMode.fromName(connectionPreferences.getString("mode", null))
+
+    internal suspend fun setConnectionMode(mode: ConnectionMode) = lock.withLock {
+        connectionPreferences.edit().putString("mode", mode.name).apply()
+        selectedConnectionMode = mode
+        if (wdttRetryAt != 0L && wdttRetryAt != Long.MAX_VALUE) {
+            wdttRetryAt = SystemClock.elapsedRealtime() + mode.retryInterval
+        }
+    }
     private val wdtt = WdttTunnel(::handleWdttFailure)
     private var failoverJob: Job? = null
+    @Volatile
+    private var failover: WdttFailover? = null
+
+    fun failoverStatus(): Map<String, Any?>? = failover?.status?.snapshot()
     private var wdttRetryAt = 0L
     private var binding: ManagedServiceBinding? = null
 
@@ -156,26 +175,29 @@ object ServiceController {
     private suspend fun stopWdtt() {
         failoverJob?.cancel()
         failoverJob = null
+        failover = null
         wdttRetryAt = 0
         wdtt.stop()
     }
 
     private fun startFailover(active: ServiceRuntime, link: String) {
-        failoverJob = GlobalState.launch {
-            WdttFailover(reconcile = { needed, networkChanged ->
-                lock.withLock {
-                    if (runtime !== active) return@withLock false
-                    if (!needed || networkChanged) {
-                        wdtt.stop()
-                        if (networkChanged && wdttRetryAt != Long.MAX_VALUE) wdttRetryAt = 0
-                    }
-                    if (needed && !wdtt.isRunning && SystemClock.elapsedRealtime() >= wdttRetryAt) {
-                        wdttRetryAt = SystemClock.elapsedRealtime() + 60_000
-                        startWdttFallback(link)
-                    }
-                    wdtt.isReady
+        val monitor = WdttFailover(reconcile = { needed, networkChanged ->
+            lock.withLock {
+                if (runtime !== active) return@withLock false
+                if (!needed || networkChanged) {
+                    wdtt.stop()
+                    if (networkChanged && wdttRetryAt != Long.MAX_VALUE) wdttRetryAt = 0
                 }
-            }).run()
+                if (needed && !wdtt.isRunning && SystemClock.elapsedRealtime() >= wdttRetryAt) {
+                    wdttRetryAt = SystemClock.elapsedRealtime() + connectionMode.retryInterval
+                    startWdttFallback(link)
+                }
+                wdtt.isReady
+            }
+        }, connectionMode = { connectionMode })
+        failover = monitor
+        failoverJob = GlobalState.launch {
+            monitor.run()
         }
     }
 
@@ -200,7 +222,7 @@ object ServiceController {
             ))
             if (active.wdttFallback) {
                 wdtt.stop()
-                wdttRetryAt = if (retryable) SystemClock.elapsedRealtime() + 60_000 else Long.MAX_VALUE
+                wdttRetryAt = if (retryable) SystemClock.elapsedRealtime() + connectionMode.retryInterval else Long.MAX_VALUE
                 return
             }
             val token = ServiceState.captureRequestToken()

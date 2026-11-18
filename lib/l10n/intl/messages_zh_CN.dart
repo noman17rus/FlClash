@@ -238,9 +238,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m99(date) => "有效期至 ${date}";
 
-  static String m100(count) => "${count} 年前";
+  static String m100(time) => "切换时间：${time}";
 
   static String m101(count) => "${count} 年前";
+
+  static String m102(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -420,6 +422,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "connected": MessageLookupByLibrary.simpleMessage("已连接"),
     "connecting": MessageLookupByLibrary.simpleMessage("连接中…"),
     "connection": MessageLookupByLibrary.simpleMessage("连接"),
+    "connectionBalance": MessageLookupByLibrary.simpleMessage("速度与电池平衡"),
+    "connectionBalanceDescription": MessageLookupByLibrary.simpleMessage(
+      "控制 VLESS 检查和 WDTT 备用重连。保存在此设备，无需重启 VPN。间隔从检查完成后计算；网络变化触发新检查。手动 WDTT 暂停 VLESS 检查。恢复至少需要三次成功检查。调整恢复速度，而非带宽。",
+    ),
+    "connectionBalanced": MessageLookupByLibrary.simpleMessage("均衡"),
+    "connectionBalancedDescription": MessageLookupByLibrary.simpleMessage(
+      "默认。 VLESS 每15秒检查；使用 WDTT 时每30秒。确认间隔5秒。故障至少8秒后切换备用，稳定30秒后恢复。WDTT 重试等待60秒。",
+    ),
+    "connectionEconomical": MessageLookupByLibrary.simpleMessage("省电"),
+    "connectionEconomicalDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS 每60秒检查；使用 WDTT 时每120秒。确认间隔15秒。故障至少15秒后切换备用，稳定60秒后恢复。WDTT 重试等待180秒。 唤醒更少，反应较慢。",
+    ),
+    "connectionFastRecovery": MessageLookupByLibrary.simpleMessage("快速恢复"),
+    "connectionFastRecoveryDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS 每5秒检查；使用 WDTT 时每10秒。确认间隔2秒。故障至少4秒后切换备用，稳定10秒后恢复。WDTT 重试等待15秒。 频繁检查可能增加耗电。",
+    ),
+    "connectionModeError": MessageLookupByLibrary.simpleMessage(
+      "无法加载或保存模式。点击重新加载。",
+    ),
     "connectionStats": MessageLookupByLibrary.simpleMessage("连接统计"),
     "connectionStatsDesc": MessageLookupByLibrary.simpleMessage(
       "实时连接、最近请求、DNS查询",
@@ -509,6 +530,52 @@ class MessageLookup extends MessageLookupByLibrary {
     "detectionTip": MessageLookupByLibrary.simpleMessage("依赖第三方api，仅供参考"),
     "developerMode": MessageLookupByLibrary.simpleMessage("开发者模式"),
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage("开发者模式已启用。"),
+    "diagnosticAuthAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 服务器拒绝设备或密码。请检查访问权限并导入新链接。",
+    ),
+    "diagnosticBlocked": MessageLookupByLibrary.simpleMessage("因前置阶段失败而阻止"),
+    "diagnosticCaptcha": MessageLookupByLibrary.simpleMessage("需要验证码"),
+    "diagnosticCaptchaAction": MessageLookupByLibrary.simpleMessage(
+      "正常连接 WDTT，完成验证码后重试。",
+    ),
+    "diagnosticDnsAction": MessageLookupByLibrary.simpleMessage(
+      "检查通过 WDTT 到 1.1.1.1 的 TCP DNS 和过滤。",
+    ),
+    "diagnosticDtlsAction": MessageLookupByLibrary.simpleMessage(
+      "检查 UDP、服务器及 DTLS 证书指纹。",
+    ),
+    "diagnosticError": MessageLookupByLibrary.simpleMessage("操作失败，请重试。"),
+    "diagnosticExport": MessageLookupByLibrary.simpleMessage("导出安全报告"),
+    "diagnosticFailed": MessageLookupByLibrary.simpleMessage("失败"),
+    "diagnosticInternet": MessageLookupByLibrary.simpleMessage("互联网连接"),
+    "diagnosticInternetAction": MessageLookupByLibrary.simpleMessage(
+      "检查互联网和 HTTPS。要求有效证书及 gstatic 返回 HTTP 204。",
+    ),
+    "diagnosticPassed": MessageLookupByLibrary.simpleMessage("成功"),
+    "diagnosticPending": MessageLookupByLibrary.simpleMessage("等待中"),
+    "diagnosticPrivacy": MessageLookupByLibrary.simpleMessage(
+      "报告不包含链接、地址、设备 ID、日志和凭据。",
+    ),
+    "diagnosticRunning": MessageLookupByLibrary.simpleMessage("检查中…"),
+    "diagnosticScope": MessageLookupByLibrary.simpleMessage(
+      "VLESS 使用运行中的配置，WDTT 使用独立临时连接。WireGuard 使用到 IP 的 TCP；DNS 通过 WDTT 查询 1.1.1.1。互联网通过 WDTT 检查，与选择的路由无关。可能需要三分钟。",
+    ),
+    "diagnosticSetupAction": MessageLookupByLibrary.simpleMessage(
+      "选择带 WDTT 备用的 VLESS 配置并连接。",
+    ),
+    "diagnosticStart": MessageLookupByLibrary.simpleMessage("开始诊断"),
+    "diagnosticTurn": MessageLookupByLibrary.simpleMessage("获取 TURN 访问权限"),
+    "diagnosticTurnAction": MessageLookupByLibrary.simpleMessage(
+      "更新 WDTT 邀请并检查 VK 访问。",
+    ),
+    "diagnosticUnavailable": MessageLookupByLibrary.simpleMessage("不可用"),
+    "diagnosticVlessAction": MessageLookupByLibrary.simpleMessage(
+      "检查 VLESS 服务器和凭据。",
+    ),
+    "diagnosticWireguardAction": MessageLookupByLibrary.simpleMessage(
+      "检查 WireGuard 密钥、配置和服务器外网连接。",
+    ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("连接诊断"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("拨号代理"),
     "dialerProxyLoopStopped": m25,
     "dialog": MessageLookupByLibrary.simpleMessage("对话框"),
@@ -1663,14 +1730,40 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
       "VPN 相关配置已改动，点击重启",
     ),
+    "wdttCheckError": MessageLookupByLibrary.simpleMessage("检查失败 — 将重试"),
+    "wdttChecking": MessageLookupByLibrary.simpleMessage("正在检查 VLESS 可用性…"),
+    "wdttHistory": MessageLookupByLibrary.simpleMessage("最近连接事件"),
+    "wdttManual": MessageLookupByLibrary.simpleMessage("WDTT — 手动选择"),
+    "wdttManualVless": MessageLookupByLibrary.simpleMessage("VLESS — 手动选择"),
+    "wdttOffline": MessageLookupByLibrary.simpleMessage("无网络连接"),
+    "wdttPrimary": MessageLookupByLibrary.simpleMessage("VLESS — 可用"),
+    "wdttRecoveryConfirming": MessageLookupByLibrary.simpleMessage(
+      "恢复：正在确认 VLESS 稳定性",
+    ),
+    "wdttRecoveryManual": MessageLookupByLibrary.simpleMessage("手动模式下暂停自动恢复"),
+    "wdttRecoveryOffline": MessageLookupByLibrary.simpleMessage("恢复已暂停，等待网络连接"),
+    "wdttRecoveryReady": MessageLookupByLibrary.simpleMessage(
+      "VLESS 正常 — 自动监测已启用",
+    ),
+    "wdttRecoveryWaiting": MessageLookupByLibrary.simpleMessage(
+      "恢复：等待 VLESS 可用",
+    ),
+    "wdttStartingBackup": MessageLookupByLibrary.simpleMessage(
+      "VLESS 不可用 — 正在连接 WDTT",
+    ),
+    "wdttStartingManual": MessageLookupByLibrary.simpleMessage(
+      "正在连接 WDTT — 手动选择",
+    ),
+    "wdttSwitchedAt": m100,
+    "wdttUnavailable": MessageLookupByLibrary.simpleMessage("WDTT — VLESS 不可用"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("写入系统"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "写入系统会同时设置系统时钟，Android 上不生效。",
     ),
-    "yearsAgo": m100,
-    "yearsAgoShort": m101,
+    "yearsAgo": m101,
+    "yearsAgoShort": m102,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };

@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/service_probe.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/outbound_ip.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/providers/routed_probe.dart';
+import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/widgets.dart';
 
 import 'card.dart';
+import 'wdtt_status.dart';
 
 Glyph _glyphOf(Mode mode) => switch (mode) {
   Mode.rule => AppGlyphs.rules,
@@ -218,10 +221,33 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
   static final _vlessExit = RegExp(r'^"(?:[^"\\]|\\.)*" Vless ');
   late final OutboundIpProbe _probe;
   Timer? _refresh;
+  Timer? _statusRefresh;
+  Map<Object?, Object?>? _failoverStatus;
+  bool _loadingStatus = false;
+
+  Future<void> _loadStatus() async {
+    if (_loadingStatus || !ref.read(appVisibleProvider)) return;
+    _loadingStatus = true;
+    try {
+      final status = await service?.getFailoverStatus();
+      if (mounted &&
+          !const DeepCollectionEquality().equals(_failoverStatus, status)) {
+        setState(() => _failoverStatus = status);
+      }
+    } catch (_) {
+      if (mounted) setState(() => _failoverStatus = null);
+    } finally {
+      _loadingStatus = false;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _loadStatus();
+    _statusRefresh = Timer.periodic(const Duration(seconds: 2), (_) {
+      _loadStatus();
+    });
     _probe = ref.read(outboundIpProbeProvider.notifier)..watch(routedOutbound);
     _refresh = Timer.periodic(const Duration(seconds: 20), (_) {
       if (ref.read(appVisibleProvider) &&
@@ -235,6 +261,7 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
   @override
   void dispose() {
     _refresh?.cancel();
+    _statusRefresh?.cancel();
     _probe.unwatch(routedOutbound);
     super.dispose();
   }
@@ -281,7 +308,17 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
         ? (l10n.serviceUnavailable, DashboardChipTone.warn)
         : (l10n.loading, DashboardChipTone.idle);
     final style = AppTextStyle.footnote.of(context, emphasized: true);
-    final indicator = DashboardChip(label: status, tone: tone);
+    final failover =
+        active &&
+            (_failoverStatus?['group'] == group ||
+                _failoverStatus?['group'] == null)
+        ? _failoverStatus
+        : null;
+    final nativeRoute = failover?['route'] as String?;
+    final indicator = DashboardChip(
+      label: nativeRoute ?? status,
+      tone: nativeRoute != null ? DashboardChipTone.ok : tone,
+    );
     final controls = DashboardConnectedGroup(
       children: [
         for (final (index, mode) in WdttRouteMode.values.indexed)
@@ -313,25 +350,24 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
     return DashboardCard(
       semanticLabel: l10n.outboundMode,
       padding: widget.compact ? const EdgeInsets.all(8) : null,
-      child: widget.compact
-          ? Row(
-              spacing: 8,
-              children: [
-                indicator,
-                Expanded(child: controls),
-              ],
-            )
-          : Column(
-              spacing: 12,
-              children: [
-                DashboardCardHeader(
-                  glyph: AppGlyphs.split,
-                  title: l10n.outboundMode,
-                  leading: [indicator],
-                ),
-                controls,
-              ],
+      child: Column(
+        spacing: 12,
+        children: [
+          DashboardCardHeader(
+            glyph: AppGlyphs.split,
+            title: l10n.outboundMode,
+            leading: [indicator],
+          ),
+          controls,
+          if (active)
+            DefaultTextStyle(
+              style: AppTextStyle.footnote.of(context),
+              child: failover != null
+                  ? WdttStatusPanel(status: failover)
+                  : Text(l10n.wdttChecking),
             ),
+        ],
+      ),
     );
   }
 

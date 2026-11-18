@@ -1,6 +1,8 @@
 package com.follow.clash.plugins
 
 import com.follow.clash.ServiceController
+import com.follow.clash.ConnectionMode
+import com.follow.clash.ConnectionDiagnostics
 import com.follow.clash.ServiceState
 import com.follow.clash.common.Components
 import com.follow.clash.common.GlobalState
@@ -18,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private lateinit var messenger: BinaryMessenger
@@ -59,6 +62,36 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             "init" -> initialize(result)
             "shutdown" -> shutdown(result)
             "getRunTime" -> getRunTime(result)
+            "getFailoverStatus" -> result.success(ServiceController.failoverStatus())
+            "getConnectionMode" -> result.success(ServiceController.connectionMode.name)
+            "setConnectionMode" -> {
+                val mode = ConnectionMode.entries.firstOrNull { it.name == call.arguments as? String }
+                if (mode == null) {
+                    result.error("INVALID_ARGUMENT", "Unknown connection mode", null)
+                    return
+                }
+                scope.launch {
+                    try {
+                        ServiceController.setConnectionMode(mode)
+                        withContext(Dispatchers.Main) { result.success(mode.name) }
+                    } catch (error: kotlinx.coroutines.CancellationException) {
+                        throw error
+                    } catch (_: Exception) {
+                        withContext(Dispatchers.Main) { result.error("MODE_FAILED", "Unable to save connection mode", null) }
+                    }
+                }
+            }
+            "getDiagnostics" -> result.success(ConnectionDiagnostics.snapshot())
+            "runDiagnostics" -> scope.launch {
+                try {
+                    val report = ConnectionDiagnostics.run(call.argument<Int>("profileId"), call.argument<String>("link"))
+                    withContext(Dispatchers.Main) { result.success(report) }
+                } catch (error: kotlinx.coroutines.CancellationException) {
+                    throw error
+                } catch (_: Exception) {
+                    withContext(Dispatchers.Main) { result.error("DIAGNOSTICS_FAILED", "Diagnostics unavailable", null) }
+                }
+            }
             "syncState" -> syncState(call, result)
             "start" -> start(call, result)
             "stop" -> stop(call, result)

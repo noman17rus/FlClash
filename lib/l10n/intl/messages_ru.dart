@@ -269,10 +269,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m99(date) => "Действителен до ${date}";
 
-  static String m100(count) =>
-      "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
+  static String m100(time) => "Время перехода: ${time}";
 
   static String m101(count) =>
+      "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
+
+  static String m102(count) =>
       "${Intl.plural(count, one: '${count} г. назад', few: '${count} г. назад', many: '${count} л. назад', other: '${count} г. назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -549,6 +551,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "connected": MessageLookupByLibrary.simpleMessage("Подключено"),
     "connecting": MessageLookupByLibrary.simpleMessage("Подключение…"),
     "connection": MessageLookupByLibrary.simpleMessage("Соединение"),
+    "connectionBalance": MessageLookupByLibrary.simpleMessage(
+      "Баланс скорости и батареи",
+    ),
+    "connectionBalanceDescription": MessageLookupByLibrary.simpleMessage(
+      "Управляет проверками VLESS и повторными подключениями резервного WDTT. Сохраняется на устройстве и применяется без перезапуска VPN. Интервалы отсчитываются после завершения проверки; смена сети запускает новую проверку. Ручной WDTT приостанавливает проверки VLESS. Возврат требует минимум трёх успешных проверок. Меняется скорость восстановления, а не пропускная способность.",
+    ),
+    "connectionBalanced": MessageLookupByLibrary.simpleMessage(
+      "Сбалансированный",
+    ),
+    "connectionBalancedDescription": MessageLookupByLibrary.simpleMessage(
+      "По умолчанию. Проверки VLESS: каждые 15 с; при работе через WDTT: 30 с. Подтверждение: каждые 5 с. Резерв после минимум 8 с сбоев, возврат после 30 с стабильной доступности. Повтор подключения WDTT через 60 с.",
+    ),
+    "connectionEconomical": MessageLookupByLibrary.simpleMessage("Экономичный"),
+    "connectionEconomicalDescription": MessageLookupByLibrary.simpleMessage(
+      "Проверки VLESS: каждые 60 с; при работе через WDTT: 120 с. Подтверждение: каждые 15 с. Резерв после минимум 15 с сбоев, возврат после 60 с стабильной доступности. Повтор подключения WDTT через 180 с. Меньше пробуждений, медленнее реакция.",
+    ),
+    "connectionFastRecovery": MessageLookupByLibrary.simpleMessage(
+      "Быстрое восстановление",
+    ),
+    "connectionFastRecoveryDescription": MessageLookupByLibrary.simpleMessage(
+      "Проверки VLESS: каждые 5 с; при работе через WDTT: 10 с. Подтверждение: каждые 2 с. Резерв после минимум 4 с сбоев, возврат после 10 с стабильной доступности. Повтор подключения WDTT через 15 с. Частые проверки могут увеличить расход батареи.",
+    ),
+    "connectionModeError": MessageLookupByLibrary.simpleMessage(
+      "Не удалось загрузить или сохранить режим. Нажмите для повторной загрузки.",
+    ),
     "connectionStats": MessageLookupByLibrary.simpleMessage(
       "Статистика подключений",
     ),
@@ -671,6 +698,68 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerMode": MessageLookupByLibrary.simpleMessage("Режим разработчика"),
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Режим разработчика включён.",
+    ),
+    "diagnosticAuthAction": MessageLookupByLibrary.simpleMessage(
+      "Сервер WDTT отклонил устройство или пароль. Проверьте доступ в панели сервера и импортируйте свежую ссылку.",
+    ),
+    "diagnosticBlocked": MessageLookupByLibrary.simpleMessage(
+      "Заблокировано предыдущим этапом",
+    ),
+    "diagnosticCaptcha": MessageLookupByLibrary.simpleMessage(
+      "Требуется CAPTCHA",
+    ),
+    "diagnosticCaptchaAction": MessageLookupByLibrary.simpleMessage(
+      "Подключите WDTT обычным способом, пройдите CAPTCHA и повторите проверку.",
+    ),
+    "diagnosticDnsAction": MessageLookupByLibrary.simpleMessage(
+      "Проверьте фильтрацию DNS и маршрутизацию TCP к 1.1.1.1 через WDTT.",
+    ),
+    "diagnosticDtlsAction": MessageLookupByLibrary.simpleMessage(
+      "Проверьте доступность UDP, сервера и отпечатки сертификата DTLS.",
+    ),
+    "diagnosticError": MessageLookupByLibrary.simpleMessage(
+      "Операция не завершена. Повторите диагностику или экспорт.",
+    ),
+    "diagnosticExport": MessageLookupByLibrary.simpleMessage(
+      "Экспорт безопасного отчёта",
+    ),
+    "diagnosticFailed": MessageLookupByLibrary.simpleMessage("Сбой"),
+    "diagnosticInternet": MessageLookupByLibrary.simpleMessage(
+      "Выход в интернет",
+    ),
+    "diagnosticInternetAction": MessageLookupByLibrary.simpleMessage(
+      "Проверьте интернет на сервере и фильтрацию HTTPS. Тест требует действительный сертификат и HTTP 204 от gstatic.",
+    ),
+    "diagnosticPassed": MessageLookupByLibrary.simpleMessage("Успешно"),
+    "diagnosticPending": MessageLookupByLibrary.simpleMessage("Ожидание"),
+    "diagnosticPrivacy": MessageLookupByLibrary.simpleMessage(
+      "В отчёт входят только обозначения этапов и результаты. Ссылки, адреса, ID устройства, логи и учётные данные исключены.",
+    ),
+    "diagnosticRunning": MessageLookupByLibrary.simpleMessage("Проверка…"),
+    "diagnosticScope": MessageLookupByLibrary.simpleMessage(
+      "VLESS проверяется в запущенном профиле, WDTT — в отдельном временном соединении. WireGuard проверяется TCP-соединением по IP; DNS — запросом к 1.1.1.1 через WDTT. Интернет проверяется через WDTT независимо от выбранного маршрута. Проверка может занять до трёх минут.",
+    ),
+    "diagnosticSetupAction": MessageLookupByLibrary.simpleMessage(
+      "Выберите профиль VLESS с резервом WDTT и запустите соединение.",
+    ),
+    "diagnosticStart": MessageLookupByLibrary.simpleMessage(
+      "Запустить диагностику",
+    ),
+    "diagnosticTurn": MessageLookupByLibrary.simpleMessage(
+      "Получение TURN-доступа",
+    ),
+    "diagnosticTurnAction": MessageLookupByLibrary.simpleMessage(
+      "Обновите приглашение WDTT и проверьте доступ к VK.",
+    ),
+    "diagnosticUnavailable": MessageLookupByLibrary.simpleMessage("Недоступно"),
+    "diagnosticVlessAction": MessageLookupByLibrary.simpleMessage(
+      "Проверьте сервер VLESS, учётные данные и профиль.",
+    ),
+    "diagnosticWireguardAction": MessageLookupByLibrary.simpleMessage(
+      "Проверьте ключи и конфигурацию WireGuard на сервере и его доступ во внешнюю сеть.",
+    ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage(
+      "Диагностика соединения",
     ),
     "dialerProxy": MessageLookupByLibrary.simpleMessage(
       "Прокси для подключения",
@@ -1096,9 +1185,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "installCertificateSuccess": MessageLookupByLibrary.simpleMessage(
       "Сертификат установлен",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -2255,6 +2345,48 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
       "Настройки VPN изменены. Нажмите, чтобы перезапустить",
     ),
+    "wdttCheckError": MessageLookupByLibrary.simpleMessage(
+      "Ошибка проверки — повторим попытку",
+    ),
+    "wdttChecking": MessageLookupByLibrary.simpleMessage(
+      "Проверяем доступность VLESS…",
+    ),
+    "wdttHistory": MessageLookupByLibrary.simpleMessage(
+      "Последние события подключения",
+    ),
+    "wdttManual": MessageLookupByLibrary.simpleMessage("WDTT — выбран вручную"),
+    "wdttManualVless": MessageLookupByLibrary.simpleMessage(
+      "VLESS — выбран вручную",
+    ),
+    "wdttOffline": MessageLookupByLibrary.simpleMessage(
+      "Нет подключения к сети",
+    ),
+    "wdttPrimary": MessageLookupByLibrary.simpleMessage("VLESS — доступен"),
+    "wdttRecoveryConfirming": MessageLookupByLibrary.simpleMessage(
+      "Восстановление: проверяем стабильность VLESS",
+    ),
+    "wdttRecoveryManual": MessageLookupByLibrary.simpleMessage(
+      "Автовозврат отключён в ручном режиме",
+    ),
+    "wdttRecoveryOffline": MessageLookupByLibrary.simpleMessage(
+      "Восстановление приостановлено до появления сети",
+    ),
+    "wdttRecoveryReady": MessageLookupByLibrary.simpleMessage(
+      "VLESS работает — автоматическая проверка включена",
+    ),
+    "wdttRecoveryWaiting": MessageLookupByLibrary.simpleMessage(
+      "Восстановление: ожидаем доступности VLESS",
+    ),
+    "wdttStartingBackup": MessageLookupByLibrary.simpleMessage(
+      "VLESS недоступен — подключаем WDTT",
+    ),
+    "wdttStartingManual": MessageLookupByLibrary.simpleMessage(
+      "Подключаем WDTT — выбран вручную",
+    ),
+    "wdttSwitchedAt": m100,
+    "wdttUnavailable": MessageLookupByLibrary.simpleMessage(
+      "WDTT — VLESS недоступен",
+    ),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "Настройка WebDAV",
     ),
@@ -2267,8 +2399,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "«Записывать в систему» также устанавливает системные часы; Android это игнорирует.",
     ),
-    "yearsAgo": m100,
-    "yearsAgoShort": m101,
+    "yearsAgo": m101,
+    "yearsAgoShort": m102,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

@@ -113,7 +113,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 /// Four columns fill the window, the tables taking what the rows above them
 /// leave. A window too short for the tables, and every two column one, gets
 /// the summary cards instead, so no list scrolls inside a page that scrolls.
-class _DesktopDashboard extends StatelessWidget {
+class _DesktopDashboard extends ConsumerWidget {
   const _DesktopDashboard({
     required this.platform,
     required this.columns,
@@ -125,7 +125,7 @@ class _DesktopDashboard extends StatelessWidget {
   final double gap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final density = DashboardDensityScope.of(context);
     final compact = density.isCompact;
     final scale = DashboardDensityScope.scaleOf(context);
@@ -136,7 +136,14 @@ class _DesktopDashboard extends StatelessWidget {
       24 + MediaQuery.paddingOf(context).bottom,
     );
     final topHeight = (compact ? 176 : 208) * scale;
-    final controlHeight = (compact ? 56 : 64) * scale;
+    final wdtt =
+        platform == SupportPlatform.Android &&
+        ref.watch(
+          currentProfileProvider.select(
+            (profile) => profile?.overrides.wdttFallbackLink.isWdttLink == true,
+          ),
+        );
+    final controlHeight = (wdtt ? 300 : (compact ? 56 : 64)) * scale;
     final middleHeight = (compact ? 152 : 176) * scale;
     final tablesHeight = connectionsTableMinHeight(density, scale);
     final summaryHeight = (compact ? 112 : 120) * scale;

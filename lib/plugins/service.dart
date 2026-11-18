@@ -152,6 +152,24 @@ class Service {
     return DateTime.fromMillisecondsSinceEpoch(ms);
   }
 
+  Future<Map<Object?, Object?>?> getFailoverStatus() =>
+      methodChannel.invokeMapMethod<Object?, Object?>('getFailoverStatus');
+
+  Future<String?> getConnectionMode() =>
+      methodChannel.invokeMethod<String>('getConnectionMode');
+
+  Future<String?> setConnectionMode(String mode) =>
+      methodChannel.invokeMethod<String>('setConnectionMode', mode);
+
+  Future<Map<Object?, Object?>?> getDiagnostics() =>
+      methodChannel.invokeMapMethod<Object?, Object?>('getDiagnostics');
+
+  Future<Map<Object?, Object?>?> runDiagnostics(int? profileId, String? link) =>
+      methodChannel.invokeMapMethod<Object?, Object?>('runDiagnostics', {
+        'profileId': profileId,
+        'link': link,
+      });
+
   bool get hasListeners {
     return _listeners.isNotEmpty;
   }

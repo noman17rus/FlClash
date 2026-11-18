@@ -16,6 +16,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/advanced.dart';
 import 'developer.dart';
 import 'disclaimer.dart';
+import 'diagnostics.dart';
+import 'connection_mode.dart';
 import 'theme.dart';
 
 class ToolsView extends ConsumerStatefulWidget {
@@ -40,6 +42,12 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       title: context.appLocalizations.other,
       items: [
         const _DisclaimerItem(),
+        if (system.isAndroid)
+          ListItem.open(
+            leading: const GlyphIcon(AppGlyphs.checkCircle),
+            title: Text(context.appLocalizations.diagnostics),
+            widget: const DiagnosticsView(),
+          ),
         if (enableDeveloperMode) const _DeveloperItem(),
         const _InfoItem(),
       ],
@@ -54,6 +62,12 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         const _ThemeItem(),
         if (system.isDesktop) const _HotkeyItem(),
         if (system.isAndroid) const _AccessItem(),
+        if (system.isAndroid)
+          ListItem.open(
+            leading: const GlyphIcon(AppGlyphs.settings),
+            title: Text(context.appLocalizations.connectionBalance),
+            widget: const ConnectionModeView(),
+          ),
         const _BackupItem(),
         const _AdvancedConfigItem(),
         const _GeneralItem(),

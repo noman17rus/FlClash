@@ -37,7 +37,8 @@ Map<String, dynamic> wdttFallbackConfig(
     'proxies': members,
     'url': defaultTestUrl,
     'expected-status': '204',
-    'interval': 30,
+    // The Android monitor owns frequent checks; keep Core's lazy safety check sparse.
+    'interval': 300,
     'timeout': 5000,
     'lazy': true,
   };

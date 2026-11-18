@@ -246,9 +246,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m99(date) => "${date}까지 유효";
 
-  static String m100(count) => "${Intl.plural(count, other: '${count}년 전')}";
+  static String m100(time) => "전환 시간: ${time}";
 
   static String m101(count) => "${Intl.plural(count, other: '${count}년 전')}";
+
+  static String m102(count) => "${Intl.plural(count, other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -440,6 +442,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "connected": MessageLookupByLibrary.simpleMessage("연결됨"),
     "connecting": MessageLookupByLibrary.simpleMessage("연결 중…"),
     "connection": MessageLookupByLibrary.simpleMessage("연결"),
+    "connectionBalance": MessageLookupByLibrary.simpleMessage("속도와 배터리 균형"),
+    "connectionBalanceDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS 확인과 WDTT 재연결을 제어합니다. VPN 재시작 없이 기기에 저장됩니다. 확인 완료 후 간격을 계산하고 네트워크 변경 시 다시 확인합니다. 수동 WDTT는 VLESS 확인을 중지합니다. 복귀에는 최소 3회 성공이 필요합니다. 대역폭이 아닌 복구 속도를 조절합니다.",
+    ),
+    "connectionBalanced": MessageLookupByLibrary.simpleMessage("균형"),
+    "connectionBalancedDescription": MessageLookupByLibrary.simpleMessage(
+      "기본값. VLESS: 15초마다; WDTT 사용 중: 30초마다. 확인 간격: 5초. 최소 8초 장애 후 예비 연결, 30초 안정 후 복귀. WDTT 재시도: 60초 후.",
+    ),
+    "connectionEconomical": MessageLookupByLibrary.simpleMessage("절약"),
+    "connectionEconomicalDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS: 60초마다; WDTT 사용 중: 120초마다. 확인 간격: 15초. 최소 15초 장애 후 예비 연결, 60초 안정 후 복귀. WDTT 재시도: 180초 후. 절전 효과가 있지만 반응이 느립니다.",
+    ),
+    "connectionFastRecovery": MessageLookupByLibrary.simpleMessage("빠른 복구"),
+    "connectionFastRecoveryDescription": MessageLookupByLibrary.simpleMessage(
+      "VLESS: 5초마다; WDTT 사용 중: 10초마다. 확인 간격: 2초. 최소 4초 장애 후 예비 연결, 10초 안정 후 복귀. WDTT 재시도: 15초 후. 배터리 사용량이 늘 수 있습니다.",
+    ),
+    "connectionModeError": MessageLookupByLibrary.simpleMessage(
+      "불러오기 또는 저장 실패. 눌러서 다시 불러오세요.",
+    ),
     "connectionStats": MessageLookupByLibrary.simpleMessage("연결 통계"),
     "connectionStatsDesc": MessageLookupByLibrary.simpleMessage(
       "실시간 연결, 최근 요청, DNS 쿼리",
@@ -537,6 +558,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "개발자 모드가 켜졌습니다.",
     ),
+    "diagnosticAuthAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 서버가 기기 또는 비밀번호를 거부했습니다. 접근 권한을 확인하고 새 링크를 가져오세요.",
+    ),
+    "diagnosticBlocked": MessageLookupByLibrary.simpleMessage("이전 단계로 인해 차단됨"),
+    "diagnosticCaptcha": MessageLookupByLibrary.simpleMessage("CAPTCHA 필요"),
+    "diagnosticCaptchaAction": MessageLookupByLibrary.simpleMessage(
+      "일반 WDTT 연결에서 CAPTCHA를 완료하고 다시 시도하세요.",
+    ),
+    "diagnosticDnsAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT를 통한 1.1.1.1 TCP DNS와 필터링을 확인하세요.",
+    ),
+    "diagnosticDtlsAction": MessageLookupByLibrary.simpleMessage(
+      "UDP, 서버와 DTLS 인증서 지문을 확인하세요.",
+    ),
+    "diagnosticError": MessageLookupByLibrary.simpleMessage(
+      "작업에 실패했습니다. 다시 시도하세요.",
+    ),
+    "diagnosticExport": MessageLookupByLibrary.simpleMessage("안전한 보고서 내보내기"),
+    "diagnosticFailed": MessageLookupByLibrary.simpleMessage("실패"),
+    "diagnosticInternet": MessageLookupByLibrary.simpleMessage("인터넷 연결"),
+    "diagnosticInternetAction": MessageLookupByLibrary.simpleMessage(
+      "인터넷과 HTTPS를 확인하세요. 유효한 인증서와 gstatic HTTP 204가 필요합니다.",
+    ),
+    "diagnosticPassed": MessageLookupByLibrary.simpleMessage("성공"),
+    "diagnosticPending": MessageLookupByLibrary.simpleMessage("대기 중"),
+    "diagnosticPrivacy": MessageLookupByLibrary.simpleMessage(
+      "보고서에서 링크, 주소, 기기 ID, 로그와 인증 정보는 제외됩니다.",
+    ),
+    "diagnosticRunning": MessageLookupByLibrary.simpleMessage("확인 중…"),
+    "diagnosticScope": MessageLookupByLibrary.simpleMessage(
+      "VLESS는 실행 중인 프로필, WDTT는 별도의 임시 연결로 검사합니다. WireGuard는 IP로 TCP 연결, DNS는 WDTT를 통해 1.1.1.1을 사용합니다. 인터넷은 선택 경로와 관계없이 WDTT로 검사합니다. 최대 약 3분입니다.",
+    ),
+    "diagnosticSetupAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 백업이 있는 VLESS 프로필을 선택하고 연결하세요.",
+    ),
+    "diagnosticStart": MessageLookupByLibrary.simpleMessage("진단 시작"),
+    "diagnosticTurn": MessageLookupByLibrary.simpleMessage("TURN 접근"),
+    "diagnosticTurnAction": MessageLookupByLibrary.simpleMessage(
+      "WDTT 초대와 VK 접근을 확인하세요.",
+    ),
+    "diagnosticUnavailable": MessageLookupByLibrary.simpleMessage("사용 불가"),
+    "diagnosticVlessAction": MessageLookupByLibrary.simpleMessage(
+      "VLESS 서버와 인증 정보를 확인하세요.",
+    ),
+    "diagnosticWireguardAction": MessageLookupByLibrary.simpleMessage(
+      "WireGuard 키, 설정과 서버 외부 연결을 확인하세요.",
+    ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("연결 진단"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("다이얼러 프록시"),
     "dialerProxyLoopStopped": m25,
     "dialog": MessageLookupByLibrary.simpleMessage("대화상자"),
@@ -1813,14 +1882,48 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
       "VPN 관련 구성이 변경되었습니다. 눌러서 재시작",
     ),
+    "wdttCheckError": MessageLookupByLibrary.simpleMessage("확인 실패 — 재시도 예정"),
+    "wdttChecking": MessageLookupByLibrary.simpleMessage(
+      "VLESS 사용 가능 여부 확인 중…",
+    ),
+    "wdttHistory": MessageLookupByLibrary.simpleMessage("최근 연결 이벤트"),
+    "wdttManual": MessageLookupByLibrary.simpleMessage("WDTT — 수동 선택"),
+    "wdttManualVless": MessageLookupByLibrary.simpleMessage("VLESS — 수동 선택"),
+    "wdttOffline": MessageLookupByLibrary.simpleMessage("네트워크 연결 없음"),
+    "wdttPrimary": MessageLookupByLibrary.simpleMessage("VLESS — 사용 가능"),
+    "wdttRecoveryConfirming": MessageLookupByLibrary.simpleMessage(
+      "복구: VLESS 안정성 확인 중",
+    ),
+    "wdttRecoveryManual": MessageLookupByLibrary.simpleMessage(
+      "수동 모드에서 자동 복구 일시 중지",
+    ),
+    "wdttRecoveryOffline": MessageLookupByLibrary.simpleMessage(
+      "네트워크 복원까지 복구 일시 중지",
+    ),
+    "wdttRecoveryReady": MessageLookupByLibrary.simpleMessage(
+      "VLESS 정상 — 자동 모니터링 중",
+    ),
+    "wdttRecoveryWaiting": MessageLookupByLibrary.simpleMessage(
+      "복구: VLESS 대기 중",
+    ),
+    "wdttStartingBackup": MessageLookupByLibrary.simpleMessage(
+      "VLESS 사용 불가 — WDTT 연결 중",
+    ),
+    "wdttStartingManual": MessageLookupByLibrary.simpleMessage(
+      "WDTT 연결 중 — 수동 선택",
+    ),
+    "wdttSwitchedAt": m100,
+    "wdttUnavailable": MessageLookupByLibrary.simpleMessage(
+      "WDTT — VLESS 사용 불가",
+    ),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV 구성"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("화이트리스트 모드"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("시스템에 기록"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "시스템에 기록하면 시스템 시계도 설정합니다. Android에서는 무시됩니다.",
     ),
-    "yearsAgo": m100,
-    "yearsAgoShort": m101,
+    "yearsAgo": m101,
+    "yearsAgoShort": m102,
     "yes": MessageLookupByLibrary.simpleMessage("예"),
     "zhCN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
   };

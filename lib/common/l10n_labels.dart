@@ -1,8 +1,27 @@
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/enum/connection_mode.dart';
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/color.dart';
 
 import 'app_localizations.dart';
+
+extension ConnectionModeL10n on ConnectionMode {
+  String get label => switch (this) {
+    ConnectionMode.economical => currentAppLocalizations.connectionEconomical,
+    ConnectionMode.balanced => currentAppLocalizations.connectionBalanced,
+    ConnectionMode.fastRecovery =>
+      currentAppLocalizations.connectionFastRecovery,
+  };
+
+  String get description => switch (this) {
+    ConnectionMode.economical =>
+      currentAppLocalizations.connectionEconomicalDescription,
+    ConnectionMode.balanced =>
+      currentAppLocalizations.connectionBalancedDescription,
+    ConnectionMode.fastRecovery =>
+      currentAppLocalizations.connectionFastRecoveryDescription,
+  };
+}
 
 extension PageLabelL10n on PageLabel {
   String get label {

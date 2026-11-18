@@ -18,6 +18,7 @@ void main() {
     expect(vless['type'], 'fallback');
     expect(vless['proxies'], ['Primary', 'Second']);
     expect(vless['lazy'], isTrue);
+    expect(vless['interval'], 300);
     expect(config['rules'], ['MATCH,VLESS / WDTT [17]']);
   });
 

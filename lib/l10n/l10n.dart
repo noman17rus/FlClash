@@ -7663,8 +7663,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9068,6 +9067,486 @@ class AppLocalizations {
     return Intl.message(
       'These domains are resolved by Fallback directly.',
       name: 'fallbackFilterDomainDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WDTT — VLESS unavailable`
+  String get wdttUnavailable {
+    return Intl.message(
+      'WDTT — VLESS unavailable',
+      name: 'wdttUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WDTT — selected manually`
+  String get wdttManual {
+    return Intl.message(
+      'WDTT — selected manually',
+      name: 'wdttManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS — selected manually`
+  String get wdttManualVless {
+    return Intl.message(
+      'VLESS — selected manually',
+      name: 'wdttManualVless',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS — available`
+  String get wdttPrimary {
+    return Intl.message(
+      'VLESS — available',
+      name: 'wdttPrimary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS unavailable — connecting WDTT`
+  String get wdttStartingBackup {
+    return Intl.message(
+      'VLESS unavailable — connecting WDTT',
+      name: 'wdttStartingBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting WDTT — selected manually`
+  String get wdttStartingManual {
+    return Intl.message(
+      'Connecting WDTT — selected manually',
+      name: 'wdttStartingManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No network connection`
+  String get wdttOffline {
+    return Intl.message(
+      'No network connection',
+      name: 'wdttOffline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check failed — will retry`
+  String get wdttCheckError {
+    return Intl.message(
+      'Check failed — will retry',
+      name: 'wdttCheckError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking VLESS availability…`
+  String get wdttChecking {
+    return Intl.message(
+      'Checking VLESS availability…',
+      name: 'wdttChecking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switched at: {time}`
+  String wdttSwitchedAt(Object time) {
+    return Intl.message(
+      'Switched at: $time',
+      name: 'wdttSwitchedAt',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Recovery: waiting for VLESS`
+  String get wdttRecoveryWaiting {
+    return Intl.message(
+      'Recovery: waiting for VLESS',
+      name: 'wdttRecoveryWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery: confirming VLESS stability`
+  String get wdttRecoveryConfirming {
+    return Intl.message(
+      'Recovery: confirming VLESS stability',
+      name: 'wdttRecoveryConfirming',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic recovery paused in manual mode`
+  String get wdttRecoveryManual {
+    return Intl.message(
+      'Automatic recovery paused in manual mode',
+      name: 'wdttRecoveryManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS is working — automatic monitoring active`
+  String get wdttRecoveryReady {
+    return Intl.message(
+      'VLESS is working — automatic monitoring active',
+      name: 'wdttRecoveryReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery paused until the network returns`
+  String get wdttRecoveryOffline {
+    return Intl.message(
+      'Recovery paused until the network returns',
+      name: 'wdttRecoveryOffline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent connection events`
+  String get wdttHistory {
+    return Intl.message(
+      'Recent connection events',
+      name: 'wdttHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection diagnostics`
+  String get diagnostics {
+    return Intl.message(
+      'Connection diagnostics',
+      name: 'diagnostics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TURN access`
+  String get diagnosticTurn {
+    return Intl.message(
+      'TURN access',
+      name: 'diagnosticTurn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internet access`
+  String get diagnosticInternet {
+    return Intl.message(
+      'Internet access',
+      name: 'diagnosticInternet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check VLESS server, credentials and profile.`
+  String get diagnosticVlessAction {
+    return Intl.message(
+      'Check VLESS server, credentials and profile.',
+      name: 'diagnosticVlessAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refresh the WDTT invitation and check VK access.`
+  String get diagnosticTurnAction {
+    return Intl.message(
+      'Refresh the WDTT invitation and check VK access.',
+      name: 'diagnosticTurnAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check UDP, server availability and DTLS certificate fingerprints.`
+  String get diagnosticDtlsAction {
+    return Intl.message(
+      'Check UDP, server availability and DTLS certificate fingerprints.',
+      name: 'diagnosticDtlsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check server WireGuard keys, configuration and outbound connectivity.`
+  String get diagnosticWireguardAction {
+    return Intl.message(
+      'Check server WireGuard keys, configuration and outbound connectivity.',
+      name: 'diagnosticWireguardAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check DNS filtering and TCP routing to 1.1.1.1 through WDTT.`
+  String get diagnosticDnsAction {
+    return Intl.message(
+      'Check DNS filtering and TCP routing to 1.1.1.1 through WDTT.',
+      name: 'diagnosticDnsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check server Internet access and HTTPS filtering. A valid certificate and HTTP 204 from gstatic are required.`
+  String get diagnosticInternetAction {
+    return Intl.message(
+      'Check server Internet access and HTTPS filtering. A valid certificate and HTTP 204 from gstatic are required.',
+      name: 'diagnosticInternetAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passed`
+  String get diagnosticPassed {
+    return Intl.message('Passed', name: 'diagnosticPassed', desc: '', args: []);
+  }
+
+  /// `Failed`
+  String get diagnosticFailed {
+    return Intl.message('Failed', name: 'diagnosticFailed', desc: '', args: []);
+  }
+
+  /// `Checking…`
+  String get diagnosticRunning {
+    return Intl.message(
+      'Checking…',
+      name: 'diagnosticRunning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting`
+  String get diagnosticPending {
+    return Intl.message(
+      'Waiting',
+      name: 'diagnosticPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blocked by an earlier stage`
+  String get diagnosticBlocked {
+    return Intl.message(
+      'Blocked by an earlier stage',
+      name: 'diagnosticBlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CAPTCHA required`
+  String get diagnosticCaptcha {
+    return Intl.message(
+      'CAPTCHA required',
+      name: 'diagnosticCaptcha',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not available`
+  String get diagnosticUnavailable {
+    return Intl.message(
+      'Not available',
+      name: 'diagnosticUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run diagnostics`
+  String get diagnosticStart {
+    return Intl.message(
+      'Run diagnostics',
+      name: 'diagnosticStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation failed. Retry diagnostics or export.`
+  String get diagnosticError {
+    return Intl.message(
+      'Operation failed. Retry diagnostics or export.',
+      name: 'diagnosticError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a VLESS profile with WDTT backup and start the connection.`
+  String get diagnosticSetupAction {
+    return Intl.message(
+      'Select a VLESS profile with WDTT backup and start the connection.',
+      name: 'diagnosticSetupAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect WDTT normally, complete CAPTCHA, then retry.`
+  String get diagnosticCaptchaAction {
+    return Intl.message(
+      'Connect WDTT normally, complete CAPTCHA, then retry.',
+      name: 'diagnosticCaptchaAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The report contains only stage identifiers and results. Links, addresses, device IDs, logs and credentials are excluded.`
+  String get diagnosticPrivacy {
+    return Intl.message(
+      'The report contains only stage identifiers and results. Links, addresses, device IDs, logs and credentials are excluded.',
+      name: 'diagnosticPrivacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export safe report`
+  String get diagnosticExport {
+    return Intl.message(
+      'Export safe report',
+      name: 'diagnosticExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tests VLESS in the running profile and WDTT in a separate temporary connection. WireGuard uses TCP to an IP; DNS queries 1.1.1.1 through WDTT. Internet is tested through WDTT independently of the selected route. Allow up to three minutes.`
+  String get diagnosticScope {
+    return Intl.message(
+      'Tests VLESS in the running profile and WDTT in a separate temporary connection. WireGuard uses TCP to an IP; DNS queries 1.1.1.1 through WDTT. Internet is tested through WDTT independently of the selected route. Allow up to three minutes.',
+      name: 'diagnosticScope',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The WDTT server rejected the device or password. Check access in the server panel and import a fresh link.`
+  String get diagnosticAuthAction {
+    return Intl.message(
+      'The WDTT server rejected the device or password. Check access in the server panel and import a fresh link.',
+      name: 'diagnosticAuthAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Speed and battery balance`
+  String get connectionBalance {
+    return Intl.message(
+      'Speed and battery balance',
+      name: 'connectionBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Controls VLESS checks and WDTT backup reconnections. Saved on this device and applied without restarting VPN. Intervals follow completed checks; network changes trigger a new check. Manual WDTT pauses VLESS checks. Return requires at least three successful checks. Changes recovery speed, not bandwidth.`
+  String get connectionBalanceDescription {
+    return Intl.message(
+      'Controls VLESS checks and WDTT backup reconnections. Saved on this device and applied without restarting VPN. Intervals follow completed checks; network changes trigger a new check. Manual WDTT pauses VLESS checks. Return requires at least three successful checks. Changes recovery speed, not bandwidth.',
+      name: 'connectionBalanceDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Economical`
+  String get connectionEconomical {
+    return Intl.message(
+      'Economical',
+      name: 'connectionEconomical',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Balanced`
+  String get connectionBalanced {
+    return Intl.message(
+      'Balanced',
+      name: 'connectionBalanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fast recovery`
+  String get connectionFastRecovery {
+    return Intl.message(
+      'Fast recovery',
+      name: 'connectionFastRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS checks: 60 s; while on WDTT: 120 s. Confirmation: 15 s. Backup after at least 15 s of failures; return after 60 s of stable recovery. Retry WDTT after 180 s. Fewer wakeups, slower response.`
+  String get connectionEconomicalDescription {
+    return Intl.message(
+      'VLESS checks: 60 s; while on WDTT: 120 s. Confirmation: 15 s. Backup after at least 15 s of failures; return after 60 s of stable recovery. Retry WDTT after 180 s. Fewer wakeups, slower response.',
+      name: 'connectionEconomicalDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default. VLESS checks: 15 s; while on WDTT: 30 s. Confirmation: 5 s. Backup after at least 8 s of failures; return after 30 s of stable recovery. Retry WDTT after 60 s.`
+  String get connectionBalancedDescription {
+    return Intl.message(
+      'Default. VLESS checks: 15 s; while on WDTT: 30 s. Confirmation: 5 s. Backup after at least 8 s of failures; return after 30 s of stable recovery. Retry WDTT after 60 s.',
+      name: 'connectionBalancedDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS checks: 5 s; while on WDTT: 10 s. Confirmation: 2 s. Backup after at least 4 s of failures; return after 10 s of stable recovery. Retry WDTT after 15 s. Frequent checks may use more battery.`
+  String get connectionFastRecoveryDescription {
+    return Intl.message(
+      'VLESS checks: 5 s; while on WDTT: 10 s. Confirmation: 2 s. Backup after at least 4 s of failures; return after 10 s of stable recovery. Retry WDTT after 15 s. Frequent checks may use more battery.',
+      name: 'connectionFastRecoveryDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load or save the mode. Tap to reload.`
+  String get connectionModeError {
+    return Intl.message(
+      'Unable to load or save the mode. Tap to reload.',
+      name: 'connectionModeError',
       desc: '',
       args: [],
     );
