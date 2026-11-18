@@ -3586,7 +3586,7 @@ as String,
 /// @nodoc
 mixin _$VpnOptions {
 
- bool get enable; int get port; bool get ipv6; bool get dnsHijacking; AccessControlProps get accessControlProps; bool get allowBypass; bool get systemProxy; List<String> get bypassDomain; String get stack; List<String> get routeAddress; int get mtu; String get congestionController; String? get wdttLink; bool get wdttFallback;
+ bool get enable; int get port; bool get ipv6; bool get dnsHijacking; AccessControlProps get accessControlProps; bool get allowBypass; bool get systemProxy; List<String> get bypassDomain; String get stack; List<String> get routeAddress; int get mtu; String get congestionController; String? get wdttLink; bool get wdttFallback; String? get byeDpiStrategy;
 /// Create a copy of VpnOptions
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3600,20 +3600,20 @@ $VpnOptionsCopyWith<VpnOptions> get copyWith => _$VpnOptionsCopyWithImpl<VpnOpti
 @override
 bool operator ==(Object other) {
   final _this = this as VpnOptions;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VpnOptions&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.port, _this.port) || other.port == _this.port)&&(identical(other.ipv6, _this.ipv6) || other.ipv6 == _this.ipv6)&&(identical(other.dnsHijacking, _this.dnsHijacking) || other.dnsHijacking == _this.dnsHijacking)&&(identical(other.accessControlProps, _this.accessControlProps) || other.accessControlProps == _this.accessControlProps)&&(identical(other.allowBypass, _this.allowBypass) || other.allowBypass == _this.allowBypass)&&(identical(other.systemProxy, _this.systemProxy) || other.systemProxy == _this.systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _this.bypassDomain)&&(identical(other.stack, _this.stack) || other.stack == _this.stack)&&const DeepCollectionEquality().equals(other.routeAddress, _this.routeAddress)&&(identical(other.mtu, _this.mtu) || other.mtu == _this.mtu)&&(identical(other.congestionController, _this.congestionController) || other.congestionController == _this.congestionController)&&(identical(other.wdttLink, _this.wdttLink) || other.wdttLink == _this.wdttLink)&&(identical(other.wdttFallback, _this.wdttFallback) || other.wdttFallback == _this.wdttFallback));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VpnOptions&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.port, _this.port) || other.port == _this.port)&&(identical(other.ipv6, _this.ipv6) || other.ipv6 == _this.ipv6)&&(identical(other.dnsHijacking, _this.dnsHijacking) || other.dnsHijacking == _this.dnsHijacking)&&(identical(other.accessControlProps, _this.accessControlProps) || other.accessControlProps == _this.accessControlProps)&&(identical(other.allowBypass, _this.allowBypass) || other.allowBypass == _this.allowBypass)&&(identical(other.systemProxy, _this.systemProxy) || other.systemProxy == _this.systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _this.bypassDomain)&&(identical(other.stack, _this.stack) || other.stack == _this.stack)&&const DeepCollectionEquality().equals(other.routeAddress, _this.routeAddress)&&(identical(other.mtu, _this.mtu) || other.mtu == _this.mtu)&&(identical(other.congestionController, _this.congestionController) || other.congestionController == _this.congestionController)&&(identical(other.wdttLink, _this.wdttLink) || other.wdttLink == _this.wdttLink)&&(identical(other.wdttFallback, _this.wdttFallback) || other.wdttFallback == _this.wdttFallback)&&(identical(other.byeDpiStrategy, _this.byeDpiStrategy) || other.byeDpiStrategy == _this.byeDpiStrategy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as VpnOptions;
-  return Object.hash(runtimeType,_this.enable,_this.port,_this.ipv6,_this.dnsHijacking,_this.accessControlProps,_this.allowBypass,_this.systemProxy,const DeepCollectionEquality().hash(_this.bypassDomain),_this.stack,const DeepCollectionEquality().hash(_this.routeAddress),_this.mtu,_this.congestionController,_this.wdttLink,_this.wdttFallback);
+  return Object.hash(runtimeType,_this.enable,_this.port,_this.ipv6,_this.dnsHijacking,_this.accessControlProps,_this.allowBypass,_this.systemProxy,const DeepCollectionEquality().hash(_this.bypassDomain),_this.stack,const DeepCollectionEquality().hash(_this.routeAddress),_this.mtu,_this.congestionController,_this.wdttLink,_this.wdttFallback,_this.byeDpiStrategy);
 }
 
 @override
 String toString() {
   final _this = this as VpnOptions;
-  return 'VpnOptions(enable: ${_this.enable}, port: ${_this.port}, ipv6: ${_this.ipv6}, dnsHijacking: ${_this.dnsHijacking}, accessControlProps: ${_this.accessControlProps}, allowBypass: ${_this.allowBypass}, systemProxy: ${_this.systemProxy}, bypassDomain: ${_this.bypassDomain}, stack: ${_this.stack}, routeAddress: ${_this.routeAddress}, mtu: ${_this.mtu}, congestionController: ${_this.congestionController}, wdttLink: ${_this.wdttLink}, wdttFallback: ${_this.wdttFallback})';
+  return 'VpnOptions(enable: ${_this.enable}, port: ${_this.port}, ipv6: ${_this.ipv6}, dnsHijacking: ${_this.dnsHijacking}, accessControlProps: ${_this.accessControlProps}, allowBypass: ${_this.allowBypass}, systemProxy: ${_this.systemProxy}, bypassDomain: ${_this.bypassDomain}, stack: ${_this.stack}, routeAddress: ${_this.routeAddress}, mtu: ${_this.mtu}, congestionController: ${_this.congestionController}, wdttLink: ${_this.wdttLink}, wdttFallback: ${_this.wdttFallback}, byeDpiStrategy: ${_this.byeDpiStrategy})';
 }
 
 
@@ -3624,7 +3624,7 @@ abstract mixin class $VpnOptionsCopyWith<$Res>  {
   factory $VpnOptionsCopyWith(VpnOptions value, $Res Function(VpnOptions) _then) = _$VpnOptionsCopyWithImpl;
 @useResult
 $Res call({
- bool enable, int port, bool ipv6, bool dnsHijacking, AccessControlProps accessControlProps, bool allowBypass, bool systemProxy, List<String> bypassDomain, String stack, List<String> routeAddress, int mtu, String congestionController, String? wdttLink, bool wdttFallback
+ bool enable, int port, bool ipv6, bool dnsHijacking, AccessControlProps accessControlProps, bool allowBypass, bool systemProxy, List<String> bypassDomain, String stack, List<String> routeAddress, int mtu, String congestionController, String? wdttLink, bool wdttFallback, String? byeDpiStrategy
 });
 
 
@@ -3641,7 +3641,7 @@ class _$VpnOptionsCopyWithImpl<$Res>
 
 /// Create a copy of VpnOptions
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? port = null,Object? ipv6 = null,Object? dnsHijacking = null,Object? accessControlProps = null,Object? allowBypass = null,Object? systemProxy = null,Object? bypassDomain = null,Object? stack = null,Object? routeAddress = null,Object? mtu = null,Object? congestionController = null,Object? wdttLink = freezed,Object? wdttFallback = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? port = null,Object? ipv6 = null,Object? dnsHijacking = null,Object? accessControlProps = null,Object? allowBypass = null,Object? systemProxy = null,Object? bypassDomain = null,Object? stack = null,Object? routeAddress = null,Object? mtu = null,Object? congestionController = null,Object? wdttLink = freezed,Object? wdttFallback = null,Object? byeDpiStrategy = freezed,}) {
   return _then(VpnOptions(
 enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
@@ -3657,7 +3657,8 @@ as List<String>,mtu: null == mtu ? _self.mtu : mtu // ignore: cast_nullable_to_n
 as int,congestionController: null == congestionController ? _self.congestionController : congestionController // ignore: cast_nullable_to_non_nullable
 as String,wdttLink: freezed == wdttLink ? _self.wdttLink : wdttLink // ignore: cast_nullable_to_non_nullable
 as String?,wdttFallback: null == wdttFallback ? _self.wdttFallback : wdttFallback // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,byeDpiStrategy: freezed == byeDpiStrategy ? _self.byeDpiStrategy : byeDpiStrategy // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of VpnOptions
@@ -3751,10 +3752,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback,  String? byeDpiStrategy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VpnOptions() when $default != null:
-return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback);case _:
+return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback,_that.byeDpiStrategy);case _:
   return orElse();
 
 }
@@ -3772,10 +3773,10 @@ return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.acce
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback,  String? byeDpiStrategy)  $default,) {final _that = this;
 switch (_that) {
 case _VpnOptions():
-return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback);case _:
+return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback,_that.byeDpiStrategy);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3792,10 +3793,10 @@ return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.acce
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable,  int port,  bool ipv6,  bool dnsHijacking,  AccessControlProps accessControlProps,  bool allowBypass,  bool systemProxy,  List<String> bypassDomain,  String stack,  List<String> routeAddress,  int mtu,  String congestionController,  String? wdttLink,  bool wdttFallback,  String? byeDpiStrategy)?  $default,) {final _that = this;
 switch (_that) {
 case _VpnOptions() when $default != null:
-return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback);case _:
+return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.accessControlProps,_that.allowBypass,_that.systemProxy,_that.bypassDomain,_that.stack,_that.routeAddress,_that.mtu,_that.congestionController,_that.wdttLink,_that.wdttFallback,_that.byeDpiStrategy);case _:
   return null;
 
 }
@@ -3807,7 +3808,7 @@ return $default(_that.enable,_that.port,_that.ipv6,_that.dnsHijacking,_that.acce
 @JsonSerializable()
 
 class _VpnOptions implements VpnOptions {
-  const _VpnOptions({required this.enable, required this.port, required this.ipv6, required this.dnsHijacking, required this.accessControlProps, required this.allowBypass, required this.systemProxy, required  List<String> bypassDomain, required this.stack,  List<String> routeAddress = const [], this.mtu = 0, this.congestionController = '', this.wdttLink, this.wdttFallback = false}): _bypassDomain = bypassDomain,_routeAddress = routeAddress;
+  const _VpnOptions({required this.enable, required this.port, required this.ipv6, required this.dnsHijacking, required this.accessControlProps, required this.allowBypass, required this.systemProxy, required  List<String> bypassDomain, required this.stack,  List<String> routeAddress = const [], this.mtu = 0, this.congestionController = '', this.wdttLink, this.wdttFallback = false, this.byeDpiStrategy}): _bypassDomain = bypassDomain,_routeAddress = routeAddress;
   factory _VpnOptions.fromJson(Map<String, dynamic> json) => _$VpnOptionsFromJson(json);
 
 @override final  bool enable;
@@ -3836,6 +3837,7 @@ class _VpnOptions implements VpnOptions {
 @override@JsonKey() final  String congestionController;
 @override final  String? wdttLink;
 @override@JsonKey() final  bool wdttFallback;
+@override final  String? byeDpiStrategy;
 
 /// Create a copy of VpnOptions
 /// with the given fields replaced by the non-null parameter values.
@@ -3850,18 +3852,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VpnOptions&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.port, port) || other.port == port)&&(identical(other.ipv6, ipv6) || other.ipv6 == ipv6)&&(identical(other.dnsHijacking, dnsHijacking) || other.dnsHijacking == dnsHijacking)&&(identical(other.accessControlProps, accessControlProps) || other.accessControlProps == accessControlProps)&&(identical(other.allowBypass, allowBypass) || other.allowBypass == allowBypass)&&(identical(other.systemProxy, systemProxy) || other.systemProxy == systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _bypassDomain)&&(identical(other.stack, stack) || other.stack == stack)&&const DeepCollectionEquality().equals(other.routeAddress, _routeAddress)&&(identical(other.mtu, mtu) || other.mtu == mtu)&&(identical(other.congestionController, congestionController) || other.congestionController == congestionController)&&(identical(other.wdttLink, wdttLink) || other.wdttLink == wdttLink)&&(identical(other.wdttFallback, wdttFallback) || other.wdttFallback == wdttFallback));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VpnOptions&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.port, port) || other.port == port)&&(identical(other.ipv6, ipv6) || other.ipv6 == ipv6)&&(identical(other.dnsHijacking, dnsHijacking) || other.dnsHijacking == dnsHijacking)&&(identical(other.accessControlProps, accessControlProps) || other.accessControlProps == accessControlProps)&&(identical(other.allowBypass, allowBypass) || other.allowBypass == allowBypass)&&(identical(other.systemProxy, systemProxy) || other.systemProxy == systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _bypassDomain)&&(identical(other.stack, stack) || other.stack == stack)&&const DeepCollectionEquality().equals(other.routeAddress, _routeAddress)&&(identical(other.mtu, mtu) || other.mtu == mtu)&&(identical(other.congestionController, congestionController) || other.congestionController == congestionController)&&(identical(other.wdttLink, wdttLink) || other.wdttLink == wdttLink)&&(identical(other.wdttFallback, wdttFallback) || other.wdttFallback == wdttFallback)&&(identical(other.byeDpiStrategy, byeDpiStrategy) || other.byeDpiStrategy == byeDpiStrategy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,enable,port,ipv6,dnsHijacking,accessControlProps,allowBypass,systemProxy,const DeepCollectionEquality().hash(_bypassDomain),stack,const DeepCollectionEquality().hash(_routeAddress),mtu,congestionController,wdttLink,wdttFallback);
+    return Object.hash(runtimeType,enable,port,ipv6,dnsHijacking,accessControlProps,allowBypass,systemProxy,const DeepCollectionEquality().hash(_bypassDomain),stack,const DeepCollectionEquality().hash(_routeAddress),mtu,congestionController,wdttLink,wdttFallback,byeDpiStrategy);
 }
 
 @override
 String toString() {
-    return 'VpnOptions(enable: $enable, port: $port, ipv6: $ipv6, dnsHijacking: $dnsHijacking, accessControlProps: $accessControlProps, allowBypass: $allowBypass, systemProxy: $systemProxy, bypassDomain: $bypassDomain, stack: $stack, routeAddress: $routeAddress, mtu: $mtu, congestionController: $congestionController, wdttLink: $wdttLink, wdttFallback: $wdttFallback)';
+    return 'VpnOptions(enable: $enable, port: $port, ipv6: $ipv6, dnsHijacking: $dnsHijacking, accessControlProps: $accessControlProps, allowBypass: $allowBypass, systemProxy: $systemProxy, bypassDomain: $bypassDomain, stack: $stack, routeAddress: $routeAddress, mtu: $mtu, congestionController: $congestionController, wdttLink: $wdttLink, wdttFallback: $wdttFallback, byeDpiStrategy: $byeDpiStrategy)';
 }
 
 
@@ -3872,7 +3874,7 @@ abstract mixin class _$VpnOptionsCopyWith<$Res> implements $VpnOptionsCopyWith<$
   factory _$VpnOptionsCopyWith(_VpnOptions value, $Res Function(_VpnOptions) _then) = __$VpnOptionsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enable, int port, bool ipv6, bool dnsHijacking, AccessControlProps accessControlProps, bool allowBypass, bool systemProxy, List<String> bypassDomain, String stack, List<String> routeAddress, int mtu, String congestionController, String? wdttLink, bool wdttFallback
+ bool enable, int port, bool ipv6, bool dnsHijacking, AccessControlProps accessControlProps, bool allowBypass, bool systemProxy, List<String> bypassDomain, String stack, List<String> routeAddress, int mtu, String congestionController, String? wdttLink, bool wdttFallback, String? byeDpiStrategy
 });
 
 
@@ -3889,7 +3891,7 @@ class __$VpnOptionsCopyWithImpl<$Res>
 
 /// Create a copy of VpnOptions
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? port = null,Object? ipv6 = null,Object? dnsHijacking = null,Object? accessControlProps = null,Object? allowBypass = null,Object? systemProxy = null,Object? bypassDomain = null,Object? stack = null,Object? routeAddress = null,Object? mtu = null,Object? congestionController = null,Object? wdttLink = freezed,Object? wdttFallback = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? port = null,Object? ipv6 = null,Object? dnsHijacking = null,Object? accessControlProps = null,Object? allowBypass = null,Object? systemProxy = null,Object? bypassDomain = null,Object? stack = null,Object? routeAddress = null,Object? mtu = null,Object? congestionController = null,Object? wdttLink = freezed,Object? wdttFallback = null,Object? byeDpiStrategy = freezed,}) {
   return _then(_VpnOptions(
 enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
@@ -3905,7 +3907,8 @@ as List<String>,mtu: null == mtu ? _self.mtu : mtu // ignore: cast_nullable_to_n
 as int,congestionController: null == congestionController ? _self.congestionController : congestionController // ignore: cast_nullable_to_non_nullable
 as String,wdttLink: freezed == wdttLink ? _self.wdttLink : wdttLink // ignore: cast_nullable_to_non_nullable
 as String?,wdttFallback: null == wdttFallback ? _self.wdttFallback : wdttFallback // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,byeDpiStrategy: freezed == byeDpiStrategy ? _self.byeDpiStrategy : byeDpiStrategy // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

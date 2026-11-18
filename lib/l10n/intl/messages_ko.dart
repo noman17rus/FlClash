@@ -359,6 +359,49 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("QUIC 차단"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("본문 재작성"),
     "brightness": MessageLookupByLibrary.simpleMessage("밝기"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage("YouTube 실제 경로"),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "ByeDPI를 사용하면 서비스에 이 네트워크의 공인 IP가 표시됩니다.",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage("전략 자동 검색"),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "전략 목록을 불러올 수 없습니다",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "YouTube 및 Google 확인 중…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("전략 선택"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google 및 YouTube에 ByeDPI 사용",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "네트워크가 변경되었습니다. 다시 검사하세요.",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage("새 연결"),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "활성 YouTube 연결이 없습니다.",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("아직 검사하지 않음"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage("이 네트워크에서 전략 검사"),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "녹색 표시는 이 전략으로 YouTube 사이트가 열렸음을 의미합니다. 동영상 재생 결과는 다를 수 있습니다. 검사는 ByeDPI를 직접 사용합니다. 일반 탐색에서는 VLESS / WDTT 백업도 사용될 수 있습니다.",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Google 및 YouTube에 ByeDPI를 사용하려면 위에 WDTT 백업 링크를 추가하세요.",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "현재 프로필의 활성 연결 경로와 수신 데이터를 표시합니다. 기존 연결은 이전 경로를 사용할 수 있습니다.",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("알 수 없는 경로"),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("확인되지 않음"),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("전략 목록 업데이트"),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 동영상"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "YouTube 사이트 연결 가능",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · 확인되지 않음",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("우회 도메인"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "우회 도메인은 시스템 프록시가 켜져 있을 때만 적용됩니다.",

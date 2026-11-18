@@ -1,6 +1,9 @@
 package com.follow.clash.plugins
 
 import com.follow.clash.ServiceController
+import com.follow.clash.ByeDpi
+import com.follow.clash.ByeDpiCatalog
+import com.follow.clash.ByeDpiRoutes
 import com.follow.clash.ConnectionMode
 import com.follow.clash.ConnectionDiagnostics
 import com.follow.clash.ServiceState
@@ -19,6 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -29,9 +36,20 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private lateinit var scope: CoroutineScope
     private val gson = Gson()
     private var commandRevision = 0
+    private var byeDpiProbe: Job? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        scope.launch {
+            ByeDpi.strategy.collectLatest { strategy ->
+                if (strategy != null) while (true) {
+                    try { ByeDpiCatalog.load(true, automatic = true) }
+                    catch (error: CancellationException) { throw error }
+                    catch (_: Exception) { GlobalState.log("ByeDPI catalog update unavailable") }
+                    delay(86_400_000)
+                }
+            }
+        }
         // The main thread is also Flutter's UI thread, where "init" would load it.
         scope.launch {
             runCatching { Core.load() }
@@ -62,7 +80,40 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             "init" -> initialize(result)
             "shutdown" -> shutdown(result)
             "getRunTime" -> getRunTime(result)
-            "getFailoverStatus" -> result.success(ServiceController.failoverStatus())
+            "getFailoverStatus", "byeDpiRoutes" -> scope.launch {
+                try {
+                    val routes = if (ByeDpi.strategy.value != null) ByeDpiRoutes.snapshot() else null
+                    result.success(if (call.method == "byeDpiRoutes") routes
+                        else ServiceController.failoverStatus()?.plus("youtube" to routes))
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (_: Exception) {
+                    result.success(if (call.method == "byeDpiRoutes") null else ServiceController.failoverStatus())
+                }
+            }
+            "byeDpiNetwork" -> result.success(NetworkObserver.state.value.revision)
+            "byeDpiCatalog", "byeDpiValidate", "byeDpiProbe" -> {
+                val job = scope.launch(Dispatchers.IO) {
+                    try {
+                        val value: Any = when (call.method) {
+                            "byeDpiCatalog" -> ByeDpiCatalog.load(call.argument<Boolean>("refresh") == true,
+                                call.argument<Boolean>("automatic") == true)
+                            "byeDpiValidate" -> ByeDpi.validate(requireNotNull(call.argument<String>("strategy")))
+                            else -> ByeDpi.measure(requireNotNull(call.argument<String>("strategy")),
+                                requireNotNull(call.argument<Number>("revision")).toLong())
+                        }
+                        result.success(value)
+                    } catch (error: CancellationException) {
+                        result.error("CANCELLED", null, null)
+                        throw error
+                    } catch (error: Exception) {
+                        result.error(if (error.message == "NETWORK_CHANGED") "NETWORK_CHANGED" else "BYEDPI",
+                            error.localizedMessage ?: error.javaClass.simpleName, null)
+                    }
+                }
+                if (call.method == "byeDpiProbe") { byeDpiProbe?.cancel(); byeDpiProbe = job }
+            }
+            "byeDpiCancel" -> { byeDpiProbe?.cancel(); result.success(null) }
             "getConnectionMode" -> result.success(ServiceController.connectionMode.name)
             "setConnectionMode" -> {
                 val mode = ConnectionMode.entries.firstOrNull { it.name == call.arguments as? String }

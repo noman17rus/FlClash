@@ -2,6 +2,35 @@ import 'package:fl_clash/common/wdtt_link.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+    'routes Google and YouTube separately with the current tunnel as backup',
+    () {
+      final config = wdttFallbackConfig(
+        [
+          {'name': 'Primary', 'type': 'vless'},
+        ],
+        17,
+        googleByeDpi: true,
+      );
+      expect(config['rules'], [
+        'GEOSITE,youtube,YouTube [17]',
+        'GEOSITE,google,Google [17]',
+        'MATCH,VLESS / WDTT [17]',
+      ]);
+      final groups = (config['proxy-groups'] as List).cast<Map>();
+      expect(groups.first['proxies'], ['Auto [17]', 'VLESS [17]', 'WDTT [17]']);
+      final services = groups.skip(3).toList();
+      expect(services.map((group) => group['url']).toSet(), hasLength(2));
+      expect(services.first['url'], 'https://www.youtube.com/');
+      expect(services.first['expected-status'], '200');
+      expect(services.last['expected-status'], '204');
+      for (final group in services) {
+        expect(group['proxies'], ['ByeDPI [17]', 'VLESS / WDTT [17]']);
+        expect(group['type'], 'fallback');
+      }
+    },
+  );
+
   test('leaves exclusive automatic selection to the Android service', () {
     final config = wdttFallbackConfig([
       {'name': 'Primary', 'type': 'vless'},

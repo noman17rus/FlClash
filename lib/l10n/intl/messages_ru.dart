@@ -440,6 +440,61 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("Блокировать QUIC"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("Перезапись тела"),
     "brightness": MessageLookupByLibrary.simpleMessage("Яркость"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage(
+      "Фактический маршрут YouTube",
+    ),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "При работе через ByeDPI сервисы видят внешний IP этой сети.",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage(
+      "Автоподбор стратегий",
+    ),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "Не удалось загрузить список стратегий",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "Проверяется YouTube и Google…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("Выбрать стратегию"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google и YouTube через ByeDPI",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "Сеть изменилась. Запустите подбор ещё раз.",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage("Новые соединения"),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Активных соединений YouTube пока нет.",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("Ещё не проверено"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage(
+      "Подобрать для этой сети",
+    ),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "Зелёная отметка означает, что сайт YouTube открылся через эту стратегию. Загрузка видео может отличаться. Проверка идёт напрямую через ByeDPI. При обычном просмотре также может сработать резерв VLESS / WDTT.",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Чтобы включить Google и YouTube через ByeDPI, добавьте ссылку резервного WDTT в поле выше.",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "Показаны цепочки активных соединений текущего профиля и объём полученных данных. Уже открытые соединения могут идти по прежнему маршруту.",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage(
+      "Маршрут неизвестен",
+    ),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "Проверка не пройдена",
+    ),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage(
+      "Обновить список стратегий",
+    ),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("Видео YouTube"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "Сайт YouTube доступен",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · проверка не пройдена",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Исключённые домены"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Исключённые домены действуют только при включённом системном прокси.",

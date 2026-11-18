@@ -143,7 +143,15 @@ class _DesktopDashboard extends ConsumerWidget {
             (profile) => profile?.overrides.wdttFallbackLink.isWdttLink == true,
           ),
         );
-    final controlHeight = (wdtt ? 300 : (compact ? 56 : 64)) * scale;
+    final googleByeDpi =
+        wdtt &&
+        ref.watch(
+          currentProfileProvider.select(
+            (profile) => profile?.overrides.googleByeDpi == true,
+          ),
+        );
+    final controlHeight =
+        (wdtt ? (googleByeDpi ? 360 : 300) : (compact ? 56 : 64)) * scale;
     final middleHeight = (compact ? 152 : 176) * scale;
     final tablesHeight = connectionsTableMinHeight(density, scale);
     final summaryHeight = (compact ? 112 : 120) * scale;

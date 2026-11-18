@@ -28,6 +28,7 @@ data class VpnOptions(
     val congestionController: String? = null,
     val wdttLink: String? = null,
     val wdttFallback: Boolean = false,
+    val byeDpiStrategy: String? = null,
 )
 
 private const val DEFAULT_TUN_MTU = 9000

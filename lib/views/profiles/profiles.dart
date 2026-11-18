@@ -412,6 +412,12 @@ class ProfileItem extends ConsumerWidget {
         label: appLocalizations.edit,
         onPressed: () => _handleEdit(context),
       ),
+      if (system.isAndroid && !profile.url.isWdttLink)
+        PopupMenuItem(
+          glyph: AppGlyphs.settings,
+          label: 'ByeDPI',
+          onPressed: () => _handleShowEditExtendPage(context),
+        ),
       if (isCustom) ...[
         PopupMenuItem(
           glyph: AppGlyphs.textShort,

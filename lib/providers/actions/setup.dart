@@ -506,6 +506,10 @@ class SetupAction extends _$SetupAction {
     final hasScript = scriptContent?.isNotEmpty == true;
     final withWdttFallback =
         system.isAndroid && setupState.overrides.wdttFallbackLink.isWdttLink;
+    final googleByeDpi =
+        withWdttFallback &&
+        setupState.overrides.googleByeDpi &&
+        !ref.read(safeModeProvider);
     final profileBase = !isCustom && !hasScript && !withWdttFallback
         ? await _core.getProfileBase(profileId)
         : null;
@@ -535,20 +539,38 @@ class SetupAction extends _$SetupAction {
       final groups = rawConfig['proxy-groups'] as List? ?? const [];
       final taken = {
         ...reservedCustomProxyNames,
-        for (final item in [...proxies, ...groups])
+        for (final item in [
+          ...proxies,
+          ...groups,
+          if (googleByeDpi) ...proxyGroups.map((group) => group.definition),
+        ])
           if (item is Map && item['name'] is String) item['name'] as String,
       };
-      if (taken.contains(wdttRouteGroupName(profileId)) ||
+      if ((googleByeDpi &&
+              [
+                'ByeDPI',
+                'YouTube',
+                'Google',
+              ].any((name) => taken.contains('$name [$profileId]'))) ||
+          taken.contains(wdttRouteGroupName(profileId)) ||
           WdttRouteMode.values.any(
             (mode) => taken.contains(mode.proxyName(profileId)),
           )) {
         throw MessageException(currentAppLocalizations.shareLinksInvalid);
       }
-      final fallback = wdttFallbackConfig(proxies, profileId);
+      final fallback = wdttFallbackConfig(
+        proxies,
+        profileId,
+        googleByeDpi: googleByeDpi,
+      );
       rawConfig = {
         ...rawConfig,
         ...fallback,
-        'proxy-groups': [...fallback['proxy-groups'] as List, ...groups],
+        'proxy-groups': [
+          ...fallback['proxy-groups'] as List,
+          ...groups,
+          if (googleByeDpi) ...proxyGroups.map((group) => group.definition),
+        ],
       };
     }
     final directory = await appPath.profilesPath;
@@ -559,8 +581,8 @@ class SetupAction extends _$SetupAction {
     );
     final res = await makeRealProfileTask(
       MakeRealProfileState(
-        rules: rules,
-        proxyGroups: proxyGroups,
+        rules: googleByeDpi ? [] : rules,
+        proxyGroups: googleByeDpi ? [] : proxyGroups,
         injectedProxyProviders: injected.proxies,
         injectedRuleProviders: injected.rules,
         profilesPath: directory,
@@ -573,7 +595,7 @@ class SetupAction extends _$SetupAction {
         bypassPrivateRoute: networkSetting.bypassPrivateRoute,
         keepEmptyDnsOverrides: setupState.profileType != ProfileType.custom,
         appendSystemDns: appendSystemDns,
-        addedRules: setupState.addedRules,
+        addedRules: googleByeDpi ? [] : setupState.addedRules,
         defaultUA: defaultUA,
         authentication: networkSetting.authentication.credentials,
         matchTarget:

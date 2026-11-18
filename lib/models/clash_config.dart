@@ -1647,6 +1647,8 @@ Map<String, Object?> _withLegacyTunOverride(Map<String, Object?> json) {
 abstract class ProfileOverrides with _$ProfileOverrides {
   const factory ProfileOverrides({
     @Default('') String wdttFallbackLink,
+    @Default(false) bool googleByeDpi,
+    @Default('-d1 -s1+s -a1') String byeDpiStrategy,
     @Default(defaultDns) @JsonKey(fromJson: Dns.safeDnsFromJson) Dns dns,
     @Default({})
     @JsonKey(name: _dnsOverrideKeysJsonKey, fromJson: _dnsOverrideKeysFromJson)

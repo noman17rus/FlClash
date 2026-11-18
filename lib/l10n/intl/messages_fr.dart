@@ -451,6 +451,65 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("Bloquer QUIC"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("Réécriture du corps"),
     "brightness": MessageLookupByLibrary.simpleMessage("Luminosité"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage(
+      "Route réelle de YouTube",
+    ),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "Avec ByeDPI, les services voient l’adresse IP publique de ce réseau.",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage(
+      "Trouver automatiquement des stratégies",
+    ),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "Impossible de charger les stratégies",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "Vérification de YouTube et Google…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage(
+      "Choisir une stratégie",
+    ),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google et YouTube via ByeDPI",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "Le réseau a changé. Relancez le test.",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage(
+      "Nouvelles connexions",
+    ),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Aucune connexion YouTube active.",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("Pas encore testé"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage(
+      "Tester les stratégies sur ce réseau",
+    ),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "Le vert indique que le site YouTube s’ouvre via cette stratégie. La lecture vidéo peut différer. Les tests passent directement par ByeDPI. La navigation peut aussi utiliser le secours VLESS / WDTT.",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Ajoutez ci-dessus un lien de secours WDTT pour activer Google et YouTube via ByeDPI.",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "Affiche les chemins actifs du profil actuel et les données reçues. Les connexions existantes peuvent utiliser une route précédente.",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage(
+      "Route inconnue",
+    ),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "Test non concluant",
+    ),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage(
+      "Actualiser les stratégies",
+    ),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("Vidéo YouTube"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "Site YouTube accessible",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · test non concluant",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Domaines contournés"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Les domaines contournés ne s’appliquent que si le proxy système est activé.",

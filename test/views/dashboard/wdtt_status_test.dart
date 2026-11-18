@@ -6,6 +6,42 @@ import '../../helpers/test_app.dart';
 import '../../helpers/host_scaffold.dart';
 
 void main() {
+  testWidgets(
+    'YouTube shows actual connections separately from the next route',
+    (tester) async {
+      await tester.pumpWidget(
+        const TestApp(
+          locale: Locale('ru'),
+          child: HostScaffold(
+            body: WdttStatusPanel(
+              status: {
+                'phase': 'primary',
+                'youtube': {
+                  'next': 'VLESS',
+                  'connections': [
+                    {
+                      'host': 'rr1.googlevideo.com',
+                      'route': 'ByeDPI',
+                      'video': true,
+                      'download': 10000,
+                    },
+                  ],
+                },
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('YouTube · ByeDPI'));
+      await tester.pumpAndSettle();
+      expect(find.text('Новые соединения · VLESS (VPS)'), findsOneWidget);
+      expect(find.textContaining('Видео YouTube · ByeDPI'), findsOneWidget);
+      expect(find.textContaining('rr1.googlevideo.com'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   Future<void> pump(WidgetTester tester, String phase) => tester.pumpWidget(
     TestApp(
       locale: const Locale('ru'),

@@ -22,8 +22,9 @@ Map<String, dynamic> wdttProxyConfig(String name) => {
 
 Map<String, dynamic> wdttFallbackConfig(
   List<Map<String, dynamic>> proxies,
-  int profileId,
-) {
+  int profileId, {
+  bool googleByeDpi = false,
+}) {
   final route = wdttRouteGroupName(profileId);
   final wdtt = WdttRouteMode.wdtt.proxyName(profileId);
   final primary = [
@@ -43,7 +44,18 @@ Map<String, dynamic> wdttFallbackConfig(
     'lazy': true,
   };
   return {
-    'proxies': [...proxies, wdttProxyConfig(wdtt)],
+    'proxies': [
+      ...proxies,
+      wdttProxyConfig(wdtt),
+      if (googleByeDpi)
+        {
+          'name': 'ByeDPI [$profileId]',
+          'type': 'socks5',
+          'server': localhost,
+          'port': 11081,
+          'udp': true,
+        },
+    ],
     'proxy-groups': [
       {
         'name': route,
@@ -60,8 +72,29 @@ Map<String, dynamic> wdttFallbackConfig(
         'proxies': [WdttRouteMode.vless.proxyName(profileId), wdtt],
       },
       fallback(WdttRouteMode.vless, primary),
+      if (googleByeDpi)
+        for (final service in ['YouTube', 'Google'])
+          {
+            'name': '$service [$profileId]',
+            'type': 'fallback',
+            'hidden': true,
+            'proxies': ['ByeDPI [$profileId]', route],
+            'url': service == 'YouTube'
+                ? 'https://www.youtube.com/'
+                : 'https://www.gstatic.com/generate_204',
+            'expected-status': service == 'YouTube' ? '200' : '204',
+            'interval': 30,
+            'timeout': 5000,
+            'lazy': false,
+          },
     ],
-    'rules': ['MATCH,$route'],
+    'rules': [
+      if (googleByeDpi) ...[
+        'GEOSITE,youtube,YouTube [$profileId]',
+        'GEOSITE,google,Google [$profileId]',
+      ],
+      'MATCH,$route',
+    ],
   };
 }
 

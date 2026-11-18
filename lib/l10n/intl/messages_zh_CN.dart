@@ -349,6 +349,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("阻止 QUIC"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("Body 重写"),
     "brightness": MessageLookupByLibrary.simpleMessage("亮度"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage("YouTube 实际路由"),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "使用 ByeDPI 时，服务会看到当前网络的公网 IP。",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage("自动查找策略"),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage("无法加载策略列表"),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "正在检查 YouTube 和 Google…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("选择策略"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google 和 YouTube 使用 ByeDPI",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "网络已更改，请重新测试。",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage("新连接"),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "暂无活跃的 YouTube 连接。",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("尚未测试"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage("在当前网络测试策略"),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "绿色标记表示此策略成功打开 YouTube 网站，视频播放结果可能不同。测试直接通过 ByeDPI 连接，正常浏览也可能使用 VLESS / WDTT 备用路由。",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "请在上方添加 WDTT 备用链接，以启用 Google 和 YouTube 的 ByeDPI 路由。",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "显示当前配置的活跃连接路径及已接收数据。现有连接可能仍使用之前的路由。",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("路由未知"),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("检查未确认"),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("更新策略列表"),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 视频"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "YouTube 网站可访问",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · 检查未确认",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("排除域名"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "排除域名仅在系统代理启用时生效。",

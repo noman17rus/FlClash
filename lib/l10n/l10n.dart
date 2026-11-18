@@ -9551,6 +9551,216 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Google and YouTube via ByeDPI`
+  String get byeDpiGoogle {
+    return Intl.message(
+      'Google and YouTube via ByeDPI',
+      name: 'byeDpiGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose strategy`
+  String get byeDpiChoose {
+    return Intl.message(
+      'Choose strategy',
+      name: 'byeDpiChoose',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Test strategies on this network`
+  String get byeDpiProbe {
+    return Intl.message(
+      'Test strategies on this network',
+      name: 'byeDpiProbe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update strategy list`
+  String get byeDpiUpdate {
+    return Intl.message(
+      'Update strategy list',
+      name: 'byeDpiUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The network changed. Run the test again.`
+  String get byeDpiNetworkChanged {
+    return Intl.message(
+      'The network changed. Run the test again.',
+      name: 'byeDpiNetworkChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the strategy list`
+  String get byeDpiCatalogError {
+    return Intl.message(
+      'Could not load the strategy list',
+      name: 'byeDpiCatalogError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online services see this network’s public IP when ByeDPI is active.`
+  String get byeDpiAddress {
+    return Intl.message(
+      'Online services see this network’s public IP when ByeDPI is active.',
+      name: 'byeDpiAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a WDTT backup link above to enable Google and YouTube through ByeDPI.`
+  String get byeDpiRequiresWdtt {
+    return Intl.message(
+      'Add a WDTT backup link above to enable Google and YouTube through ByeDPI.',
+      name: 'byeDpiRequiresWdtt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find strategies automatically`
+  String get byeDpiAutoSelect {
+    return Intl.message(
+      'Find strategies automatically',
+      name: 'byeDpiAutoSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `YouTube website reachable`
+  String get byeDpiYouTubeAvailable {
+    return Intl.message(
+      'YouTube website reachable',
+      name: 'byeDpiYouTubeAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `YouTube · check inconclusive`
+  String get byeDpiYouTubeUnconfirmed {
+    return Intl.message(
+      'YouTube · check inconclusive',
+      name: 'byeDpiYouTubeUnconfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not tested yet`
+  String get byeDpiNotTested {
+    return Intl.message(
+      'Not tested yet',
+      name: 'byeDpiNotTested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking YouTube and Google…`
+  String get byeDpiChecking {
+    return Intl.message(
+      'Checking YouTube and Google…',
+      name: 'byeDpiChecking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Green means the YouTube website opened through this strategy. Video playback may differ. Tests connect directly through ByeDPI. Normal browsing can also use the VLESS / WDTT backup.`
+  String get byeDpiProbeScope {
+    return Intl.message(
+      'Green means the YouTube website opened through this strategy. Video playback may differ. Tests connect directly through ByeDPI. Normal browsing can also use the VLESS / WDTT backup.',
+      name: 'byeDpiProbeScope',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check inconclusive`
+  String get byeDpiUnconfirmed {
+    return Intl.message(
+      'Check inconclusive',
+      name: 'byeDpiUnconfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actual YouTube route`
+  String get byeDpiActualRoute {
+    return Intl.message(
+      'Actual YouTube route',
+      name: 'byeDpiActualRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New connections`
+  String get byeDpiNextRoute {
+    return Intl.message(
+      'New connections',
+      name: 'byeDpiNextRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Route unknown`
+  String get byeDpiRouteUnknown {
+    return Intl.message(
+      'Route unknown',
+      name: 'byeDpiRouteUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No active YouTube connections yet.`
+  String get byeDpiNoConnections {
+    return Intl.message(
+      'No active YouTube connections yet.',
+      name: 'byeDpiNoConnections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `YouTube video`
+  String get byeDpiVideoTraffic {
+    return Intl.message(
+      'YouTube video',
+      name: 'byeDpiVideoTraffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shows active connection chains in the current profile and received data. Existing connections may still use an earlier route.`
+  String get byeDpiRouteScope {
+    return Intl.message(
+      'Shows active connection chains in the current profile and received data. Existing connections may still use an earlier route.',
+      name: 'byeDpiRouteScope',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

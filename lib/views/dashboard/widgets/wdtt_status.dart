@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/widgets/youtube_route_status.dart';
 import 'package:flutter/widgets.dart';
 
 class WdttStatusPanel extends StatelessWidget {
@@ -37,6 +38,8 @@ class WdttStatusPanel extends StatelessWidget {
           _message(l10n, phase),
           style: AppTextStyle.subheadline.of(context, emphasized: true),
         ),
+        if (status['youtube'] case final Map snapshot)
+          YouTubeRouteStatus(status: snapshot),
         if (switchedAt != null && status['route'] != null)
           Text(l10n.wdttSwitchedAt(_time(switchedAt))),
         Text(switch (phase) {

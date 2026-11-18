@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -50,6 +51,7 @@ object ServiceController {
     }
     private val wdtt = WdttTunnel(::handleWdttFailure)
     private var failoverJob: Job? = null
+    private var byeDpiJob: Job? = null
     @Volatile
     private var failover: WdttFailover? = null
 
@@ -152,6 +154,7 @@ object ServiceController {
             wdttFallback = options.wdttFallback,
         )
         if (replaceTunnel && options.wdttFallback && options.wdttLink != null) {
+            byeDpiJob = GlobalState.launch { ByeDpi.monitor() }
             startFailover(requireNotNull(runtime), requireNotNull(options.wdttLink))
         }
         true
@@ -173,6 +176,8 @@ object ServiceController {
     }
 
     private suspend fun stopWdtt() {
+        byeDpiJob?.cancelAndJoin()
+        byeDpiJob = null
         failoverJob?.cancel()
         failoverJob = null
         failover = null

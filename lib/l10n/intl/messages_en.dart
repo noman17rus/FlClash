@@ -422,6 +422,59 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("Block QUIC"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("Body rewrite"),
     "brightness": MessageLookupByLibrary.simpleMessage("Brightness"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage(
+      "Actual YouTube route",
+    ),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "Online services see this network’s public IP when ByeDPI is active.",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage(
+      "Find strategies automatically",
+    ),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "Could not load the strategy list",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "Checking YouTube and Google…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("Choose strategy"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google and YouTube via ByeDPI",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "The network changed. Run the test again.",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage("New connections"),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "No active YouTube connections yet.",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("Not tested yet"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage(
+      "Test strategies on this network",
+    ),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "Green means the YouTube website opened through this strategy. Video playback may differ. Tests connect directly through ByeDPI. Normal browsing can also use the VLESS / WDTT backup.",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Add a WDTT backup link above to enable Google and YouTube through ByeDPI.",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "Shows active connection chains in the current profile and received data. Existing connections may still use an earlier route.",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("Route unknown"),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "Check inconclusive",
+    ),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage(
+      "Update strategy list",
+    ),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube video"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "YouTube website reachable",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · check inconclusive",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domains"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Bypass domains apply only while the system proxy is on.",

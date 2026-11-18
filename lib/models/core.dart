@@ -220,6 +220,7 @@ abstract class VpnOptions with _$VpnOptions {
     @Default('') String congestionController,
     String? wdttLink,
     @Default(false) bool wdttFallback,
+    String? byeDpiStrategy,
   }) = _VpnOptions;
 
   factory VpnOptions.fromJson(Map<String, Object?> json) =>
@@ -247,6 +248,7 @@ extension VpnOptionsExt on VpnOptions {
     return copyWith(
       wdttLink: null,
       wdttFallback: false,
+      byeDpiStrategy: null,
       port: systemProxy ? port : 0,
       bypassDomain: systemProxy ? bypassDomain : const [],
       accessControlProps: accessControl.enable

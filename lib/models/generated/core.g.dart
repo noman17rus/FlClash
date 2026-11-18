@@ -336,6 +336,7 @@ _VpnOptions _$VpnOptionsFromJson(Map<String, dynamic> json) => _VpnOptions(
   congestionController: json['congestionController'] as String? ?? '',
   wdttLink: json['wdttLink'] as String?,
   wdttFallback: json['wdttFallback'] as bool? ?? false,
+  byeDpiStrategy: json['byeDpiStrategy'] as String?,
 );
 
 Map<String, dynamic> _$VpnOptionsToJson(_VpnOptions instance) =>
@@ -354,6 +355,7 @@ Map<String, dynamic> _$VpnOptionsToJson(_VpnOptions instance) =>
       'congestionController': instance.congestionController,
       'wdttLink': instance.wdttLink,
       'wdttFallback': instance.wdttFallback,
+      'byeDpiStrategy': instance.byeDpiStrategy,
     };
 
 _InitParams _$InitParamsFromJson(Map<String, dynamic> json) => _InitParams(

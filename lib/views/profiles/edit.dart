@@ -15,6 +15,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'bye_dpi.dart';
 
 enum _ProfileField { label, url, wdtt, autoUpdateInterval }
 
@@ -34,6 +35,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _ageSecretKeyController;
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
+  late bool _googleByeDpi;
+  late String _byeDpiStrategy;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -52,6 +55,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       text: widget.profile.ageSecretKey,
     );
     _autoUpdate = widget.profile.autoUpdate;
+    _googleByeDpi = widget.profile.overrides.googleByeDpi;
+    _byeDpiStrategy = widget.profile.overrides.byeDpiStrategy;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -151,6 +156,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           ? extractWdttLink(_urlController.text.trim())!
           : _urlController.text.trim(),
       overrides: current.overrides.copyWith(
+        googleByeDpi: _googleByeDpi,
+        byeDpiStrategy: _byeDpiStrategy,
         wdttFallbackLink: _wdttController.text.trim().isEmpty
             ? ''
             : extractWdttLink(_wdttController.text.trim())!,
@@ -351,8 +358,39 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               optional: true,
               controller: _wdttController,
               invalid: issue?.field == _ProfileField.wdtt,
-              onChanged: _handleChanged,
+              onChanged: (_) => setState(() {}),
             ),
+          if (system.isAndroid && !isWdtt) ...[
+            if (!_wdttController.text.isWdttLink)
+              Text(appLocalizations.byeDpiRequiresWdtt),
+            FormRow(
+              title: appLocalizations.byeDpiGoogle,
+              trailing: Switch(
+                value: _googleByeDpi,
+                onChanged: _wdttController.text.isWdttLink
+                    ? (value) => setState(() => _googleByeDpi = value)
+                    : null,
+              ),
+            ),
+            ListItem(
+              title: Text(appLocalizations.byeDpiChoose),
+              subtitle: Text(
+                _byeDpiStrategy,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: const DisclosureIndicator(),
+              onTap: () async {
+                final line = await BaseNavigator.push<String>(
+                  context,
+                  ByeDpiView(selected: _byeDpiStrategy),
+                );
+                if (line != null && mounted) {
+                  setState(() => _byeDpiStrategy = line);
+                }
+              },
+            ),
+          ],
           _AgeSecretKeyField(controller: _ageSecretKeyController),
         ],
       ),

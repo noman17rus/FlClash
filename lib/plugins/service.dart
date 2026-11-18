@@ -158,6 +158,34 @@ class Service {
   Future<String?> getConnectionMode() =>
       methodChannel.invokeMethod<String>('getConnectionMode');
 
+  Future<Map<Object?, Object?>> byeDpiCatalog({
+    bool refresh = false,
+    bool automatic = false,
+  }) async => (await methodChannel.invokeMapMethod<Object?, Object?>(
+    'byeDpiCatalog',
+    {'refresh': refresh, 'automatic': automatic},
+  ))!;
+
+  Future<void> validateByeDpi(String strategy) => methodChannel
+      .invokeMethod<void>('byeDpiValidate', {'strategy': strategy});
+
+  Future<int> byeDpiNetwork() async =>
+      (await methodChannel.invokeMethod<int>('byeDpiNetwork'))!;
+
+  Future<Map<String, Object?>> probeByeDpi(
+    String strategy,
+    int revision,
+  ) async => (await methodChannel.invokeMapMethod<String, Object?>(
+    'byeDpiProbe',
+    {'strategy': strategy, 'revision': revision},
+  ))!;
+
+  Future<Map<Object?, Object?>?> byeDpiRoutes() =>
+      methodChannel.invokeMapMethod<Object?, Object?>('byeDpiRoutes');
+
+  Future<void> cancelByeDpiProbe() =>
+      methodChannel.invokeMethod<void>('byeDpiCancel');
+
   Future<String?> setConnectionMode(String mode) =>
       methodChannel.invokeMethod<String>('setConnectionMode', mode);
 

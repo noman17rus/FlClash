@@ -363,6 +363,49 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockQuic": MessageLookupByLibrary.simpleMessage("QUIC をブロック"),
     "bodyRewrite": MessageLookupByLibrary.simpleMessage("ボディ書き換え"),
     "brightness": MessageLookupByLibrary.simpleMessage("明度"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage("YouTube の実際の経路"),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "ByeDPI の使用中、サービスにはこのネットワークの公開 IP が表示されます。",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage("戦略を自動選択"),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "戦略リストを読み込めませんでした",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "YouTube と Google を確認中…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("戦略を選択"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google と YouTube に ByeDPI を使用",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "ネットワークが変わりました。もう一度テストしてください。",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage("新しい接続"),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "YouTube のアクティブ接続はありません。",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("未テスト"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage("このネットワークで戦略をテスト"),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "緑の印は、この戦略で YouTube サイトが開けたことを示します。動画再生の結果は異なる場合があります。テストは ByeDPI に直接接続します。通常の閲覧では VLESS / WDTT のバックアップも使用できます。",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Google と YouTube に ByeDPI を使用するには、上の欄に WDTT バックアップリンクを追加してください。",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "現在のプロファイルの接続経路と受信データ量を表示します。既存の接続は以前の経路を使用する場合があります。",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage("経路不明"),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage("確認できませんでした"),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage("戦略リストを更新"),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage("YouTube 動画"),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "YouTube サイトに接続可能",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · 確認できませんでした",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("除外ドメイン"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "除外ドメインはシステムプロキシが有効な場合のみ適用されます。",

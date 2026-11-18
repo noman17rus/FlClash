@@ -210,6 +210,7 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
     }
 
     private fun applySharedState() {
+        host.updateByeDpi(sharedState.vpnOptions?.takeIf { it.wdttFallback }?.byeDpiStrategy)
         host.updateNotificationParams(notificationParams(sharedState))
     }
 

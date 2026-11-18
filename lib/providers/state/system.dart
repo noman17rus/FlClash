@@ -263,9 +263,13 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final safeMode = ref.watch(safeModeProvider);
-  final (profileUrl, fallbackLink) = ref.watch(
+  final (profileUrl, fallbackLink, strategy) = ref.watch(
     currentProfileProvider.select(
-      (p) => (p?.url ?? '', p?.overrides.wdttFallbackLink ?? ''),
+      (p) => (
+        p?.url ?? '',
+        p?.overrides.wdttFallbackLink ?? '',
+        p?.overrides.googleByeDpi == true ? p?.overrides.byeDpiStrategy : null,
+      ),
     ),
   );
   final wdttFallback = system.isAndroid && !safeMode && fallbackLink.isWdttLink;
@@ -294,6 +298,7 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
     congestionController: tun.congestionController,
     wdttLink: wdttLink,
     wdttFallback: wdttFallback,
+    byeDpiStrategy: wdttFallback ? strategy : null,
   );
 }
 

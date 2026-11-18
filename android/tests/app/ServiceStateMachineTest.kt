@@ -102,6 +102,8 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
     var duringSetup: (suspend () -> Unit)? = null
     var beforeStartService: (() -> Unit)? = null
     var lastStartOptions: VpnOptions? = null
+    var byeDpiStrategy: String? = null
+    override fun updateByeDpi(strategy: String?) { byeDpiStrategy = strategy }
 
     override var runtime: ServiceRuntime? = null
     override val homeDirPath = "/data/user/0/com.follow.clash/files"
@@ -175,6 +177,23 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServiceStateMachineTest {
+
+    @Test fun changingGoogleStrategyDoesNotRestartTheVpn() = runTest {
+        val host = FakeHost(this)
+        val machine = ServiceStateMachine(host)
+        val options = vpnOptions().copy(wdttLink = "wdtt://connect?test", wdttFallback = true, byeDpiStrategy = "-d1")
+        val state = configuredState().copy(vpnOptions = options)
+        machine.syncSharedState(state)
+        assertTrue(machine.requestStart().await())
+        machine.syncSharedState(state.copy(vpnOptions = options.copy(byeDpiStrategy = "-o1")))
+        testScheduler.runCurrent()
+        assertEquals("-o1", host.byeDpiStrategy)
+        machine.syncSharedState(state.copy(vpnOptions = options.copy(byeDpiStrategy = null)))
+        testScheduler.runCurrent()
+        assertEquals(null, host.byeDpiStrategy)
+        assertEquals(1, host.startCalls)
+        assertEquals(0, host.stopCalls)
+    }
 
     @Test
     fun switchingWdttProfilesReconfiguresOnlyAnActiveRun() = runTest {

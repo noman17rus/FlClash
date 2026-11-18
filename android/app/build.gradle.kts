@@ -22,6 +22,31 @@ val hasReleaseSigning = releaseStoreFile.exists() &&
     releaseKeyAlias != null &&
     releaseKeyPassword != null
 
+val byeDpiSource = file("src/main/byedpi")
+val byeDpiOutput = layout.buildDirectory.dir("intermediates/byedpi-bin")
+val byeDpiJni = layout.buildDirectory.dir("generated/byedpi")
+val ndkBuildName = if (System.getProperty("os.name").startsWith("Windows")) "ndk-build.cmd" else "ndk-build"
+val byeDpiNdk = androidComponents.sdkComponents.sdkDirectory.map {
+    it.file("ndk/${libs.versions.ndkVersion.get()}/$ndkBuildName")
+}
+val buildByeDpi by tasks.registering(Exec::class) {
+    inputs.dir(byeDpiSource)
+    inputs.property("ndkVersion", libs.versions.ndkVersion.get())
+    outputs.dir(byeDpiOutput)
+    workingDir(byeDpiSource)
+    commandLine(byeDpiNdk.get().asFile, "NDK_PROJECT_PATH=.",
+        "APP_BUILD_SCRIPT=Android.mk", "NDK_APPLICATION_MK=Application.mk",
+        "NDK_OUT=${layout.buildDirectory.get().asFile}/intermediates/byedpi",
+        "NDK_LIBS_OUT=${byeDpiOutput.get().asFile}")
+}
+val packageByeDpi by tasks.registering(Sync::class) {
+    from(buildByeDpi)
+    include("*/byedpi")
+    rename("byedpi", "libbyedpi.so")
+    into(byeDpiJni)
+}
+tasks.named("preBuild") { dependsOn(packageByeDpi) }
+
 android {
     namespace = "com.follow.clash"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -81,6 +106,7 @@ android {
     }
 
     sourceSets {
+        getByName("main").jniLibs.srcDir(byeDpiJni.get().asFile)
         // Unit tests live under android/tests/ instead of each module's src/test.
         getByName("test").java.setSrcDirs(listOf("../tests/app"))
     }

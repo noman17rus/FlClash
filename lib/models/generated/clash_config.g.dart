@@ -555,6 +555,8 @@ Map<String, dynamic> _$ProfileTunToJson(_ProfileTun instance) =>
 _ProfileOverrides _$ProfileOverridesFromJson(Map<String, dynamic> json) =>
     _ProfileOverrides(
       wdttFallbackLink: json['wdttFallbackLink'] as String? ?? '',
+      googleByeDpi: json['googleByeDpi'] as bool? ?? false,
+      byeDpiStrategy: json['byeDpiStrategy'] as String? ?? '-d1 -s1+s -a1',
       dns: json['dns'] == null
           ? defaultDns
           : Dns.safeDnsFromJson(json['dns'] as Map<String, Object?>),
@@ -594,6 +596,8 @@ _ProfileOverrides _$ProfileOverridesFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ProfileOverridesToJson(_ProfileOverrides instance) =>
     <String, dynamic>{
       'wdttFallbackLink': instance.wdttFallbackLink,
+      'googleByeDpi': instance.googleByeDpi,
+      'byeDpiStrategy': instance.byeDpiStrategy,
       'dns': instance.dns,
       'dns-override-keys': instance.dnsOverrideKeys
           .map((e) => _$DnsOverrideKeyEnumMap[e]!)

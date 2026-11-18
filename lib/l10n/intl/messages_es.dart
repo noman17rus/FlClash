@@ -455,6 +455,65 @@ class MessageLookup extends MessageLookupByLibrary {
       "Reescritura del cuerpo",
     ),
     "brightness": MessageLookupByLibrary.simpleMessage("Brillo"),
+    "byeDpiActualRoute": MessageLookupByLibrary.simpleMessage(
+      "Ruta real de YouTube",
+    ),
+    "byeDpiAddress": MessageLookupByLibrary.simpleMessage(
+      "Con ByeDPI, los servicios ven la IP pública de esta red.",
+    ),
+    "byeDpiAutoSelect": MessageLookupByLibrary.simpleMessage(
+      "Buscar estrategias automáticamente",
+    ),
+    "byeDpiCatalogError": MessageLookupByLibrary.simpleMessage(
+      "No se pudo cargar la lista de estrategias",
+    ),
+    "byeDpiChecking": MessageLookupByLibrary.simpleMessage(
+      "Comprobando YouTube y Google…",
+    ),
+    "byeDpiChoose": MessageLookupByLibrary.simpleMessage("Elegir estrategia"),
+    "byeDpiGoogle": MessageLookupByLibrary.simpleMessage(
+      "Google y YouTube mediante ByeDPI",
+    ),
+    "byeDpiNetworkChanged": MessageLookupByLibrary.simpleMessage(
+      "La red ha cambiado. Repita la prueba.",
+    ),
+    "byeDpiNextRoute": MessageLookupByLibrary.simpleMessage(
+      "Conexiones nuevas",
+    ),
+    "byeDpiNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Aún no hay conexiones activas de YouTube.",
+    ),
+    "byeDpiNotTested": MessageLookupByLibrary.simpleMessage("Sin probar"),
+    "byeDpiProbe": MessageLookupByLibrary.simpleMessage(
+      "Probar estrategias en esta red",
+    ),
+    "byeDpiProbeScope": MessageLookupByLibrary.simpleMessage(
+      "La marca verde indica que el sitio de YouTube se abrió mediante esta estrategia. El vídeo puede funcionar de otra forma. Las pruebas usan ByeDPI directamente. La navegación también puede usar el respaldo VLESS / WDTT.",
+    ),
+    "byeDpiRequiresWdtt": MessageLookupByLibrary.simpleMessage(
+      "Añada arriba un enlace de respaldo WDTT para activar Google y YouTube mediante ByeDPI.",
+    ),
+    "byeDpiRouteScope": MessageLookupByLibrary.simpleMessage(
+      "Muestra las rutas activas del perfil actual y los datos recibidos. Las conexiones existentes pueden conservar una ruta anterior.",
+    ),
+    "byeDpiRouteUnknown": MessageLookupByLibrary.simpleMessage(
+      "Ruta desconocida",
+    ),
+    "byeDpiUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "Prueba no concluyente",
+    ),
+    "byeDpiUpdate": MessageLookupByLibrary.simpleMessage(
+      "Actualizar estrategias",
+    ),
+    "byeDpiVideoTraffic": MessageLookupByLibrary.simpleMessage(
+      "Vídeo de YouTube",
+    ),
+    "byeDpiYouTubeAvailable": MessageLookupByLibrary.simpleMessage(
+      "Sitio de YouTube accesible",
+    ),
+    "byeDpiYouTubeUnconfirmed": MessageLookupByLibrary.simpleMessage(
+      "YouTube · prueba no concluyente",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Dominios excluidos"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Los dominios excluidos solo se aplican mientras el proxy del sistema esté activado.",

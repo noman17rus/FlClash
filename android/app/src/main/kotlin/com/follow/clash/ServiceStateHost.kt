@@ -41,6 +41,7 @@ internal interface ServiceStateHost {
     fun showToast(message: String)
 
     fun updateNotificationParams(params: NotificationParams)
+    fun updateByeDpi(strategy: String?)
 
     fun loadSharedState(): SharedState
 
@@ -107,6 +108,8 @@ internal object AndroidServiceStateHost : ServiceStateHost {
 
     override fun updateNotificationParams(params: NotificationParams) =
         ServiceConfig.updateNotificationParams(params)
+
+    override fun updateByeDpi(strategy: String?) { ByeDpi.strategy.value = strategy }
 
     override fun loadSharedState(): SharedState = GlobalState.application.sharedState
 
