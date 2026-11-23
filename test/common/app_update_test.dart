@@ -57,6 +57,13 @@ void main() {
     );
   });
 
+  test('downloads updates only from the EverensProx repository', () {
+    expect(
+      releaseAssetUri('v0.9.4', 'SHA256SUMS').toString(),
+      'https://github.com/noman17rus/EverensProx/releases/download/v0.9.4/SHA256SUMS',
+    );
+  });
+
   group('releaseChecksum', () {
     const digest =
         'ff6a953c0f5c12e6bdc97b49428b565b64c4a62d85e50081823ba297407529b1';

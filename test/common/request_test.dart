@@ -121,7 +121,7 @@ void main() {
             302,
             headers: {
               HttpHeaders.locationHeader: [
-                'https://github.com/owner/repo/releases/tag/v1.2.4',
+                'https://github.com/$repository/releases/tag/v1.2.4',
               ],
             },
           ),
@@ -130,6 +130,23 @@ void main() {
         expect(await request.latestRelease(), {'tag_name': 'v1.2.4'});
       },
     );
+
+    test('rejects a redirect to another repository', () async {
+      final request = requestAnswering({
+        'api.github.com': () => ResponseBody.fromString('{}', 403),
+        'github.com': () => ResponseBody.fromString(
+          '',
+          302,
+          headers: {
+            HttpHeaders.locationHeader: [
+              'https://github.com/chen08209/FlClash/releases/tag/v1.2.4',
+            ],
+          },
+        ),
+      });
+
+      await expectLater(request.latestRelease(), throwsFormatException);
+    });
 
     test('fails instead of answering when neither endpoint does', () async {
       final request = requestAnswering({

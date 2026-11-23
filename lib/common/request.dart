@@ -136,12 +136,18 @@ class Request {
       ),
     );
     final location = response.headers.value(HttpHeaders.locationHeader);
-    final segments = Uri.tryParse(location ?? '')?.pathSegments ?? const [];
-    final tagIndex = segments.indexOf('tag') + 1;
-    if (tagIndex == 0 || tagIndex >= segments.length) {
+    final uri = Uri.tryParse(location ?? '');
+    final segments = uri?.pathSegments ?? const <String>[];
+    const prefix = '$repository/releases/tag/';
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host != 'github.com' ||
+        !uri.path.startsWith('/$prefix') ||
+        segments.length != 5 ||
+        segments.last.isEmpty) {
       throw FormatException('No release tag in the redirect', location);
     }
-    return {'tag_name': segments[tagIndex]};
+    return {'tag_name': segments.last};
   }
 
   Future<String> downloadVerifiedRelease({
