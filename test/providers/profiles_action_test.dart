@@ -53,6 +53,30 @@ void main() {
     globalState.container = container;
   });
 
+  test(
+    'adding the same managed login preserves the existing profile offline',
+    () async {
+      final original =
+          Profile.normal(
+            label: 'My profile',
+            url: 'https://existing.example/sub',
+          ).copyWith(
+            autoUpdateDuration: const Duration(hours: 4),
+            overrides: const ProfileOverrides(
+              managedAccountId: 'account',
+              managedLogin: 'example@gmail.com',
+              wdttEnabled: false,
+            ),
+          );
+      container.read(profilesProvider.notifier).put(original);
+      final result = await container
+          .read(profilesActionProvider.notifier)
+          .addManagedProfile(' EXAMPLE@gmail.com ', label: 'Do not rename');
+      expect(result, original);
+      expect(container.read(profilesProvider), [original]);
+    },
+  );
+
   void decodesTo(String link, List<Map<String, dynamic>> proxies) {
     when(
       () => core.decodeShareLinks([link]),

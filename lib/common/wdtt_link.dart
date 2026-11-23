@@ -29,6 +29,45 @@ Map<String, dynamic> wdttProxyConfig(String name) => {
   'udp': true,
 };
 
+Map<String, dynamic> wdttStandaloneConfig(
+  int profileId, {
+  bool googleByeDpi = false,
+}) => {
+  'proxies': [
+    wdttProxyConfig('WDTT'),
+    if (googleByeDpi)
+      {
+        'name': 'ByeDPI [$profileId]',
+        'type': 'socks5',
+        'server': localhost,
+        'port': 11081,
+        'udp': true,
+      },
+  ],
+  'proxy-groups': [
+    {
+      'name': 'WDTT Group',
+      'type': 'select',
+      'proxies': ['WDTT'],
+    },
+    if (googleByeDpi)
+      for (final service in ['YouTube', 'Google'])
+        {
+          'name': '$service [$profileId]',
+          'type': 'fallback',
+          'proxies': ['ByeDPI [$profileId]', 'WDTT'],
+          'url': service == 'YouTube'
+              ? 'https://www.youtube.com/'
+              : defaultTestUrl,
+          'expected-status': service == 'YouTube' ? '200' : '204',
+          'interval': 30,
+          'timeout': 5000,
+          'lazy': false,
+        },
+  ],
+  'rules': ['MATCH,WDTT'],
+};
+
 Map<String, dynamic> wdttFallbackConfig(
   List<Map<String, dynamic>> proxies,
   int profileId, {
@@ -133,7 +172,13 @@ void applyWdttRouting(
     'MATCH,${standalone ? 'WDTT' : wdttTransportName(profileId)}',
   ];
   if (standalone) {
-    config['rules'] = directRules;
+    config['rules'] = [
+      if (googleByeDpi) ...[
+        'GEOSITE,youtube,YouTube [$profileId]',
+        'GEOSITE,google,Google [$profileId]',
+      ],
+      ...directRules,
+    ];
   } else {
     final subRules = config['sub-rules'] as Map? ?? const {};
     if (subRules.containsKey(vlessRulesName(profileId)) ||

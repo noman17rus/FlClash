@@ -154,6 +154,12 @@ class ProfilesAction extends _$ProfilesAction {
         return;
       }
       final newProfile = latest.copyWith(
+        url: latest.isManaged ? updated.url : latest.url,
+        overrides: latest.isManaged
+            ? latest.overrides.copyWith(
+                wdttFallbackLink: updated.overrides.wdttFallbackLink,
+              )
+            : latest.overrides,
         label: latest.label.takeFirstValid([updated.label]),
         subscriptionInfo: updated.subscriptionInfo,
         lastUpdateDate: updated.lastUpdateDate,
@@ -378,6 +384,46 @@ class ProfilesAction extends _$ProfilesAction {
     if (profile != null) {
       putProfile(profile);
     }
+  }
+
+  Future<Profile> addManagedProfile(String login, {String label = ''}) async {
+    if (!validProvisioningLogin(login)) {
+      throw MessageException(currentAppLocalizations.provisioningLoginInvalid);
+    }
+    final normalized = normalizeProvisioningLogin(login);
+    Profile? existing() => ref
+        .read(profilesProvider)
+        .where((p) => p.isManaged && p.overrides.managedLogin == normalized)
+        .firstOrNull;
+    final found = existing();
+    if (found != null) return found;
+    final account = await provisioningClient.provision(login);
+    if (account.login != normalized) {
+      throw MessageException(currentAppLocalizations.provisioningFailed);
+    }
+    final candidate =
+        Profile.normal(
+          label: label.trim().isEmpty ? login.trim() : label.trim(),
+          url: account.subscriptionUrl,
+        ).copyWith(
+          autoUpdate: true,
+          autoUpdateDuration: const Duration(hours: 1),
+          overrides: ProfileOverrides(
+            managedAccountId: account.id,
+            managedLogin: account.login,
+            wdttFallbackLink: account.wdttLink,
+          ),
+        );
+    final profile = await candidate.update(
+      validate: (path, key) => _core.validateProfile(path, key),
+    );
+    final concurrent = existing();
+    if (concurrent != null) {
+      await (await profile.file).safeDelete();
+      return concurrent;
+    }
+    putProfile(profile);
+    return profile;
   }
 
   /// Ids are taken up front so the list keeps the order of [links]; the share

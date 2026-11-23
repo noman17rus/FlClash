@@ -178,6 +178,18 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServiceStateMachineTest {
 
+    @Test fun standaloneWdttCanUseByeDpi() = runTest {
+        val host = FakeHost(this)
+        val machine = ServiceStateMachine(host)
+        val options = vpnOptions().copy(wdttLink = "wdtt://connect?test", wdttFallback = false, byeDpiStrategy = "-d1")
+        machine.syncSharedState(configuredState().copy(vpnOptions = options))
+        assertTrue(machine.requestStart().await())
+        assertEquals("-d1", host.byeDpiStrategy)
+        machine.syncSharedState(configuredState().copy(vpnOptions = options.copy(wdttLink = null)))
+        testScheduler.runCurrent()
+        assertEquals(null, host.byeDpiStrategy)
+    }
+
     @Test fun changingGoogleStrategyDoesNotRestartTheVpn() = runTest {
         val host = FakeHost(this)
         val machine = ServiceStateMachine(host)

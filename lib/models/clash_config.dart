@@ -1646,6 +1646,10 @@ Map<String, Object?> _withLegacyTunOverride(Map<String, Object?> json) {
 @freezed
 abstract class ProfileOverrides with _$ProfileOverrides {
   const factory ProfileOverrides({
+    @Default('') String managedAccountId,
+    @Default('') String managedLogin,
+    @Default(true) bool vlessEnabled,
+    @Default(true) bool wdttEnabled,
     @Default('') String wdttFallbackLink,
     @Default(false) bool googleByeDpi,
     @Default('-d1 -s1+s -a1') String byeDpiStrategy,

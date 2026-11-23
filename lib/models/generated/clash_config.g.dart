@@ -554,6 +554,10 @@ Map<String, dynamic> _$ProfileTunToJson(_ProfileTun instance) =>
 
 _ProfileOverrides _$ProfileOverridesFromJson(Map<String, dynamic> json) =>
     _ProfileOverrides(
+      managedAccountId: json['managedAccountId'] as String? ?? '',
+      managedLogin: json['managedLogin'] as String? ?? '',
+      vlessEnabled: json['vlessEnabled'] as bool? ?? true,
+      wdttEnabled: json['wdttEnabled'] as bool? ?? true,
       wdttFallbackLink: json['wdttFallbackLink'] as String? ?? '',
       googleByeDpi: json['googleByeDpi'] as bool? ?? false,
       byeDpiStrategy: json['byeDpiStrategy'] as String? ?? '-d1 -s1+s -a1',
@@ -595,6 +599,10 @@ _ProfileOverrides _$ProfileOverridesFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ProfileOverridesToJson(_ProfileOverrides instance) =>
     <String, dynamic>{
+      'managedAccountId': instance.managedAccountId,
+      'managedLogin': instance.managedLogin,
+      'vlessEnabled': instance.vlessEnabled,
+      'wdttEnabled': instance.wdttEnabled,
       'wdttFallbackLink': instance.wdttFallbackLink,
       'googleByeDpi': instance.googleByeDpi,
       'byeDpiStrategy': instance.byeDpiStrategy,

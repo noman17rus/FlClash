@@ -1811,6 +1811,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Поддерживаются только удалённые ресурсы",
     ),
     "providers": MessageLookupByLibrary.simpleMessage("Внешние ресурсы"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS с резервом WDTT. ByeDPI выключен. Подписки обновляются каждый час.",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось получить подписки. Проверьте подключение и повторите попытку.",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("Имя или email"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "Введите имя или email (1–254 символа, без управляющих символов).",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "Другие способы импорта",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

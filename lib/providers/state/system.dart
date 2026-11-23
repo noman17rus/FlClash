@@ -263,17 +263,32 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final safeMode = ref.watch(safeModeProvider);
-  final (profileUrl, fallbackLink, strategy) = ref.watch(
+  final (
+    profileUrl,
+    fallbackLink,
+    strategy,
+    managed,
+    vlessEnabled,
+    wdttEnabled,
+  ) = ref.watch(
     currentProfileProvider.select(
       (p) => (
         p?.url ?? '',
         p?.overrides.wdttFallbackLink ?? '',
         p?.overrides.googleByeDpi == true ? p?.overrides.byeDpiStrategy : null,
+        p?.isManaged ?? false,
+        p?.overrides.vlessEnabled ?? true,
+        p?.overrides.wdttEnabled ?? true,
       ),
     ),
   );
-  final wdttFallback = system.isAndroid && !safeMode && fallbackLink.isWdttLink;
-  final wdttLink = wdttFallback
+  final useWdtt =
+      system.isAndroid &&
+      !safeMode &&
+      fallbackLink.isWdttLink &&
+      (!managed || wdttEnabled);
+  final wdttFallback = useWdtt && (!managed || vlessEnabled);
+  final wdttLink = useWdtt
       ? extractWdttLink(fallbackLink)
       : system.isAndroid && !safeMode && profileUrl.isWdttLink
       ? extractWdttLink(profileUrl)
@@ -298,7 +313,7 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
     congestionController: tun.congestionController,
     wdttLink: wdttLink,
     wdttFallback: wdttFallback,
-    byeDpiStrategy: wdttFallback ? strategy : null,
+    byeDpiStrategy: useWdtt ? strategy : null,
   );
 }
 

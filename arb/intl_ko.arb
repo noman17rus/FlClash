@@ -1147,5 +1147,10 @@
   "byeDpiRouteUnknown": "알 수 없는 경로",
   "byeDpiNoConnections": "활성 YouTube 연결이 없습니다.",
   "byeDpiVideoTraffic": "YouTube 동영상",
-  "byeDpiRouteScope": "현재 프로필의 활성 연결 경로와 수신 데이터를 표시합니다. 기존 연결은 이전 경로를 사용할 수 있습니다."
+  "byeDpiRouteScope": "현재 프로필의 활성 연결 경로와 수신 데이터를 표시합니다. 기존 연결은 이전 경로를 사용할 수 있습니다.",
+  "provisioningLogin": "이름 또는 이메일",
+  "provisioningLoginInvalid": "이름 또는 이메일을 입력하세요(제어 문자 없이 1~254자).",
+  "provisioningFailed": "구독을 가져오지 못했습니다. 연결을 확인한 후 다시 시도하세요.",
+  "provisioningDefaults": "WDTT 백업이 있는 VLESS입니다. ByeDPI는 꺼져 있습니다. 구독은 매시간 갱신됩니다.",
+  "provisioningOtherImports": "다른 가져오기 방법"
 }

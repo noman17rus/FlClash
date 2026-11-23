@@ -1147,5 +1147,10 @@
   "byeDpiRouteUnknown": "経路不明",
   "byeDpiNoConnections": "YouTube のアクティブ接続はありません。",
   "byeDpiVideoTraffic": "YouTube 動画",
-  "byeDpiRouteScope": "現在のプロファイルの接続経路と受信データ量を表示します。既存の接続は以前の経路を使用する場合があります。"
+  "byeDpiRouteScope": "現在のプロファイルの接続経路と受信データ量を表示します。既存の接続は以前の経路を使用する場合があります。",
+  "provisioningLogin": "名前またはメール",
+  "provisioningLoginInvalid": "名前またはメールを入力してください（1〜254文字、制御文字不可）。",
+  "provisioningFailed": "サブスクリプションを取得できませんでした。接続を確認して再試行してください。",
+  "provisioningDefaults": "VLESS と予備の WDTT。ByeDPI はオフです。サブスクリプションは1時間ごとに更新されます。",
+  "provisioningOtherImports": "その他のインポート方法"
 }

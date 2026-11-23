@@ -1147,5 +1147,10 @@
   "byeDpiRouteUnknown": "Ruta desconocida",
   "byeDpiNoConnections": "Aún no hay conexiones activas de YouTube.",
   "byeDpiVideoTraffic": "Vídeo de YouTube",
-  "byeDpiRouteScope": "Muestra las rutas activas del perfil actual y los datos recibidos. Las conexiones existentes pueden conservar una ruta anterior."
+  "byeDpiRouteScope": "Muestra las rutas activas del perfil actual y los datos recibidos. Las conexiones existentes pueden conservar una ruta anterior.",
+  "provisioningLogin": "Nombre o correo",
+  "provisioningLoginInvalid": "Introduce un nombre o correo (1–254 caracteres, sin caracteres de control).",
+  "provisioningFailed": "No se pudieron obtener las suscripciones. Comprueba la conexión e inténtalo de nuevo.",
+  "provisioningDefaults": "VLESS con WDTT de respaldo. ByeDPI desactivado. Las suscripciones se actualizan cada hora.",
+  "provisioningOtherImports": "Otros métodos de importación"
 }

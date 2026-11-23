@@ -1147,5 +1147,10 @@
   "byeDpiRouteUnknown": "路由未知",
   "byeDpiNoConnections": "暂无活跃的 YouTube 连接。",
   "byeDpiVideoTraffic": "YouTube 视频",
-  "byeDpiRouteScope": "显示当前配置的活跃连接路径及已接收数据。现有连接可能仍使用之前的路由。"
+  "byeDpiRouteScope": "显示当前配置的活跃连接路径及已接收数据。现有连接可能仍使用之前的路由。",
+  "provisioningLogin": "姓名或邮箱",
+  "provisioningLoginInvalid": "请输入姓名或邮箱（1–254 个字符，不含控制字符）。",
+  "provisioningFailed": "无法获取订阅。请检查网络连接并重试。",
+  "provisioningDefaults": "VLESS 使用 WDTT 备用。ByeDPI 默认关闭。订阅每小时更新。",
+  "provisioningOtherImports": "其他导入方式"
 }

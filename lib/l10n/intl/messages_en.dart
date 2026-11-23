@@ -1723,6 +1723,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Only remote providers are supported",
     ),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS with WDTT backup. ByeDPI is off. Subscriptions update every hour.",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not obtain subscriptions. Check your connection and try again.",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("Name or email"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "Enter a name or email (1–254 characters, without control characters).",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "Other import methods",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

@@ -60,8 +60,14 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
       : ref.watch(
           patchClashConfigProvider.select(
             (state) => ProfileOverrides(
+              managedAccountId: profile?.overrides.managedAccountId ?? '',
+              managedLogin: profile?.overrides.managedLogin ?? '',
+              vlessEnabled: profile?.overrides.vlessEnabled ?? true,
+              wdttEnabled: profile?.overrides.wdttEnabled ?? true,
               wdttFallbackLink: profile?.overrides.wdttFallbackLink ?? '',
               googleByeDpi: profile?.overrides.googleByeDpi ?? false,
+              byeDpiStrategy:
+                  profile?.overrides.byeDpiStrategy ?? '-d1 -s1+s -a1',
               dns: state.dns,
               dnsOverrideKeys: state.dnsOverrideKeys.intersection(
                 DnsOverrideKey.normalProfileKeys,

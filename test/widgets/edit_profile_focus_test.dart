@@ -133,6 +133,48 @@ void main() {
     } catch (_) {}
   });
 
+  testWidgets('managed transports cannot both be disabled and preserve links', (
+    tester,
+  ) async {
+    final profile = _urlProfile().copyWith(
+      autoUpdateDuration: const Duration(hours: 1),
+      overrides: const ProfileOverrides(
+        managedAccountId: 'account',
+        managedLogin: 'person',
+        wdttFallbackLink: wdtt,
+        googleByeDpi: true,
+      ),
+    );
+    await pumpEditProfile(
+      tester,
+      profile: profile,
+      overrides: [
+        profilesProvider.overrideWith(() => TestProfiles([profile])),
+      ],
+    );
+    Finder toggle(String title) => find.descendant(
+      of: find.widgetWithText(FormRow, title),
+      matching: find.byType(Switch),
+    );
+    await tester.tap(toggle('VLESS'));
+    await tester.pump();
+    expect(tester.widget<Switch>(toggle('VLESS')).value, isFalse);
+    expect(tester.widget<Switch>(toggle('WDTT')).value, isTrue);
+    await tester.tap(toggle('WDTT'));
+    await tester.pump();
+    expect(tester.widget<Switch>(toggle('VLESS')).value, isTrue);
+    expect(tester.widget<Switch>(toggle('WDTT')).value, isFalse);
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pump();
+    final saved = globalState.container.read(profilesProvider).single;
+    expect(saved.overrides.googleByeDpi, isFalse);
+    expect(saved.overrides.wdttEnabled, isFalse);
+    expect(saved.overrides.vlessEnabled, isTrue);
+    expect(saved.url, profile.url);
+    expect(saved.overrides.wdttFallbackLink, wdtt);
+    expect(saved.autoUpdateDuration, const Duration(hours: 1));
+  });
+
   testWidgets('tabbing into the edit page reaches the form past its bar', (
     tester,
   ) async {

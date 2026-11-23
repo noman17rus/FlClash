@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/features/form/form.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -9,11 +10,16 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/profiles/custom/custom.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'edit.dart';
 
 /// The ways to add a profile, in a menu out of the control [builder] makes.
 class AddProfileMenu extends ConsumerWidget {
-  const AddProfileMenu({super.key, required this.builder});
+  const AddProfileMenu({super.key, required this.builder, this.managedPrimary});
+
+  final bool? managedPrimary;
 
   final Widget Function(PopupOpen open) builder;
 
@@ -139,6 +145,17 @@ class AddProfileMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = context.appLocalizations;
+    if (managedPrimary ?? system.isAndroid) {
+      return builder(() async {
+        final profile = await showFormSheet<Profile>(
+          context: context,
+          builder: (_) => const ManagedProfileForm(),
+        );
+        if (profile != null && context.mounted) {
+          await BaseNavigator.push(context, EditProfileView(profile: profile));
+        }
+      });
+    }
     return PopupAnchor(
       targetBuilder: builder,
       popupBuilder: (_) => PopupMenu(
@@ -172,6 +189,99 @@ class AddProfileMenu extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ManagedProfileForm extends ConsumerStatefulWidget {
+  const ManagedProfileForm({super.key});
+
+  @override
+  ConsumerState<ManagedProfileForm> createState() => _ManagedProfileFormState();
+}
+
+class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
+  final _login = TextEditingController();
+  final _label = TextEditingController();
+  bool _saving = false;
+  String? _error;
+
+  Future<void> _save() async {
+    if (_saving) return;
+    if (!validProvisioningLogin(_login.text)) {
+      setState(
+        () => _error = context.appLocalizations.provisioningLoginInvalid,
+      );
+      return;
+    }
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      final profile = await ref
+          .read(profilesActionProvider.notifier)
+          .addManagedProfile(_login.text, label: _label.text);
+      if (mounted) Navigator.of(context).pop(profile);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = context.appLocalizations.provisioningFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _login.dispose();
+    _label.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    return FormPage(
+      title: l.addProfile,
+      saveLabel: l.submit,
+      onSave: _save,
+      saving: _saving,
+      error: _error,
+      children: [
+        generateSection(
+          items: [
+            FormRow(
+              title: l.provisioningLogin,
+              trailing: FormRowTextField(
+                controller: _login,
+                autofocus: true,
+                hintText: l.required,
+                textInputAction: TextInputAction.next,
+                inputFormatters: TextInputLimits.limit(254),
+              ),
+            ),
+            FormRow(
+              title: l.name,
+              trailing: FormRowTextField(
+                controller: _label,
+                hintText: l.optional,
+                textInputAction: TextInputAction.done,
+                inputFormatters: TextInputLimits.limit(TextInputLimits.name),
+                onFieldSubmitted: (_) => _save(),
+              ),
+            ),
+          ],
+        ),
+        Text(l.provisioningDefaults, style: context.listCaptionStyle),
+        AddProfileMenu(
+          managedPrimary: false,
+          builder: (open) => TextButton(
+            onPressed: _saving ? null : open,
+            child: Text(l.provisioningOtherImports),
+          ),
+        ),
+      ],
     );
   }
 }

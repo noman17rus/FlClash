@@ -1860,6 +1860,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Seuls les fournisseurs distants sont pris en charge",
     ),
     "providers": MessageLookupByLibrary.simpleMessage("Ressources externes"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS avec WDTT en secours. ByeDPI est désactivé. Mise à jour des abonnements toutes les heures.",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "Impossible de récupérer les abonnements. Vérifiez votre connexion et réessayez.",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("Nom ou e-mail"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "Saisissez un nom ou un e-mail (1 à 254 caractères, sans caractères de contrôle).",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "Autres méthodes d’importation",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxys"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

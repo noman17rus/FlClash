@@ -1446,6 +1446,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerInUse": m80,
     "providerUrlTip": MessageLookupByLibrary.simpleMessage("원격 공급자만 지원합니다"),
     "providers": MessageLookupByLibrary.simpleMessage("외부 리소스"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "WDTT 백업이 있는 VLESS입니다. ByeDPI는 꺼져 있습니다. 구독은 매시간 갱신됩니다.",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "구독을 가져오지 못했습니다. 연결을 확인한 후 다시 시도하세요.",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("이름 또는 이메일"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "이름 또는 이메일을 입력하세요(제어 문자 없이 1~254자).",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "다른 가져오기 방법",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("프록시"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

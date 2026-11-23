@@ -153,9 +153,11 @@ object ServiceController {
             wdttLink = options.wdttLink,
             wdttFallback = options.wdttFallback,
         )
-        if (replaceTunnel && options.wdttFallback && options.wdttLink != null) {
+        if (replaceTunnel && options.wdttLink != null) {
             byeDpiJob = GlobalState.launch { ByeDpi.monitor() }
-            startFailover(requireNotNull(runtime), requireNotNull(options.wdttLink))
+            if (options.wdttFallback) {
+                startFailover(requireNotNull(runtime), requireNotNull(options.wdttLink))
+            }
         }
         true
     }

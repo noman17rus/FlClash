@@ -1856,6 +1856,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "Solo se admiten proveedores remotos",
     ),
     "providers": MessageLookupByLibrary.simpleMessage("Recursos externos"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS con WDTT de respaldo. ByeDPI desactivado. Las suscripciones se actualizan cada hora.",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "No se pudieron obtener las suscripciones. Comprueba la conexión e inténtalo de nuevo.",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage(
+      "Nombre o correo",
+    ),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "Introduce un nombre o correo (1–254 caracteres, sin caracteres de control).",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "Otros métodos de importación",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

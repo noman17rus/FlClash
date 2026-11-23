@@ -1338,6 +1338,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerInUse": m80,
     "providerUrlTip": MessageLookupByLibrary.simpleMessage("仅支持远程资源"),
     "providers": MessageLookupByLibrary.simpleMessage("外部资源"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS 使用 WDTT 备用。ByeDPI 默认关闭。订阅每小时更新。",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "无法获取订阅。请检查网络连接并重试。",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("姓名或邮箱"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "请输入姓名或邮箱（1–254 个字符，不含控制字符）。",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage("其他导入方式"),
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

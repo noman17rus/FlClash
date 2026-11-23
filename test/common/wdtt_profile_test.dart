@@ -6,6 +6,42 @@ import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
 void main() {
+  test('WDTT-only with ByeDPI has no VLESS dependency', () async {
+    final raw = wdttStandaloneConfig(7, googleByeDpi: true);
+    final result = await makeRealProfileTask(
+      MakeRealProfileState(
+        profilesPath: 'profiles',
+        profileId: 7,
+        rawConfig: raw,
+        realPatchConfig: const PatchClashConfig(mode: Mode.global),
+        appendSystemDns: false,
+        proxyGroups: const [],
+        rules: const [],
+        addedRules: const [],
+        defaultUA: 'FlClash-Test',
+      ),
+      wdttStandalone: true,
+      googleByeDpi: true,
+    );
+    final built = loadYaml(result.yaml) as YamlMap;
+    expect(
+      built['rules'],
+      containsAllInOrder([
+        'GEOSITE,youtube,YouTube [7]',
+        'GEOSITE,google,Google [7]',
+        'MATCH,WDTT',
+      ]),
+    );
+    expect(built['proxies'].any((dynamic p) => p['type'] == 'vless'), isFalse);
+    expect(
+      built['proxy-groups'].firstWhere(
+        (dynamic g) => g['name'] == 'YouTube [7]',
+      )['proxies'],
+      ['ByeDPI [7]', 'WDTT'],
+    );
+    expect(built['mode'], 'rule');
+  });
+
   test('WDTT wraps the final VLESS rules after profile overrides', () async {
     final config = wdttFallbackConfig([
       {'name': 'Primary', 'type': 'vless'},

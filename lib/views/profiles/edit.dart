@@ -37,6 +37,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
   late bool _googleByeDpi;
+  late bool _vlessEnabled;
+  late bool _wdttEnabled;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -56,6 +58,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     _autoUpdate = widget.profile.autoUpdate;
     _googleByeDpi = widget.profile.overrides.googleByeDpi;
+    _vlessEnabled = widget.profile.overrides.vlessEnabled;
+    _wdttEnabled = widget.profile.overrides.wdttEnabled;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -79,7 +83,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       appLocalizations,
       _labelController.text,
     );
-    if (labelError != null) {
+    if (labelError != null && !widget.profile.isManaged) {
       return (field: _ProfileField.label, message: labelError);
     }
     final wdtt = _wdttController.text.trim();
@@ -155,13 +159,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           ? extractWdttLink(_urlController.text.trim())!
           : _urlController.text.trim(),
       overrides: current.overrides.copyWith(
+        vlessEnabled: _vlessEnabled,
+        wdttEnabled: _wdttEnabled,
         googleByeDpi: _googleByeDpi,
         wdttFallbackLink: _wdttController.text.trim().isEmpty
             ? ''
             : extractWdttLink(_wdttController.text.trim())!,
       ),
       ageSecretKey: _ageSecretKeyController.text.trim(),
-      label: _labelController.text,
+      label: current.isManaged && _labelController.text.trim().isEmpty
+          ? current.overrides.managedLogin
+          : _labelController.text,
       autoUpdate: _autoUpdate,
       autoUpdateDuration: interval != null && interval > 0
           ? Duration(minutes: interval)
@@ -378,14 +386,45 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             invalid: issue?.field == _ProfileField.label,
             onChanged: _handleChanged,
           ),
-          if (isUrl || isWdtt)
+          if (widget.profile.isManaged) ...[
+            FormRow(
+              title: 'VLESS',
+              trailing: Switch(
+                value: _vlessEnabled,
+                onChanged: (value) => setState(() {
+                  _vlessEnabled = value;
+                  if (!value) _wdttEnabled = true;
+                }),
+              ),
+            ),
+            FormRow(
+              title: 'WDTT',
+              trailing: Switch(
+                value: _wdttEnabled,
+                onChanged: (value) => setState(() {
+                  _wdttEnabled = value;
+                  if (!value) {
+                    _vlessEnabled = true;
+                    _googleByeDpi = false;
+                  }
+                }),
+              ),
+            ),
+            Text(
+              appLocalizations.byeDpiRequiresWdtt,
+              style: context.listCaptionStyle,
+            ),
+          ],
+          if (!widget.profile.isManaged && (isUrl || isWdtt))
             _ProfileUrlField(
               title: isWdtt ? 'WDTT' : null,
               controller: _urlController,
               invalid: issue?.field == _ProfileField.url,
               onChanged: _handleChanged,
             ),
-          if (!isWdtt && (system.isAndroid || _wdttController.text.isNotEmpty))
+          if (!widget.profile.isManaged &&
+              !isWdtt &&
+              (system.isAndroid || _wdttController.text.isNotEmpty))
             _ProfileUrlField(
               title: 'WDTT',
               optional: true,
@@ -400,14 +439,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               title: appLocalizations.byeDpiGoogle,
               trailing: Switch(
                 value: _googleByeDpi,
-                onChanged: _wdttController.text.isWdttLink
+                onChanged:
+                    _wdttController.text.isWdttLink &&
+                        (!widget.profile.isManaged || _wdttEnabled)
                     ? (value) => setState(() => _googleByeDpi = value)
                     : null,
               ),
             ),
             _buildByeDpiStrategy(),
           ],
-          _AgeSecretKeyField(controller: _ageSecretKeyController),
+          if (!widget.profile.isManaged)
+            _AgeSecretKeyField(controller: _ageSecretKeyController),
         ],
       ),
       if (isUrl)

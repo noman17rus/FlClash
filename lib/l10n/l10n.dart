@@ -9771,6 +9771,56 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Name or email`
+  String get provisioningLogin {
+    return Intl.message(
+      'Name or email',
+      name: 'provisioningLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a name or email (1–254 characters, without control characters).`
+  String get provisioningLoginInvalid {
+    return Intl.message(
+      'Enter a name or email (1–254 characters, without control characters).',
+      name: 'provisioningLoginInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not obtain subscriptions. Check your connection and try again.`
+  String get provisioningFailed {
+    return Intl.message(
+      'Could not obtain subscriptions. Check your connection and try again.',
+      name: 'provisioningFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VLESS with WDTT backup. ByeDPI is off. Subscriptions update every hour.`
+  String get provisioningDefaults {
+    return Intl.message(
+      'VLESS with WDTT backup. ByeDPI is off. Subscriptions update every hour.',
+      name: 'provisioningDefaults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other import methods`
+  String get provisioningOtherImports {
+    return Intl.message(
+      'Other import methods',
+      name: 'provisioningOtherImports',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

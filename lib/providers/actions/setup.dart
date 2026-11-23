@@ -504,13 +504,24 @@ class SetupAction extends _$SetupAction {
         ? await setupState.script?.content
         : null;
     final hasScript = scriptContent?.isNotEmpty == true;
+    final managed = setupState.overrides.managedAccountId.isNotEmpty;
     final withWdttFallback =
-        system.isAndroid && setupState.overrides.wdttFallbackLink.isWdttLink;
+        system.isAndroid &&
+        setupState.overrides.wdttFallbackLink.isWdttLink &&
+        (!managed ||
+            (setupState.overrides.vlessEnabled &&
+                setupState.overrides.wdttEnabled));
+    final managedWdttOnly =
+        system.isAndroid &&
+        managed &&
+        !setupState.overrides.vlessEnabled &&
+        setupState.overrides.wdttEnabled;
     final wdttStandalone =
         system.isAndroid &&
-        (ref.read(profileProvider(profileId))?.url.isWdttLink ?? false);
+        (managedWdttOnly ||
+            (ref.read(profileProvider(profileId))?.url.isWdttLink ?? false));
     final googleByeDpi =
-        withWdttFallback &&
+        (withWdttFallback || managedWdttOnly) &&
         setupState.overrides.googleByeDpi &&
         !ref.read(safeModeProvider);
     final profileBase =
@@ -530,6 +541,9 @@ class SetupAction extends _$SetupAction {
     final rules = isCustom ? setupState.rules : <Rule>[];
     if (hasScript) {
       rawConfig = await handleEvaluate(scriptContent!, rawConfig);
+    }
+    if (managedWdttOnly) {
+      rawConfig = wdttStandaloneConfig(profileId, googleByeDpi: googleByeDpi);
     }
     if (withWdttFallback) {
       final proxies = [

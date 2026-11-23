@@ -1466,6 +1466,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerInUse": m80,
     "providerUrlTip": MessageLookupByLibrary.simpleMessage("リモートリソースのみ対応しています"),
     "providers": MessageLookupByLibrary.simpleMessage("外部リソース"),
+    "provisioningDefaults": MessageLookupByLibrary.simpleMessage(
+      "VLESS と予備の WDTT。ByeDPI はオフです。サブスクリプションは1時間ごとに更新されます。",
+    ),
+    "provisioningFailed": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションを取得できませんでした。接続を確認して再試行してください。",
+    ),
+    "provisioningLogin": MessageLookupByLibrary.simpleMessage("名前またはメール"),
+    "provisioningLoginInvalid": MessageLookupByLibrary.simpleMessage(
+      "名前またはメールを入力してください（1〜254文字、制御文字不可）。",
+    ),
+    "provisioningOtherImports": MessageLookupByLibrary.simpleMessage(
+      "その他のインポート方法",
+    ),
     "proxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
     "proxiesCount": m81,
     "proxiesProfileLabel": m82,

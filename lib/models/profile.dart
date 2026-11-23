@@ -137,6 +137,8 @@ extension ProfilesExt on List<Profile> {
 }
 
 extension ProfileExtension on Profile {
+  bool get isManaged => overrides.managedAccountId.isNotEmpty;
+
   bool get realAutoUpdate => type == ProfileType.url && autoUpdate;
 
   String get realLabel => label.takeFirstValid([defaultLabel]);
@@ -184,6 +186,23 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> update({required ValidateConfig validate}) async {
+    if (isManaged) {
+      final account = await provisioningClient.refresh(url);
+      if (account.id != overrides.managedAccountId ||
+          account.login != overrides.managedLogin) {
+        throw MessageException(currentAppLocalizations.provisioningFailed);
+      }
+      return copyWith(
+        url: account.subscriptionUrl,
+        overrides: overrides.copyWith(wdttFallbackLink: account.wdttLink),
+      )._downloadSubscription(validate: validate);
+    }
+    return _downloadSubscription(validate: validate);
+  }
+
+  Future<Profile> _downloadSubscription({
+    required ValidateConfig validate,
+  }) async {
     final response = await request.getFileResponseForUrl(url);
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
