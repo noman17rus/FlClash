@@ -117,6 +117,7 @@ func loadConfig(path string) (*config.Config, error) {
 }
 
 func withPlatformLimits(cfg *config.Config) *config.Config {
+	installWdttWhitelist(cfg)
 	if cfg.NTP.WriteToSystem && !systemTimeWritable {
 		log.Warnln("ntp write-to-system ignored: Android does not let apps set the system time")
 		cfg.NTP.WriteToSystem = false

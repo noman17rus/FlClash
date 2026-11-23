@@ -81,6 +81,7 @@ internal class WdttFailover(
         val route = proxies.keySet().singleOrNull { it.startsWith("VLESS / WDTT [") } ?: return
         val suffix = route.removePrefix("VLESS / WDTT ")
         val primary = "VLESS $suffix"
+        val primaryTransport = "VLESS transport $suffix"
         val backup = "WDTT $suffix"
         val automatic = "Auto $suffix"
         val mode = proxies.getAsJsonObject(route).get("now").asString
@@ -92,9 +93,9 @@ internal class WdttFailover(
         if (mode == primary) {
             reconcile(false, false)
             if (now >= nextProbe && policy.canProbe(now)) {
-                val group = proxies.getAsJsonObject(primary)
+                val group = proxies.getAsJsonObject(primaryTransport)
                 try {
-                    probe(primary, group.getAsJsonArray("all").map { it.asString }, group.get("testUrl").asString) {
+                    probe(primaryTransport, group.getAsJsonArray("all").map { it.asString }, group.get("testUrl").asString) {
                         networkState() == network && connectionMode() == modeSetting
                     }
                 } finally {
@@ -108,11 +109,11 @@ internal class WdttFailover(
         if (mode == automatic) {
             if (now >= nextProbe && policy.canProbe(now)) {
                 nextProbe = clock() + modeSetting.confirmationInterval
-                val primaryGroup = proxies.getAsJsonObject(primary)
+                val primaryGroup = proxies.getAsJsonObject(primaryTransport)
                 val members = primaryGroup.getAsJsonArray("all").map { it.asString }
                 val testUrl = primaryGroup.get("testUrl").asString
                 val healthy = try {
-                    probe(primary, members, testUrl) { networkState() == network }
+                    probe(primaryTransport, members, testUrl) { networkState() == network }
                 } catch (error: Exception) {
                     policy.sample(null, clock())
                     nextProbe = clock() + modeSetting.confirmationInterval
@@ -134,10 +135,10 @@ internal class WdttFailover(
         if (mode != automatic && mode != backup) return
         if (networkState() != network) return
         val selected = proxies.getAsJsonObject(automatic).get("now").asString
-        if (!needed && mode == automatic && selected != primary) select(automatic, primary, selected)
+        if (!needed && mode == automatic && selected != primary) select(automatic, primary)
         val ready = reconcile(needed, restart)
         restart = false
-        if (mode == automatic && needed && ready && selected != backup) select(automatic, backup, selected)
+        if (mode == automatic && needed && ready && selected != backup) select(automatic, backup)
         status.update(
             route,
             when {
@@ -183,20 +184,9 @@ internal class WdttFailover(
         return false
     }
 
-    private suspend fun select(group: String, proxy: String, previous: String) {
-        val connections = call("connection.list").asJsonObject.get("connections")
-            ?.takeUnless { it.isJsonNull }?.asJsonArray
-        val affected = connections?.mapNotNull { entry ->
-            val connection = entry.asJsonObject
-            val chains = connection.get("chains")?.takeUnless { it.isJsonNull }
-                ?.asJsonArray?.map { it.asString }.orEmpty()
-            connection.get("id")?.asString?.takeIf { group in chains && previous in chains }
-        }.orEmpty()
+    private suspend fun select(group: String, proxy: String) {
         val result = call("proxy.select", mapOf("group-name" to group, "proxy-name" to proxy)).asJsonObject
         check(result.get("message")?.asString.orEmpty().isEmpty()) { "Core refused tunnel selection" }
-        if (result.get("changed")?.asBoolean == true) {
-            for (id in affected) call("connection.close", mapOf("id" to id))
-        }
     }
 
     private suspend fun call(method: String, arguments: Map<String, Any> = emptyMap()): JsonElement =

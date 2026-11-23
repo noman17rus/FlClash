@@ -109,11 +109,29 @@ String? lastMatchTarget(List<String> rules) {
   return null;
 }
 
-Future<RealProfile> makeRealProfileTask(MakeRealProfileState data) async {
-  return compute<MakeRealProfileState, RealProfile>(_makeRealProfileTask, data);
+typedef _WdttProfileTask = ({
+  MakeRealProfileState state,
+  bool wdttFallback,
+  bool wdttStandalone,
+  bool googleByeDpi,
+});
+
+Future<RealProfile> makeRealProfileTask(
+  MakeRealProfileState data, {
+  bool wdttFallback = false,
+  bool wdttStandalone = false,
+  bool googleByeDpi = false,
+}) async {
+  return compute<_WdttProfileTask, RealProfile>(_makeRealProfileTask, (
+    state: data,
+    wdttFallback: wdttFallback,
+    wdttStandalone: wdttStandalone,
+    googleByeDpi: googleByeDpi,
+  ));
 }
 
-Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
+Future<RealProfile> _makeRealProfileTask(_WdttProfileTask args) async {
+  final data = args.state;
   final rawConfig = Map.from(data.rawConfig);
   final realPatchConfig = data.realPatchConfig;
   final profilesPath = data.profilesPath;
@@ -380,6 +398,18 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
         .toList();
   }
   rawConfig['rules'] = [...mitm.rules, ...rules];
+  if (args.wdttFallback || args.wdttStandalone) {
+    applyWdttRouting(
+      rawConfig,
+      profileId,
+      whitelistPath: getProvidersFilePathInner(
+        rulesProviderDirectoryName,
+        wdttWhitelistName,
+      ),
+      standalone: args.wdttStandalone,
+      googleByeDpi: args.googleByeDpi,
+    );
+  }
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
   return (yaml: yaml, md5: yaml.toMd5(), counts: configCountsOf(rawConfig));
 }

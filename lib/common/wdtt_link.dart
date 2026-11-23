@@ -2,6 +2,15 @@ import 'constant.dart';
 
 enum WdttRouteMode { automatic, vless, wdtt }
 
+const wdttWhitelistName = 'FlClash WDTT whitelist';
+const wdttWhitelistUrl =
+    'https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/main/whitelist.txt';
+
+String wdttTransportName(int profileId) => 'WDTT transport [$profileId]';
+String vlessTransportName(int profileId) => 'VLESS transport [$profileId]';
+String wdttRulesName(int profileId) => 'WDTT rules [$profileId]';
+String vlessRulesName(int profileId) => 'VLESS rules [$profileId]';
+
 String wdttRouteGroupName(int profileId) => 'VLESS / WDTT [$profileId]';
 
 extension WdttRouteModeName on WdttRouteMode {
@@ -31,8 +40,8 @@ Map<String, dynamic> wdttFallbackConfig(
     for (final proxy in proxies)
       if (proxy['type'] == 'vless') proxy['name'],
   ];
-  Map<String, dynamic> fallback(WdttRouteMode mode, List<dynamic> members) => {
-    'name': mode.proxyName(profileId),
+  Map<String, dynamic> fallback(List<dynamic> members) => {
+    'name': vlessTransportName(profileId),
     'type': 'fallback',
     'hidden': true,
     'proxies': members,
@@ -46,7 +55,12 @@ Map<String, dynamic> wdttFallbackConfig(
   return {
     'proxies': [
       ...proxies,
-      wdttProxyConfig(wdtt),
+      wdttProxyConfig(wdttTransportName(profileId)),
+      for (final entry in {
+        WdttRouteMode.vless.proxyName(profileId): vlessRulesName(profileId),
+        wdtt: wdttRulesName(profileId),
+      }.entries)
+        {'name': entry.key, 'type': 'rematch', 'target-sub-rule': entry.value},
       if (googleByeDpi)
         {
           'name': 'ByeDPI [$profileId]',
@@ -71,14 +85,14 @@ Map<String, dynamic> wdttFallbackConfig(
         'hidden': true,
         'proxies': [WdttRouteMode.vless.proxyName(profileId), wdtt],
       },
-      fallback(WdttRouteMode.vless, primary),
+      fallback(primary),
       if (googleByeDpi)
         for (final service in ['YouTube', 'Google'])
           {
             'name': '$service [$profileId]',
             'type': 'fallback',
             'hidden': true,
-            'proxies': ['ByeDPI [$profileId]', route],
+            'proxies': ['ByeDPI [$profileId]', vlessTransportName(profileId)],
             'url': service == 'YouTube'
                 ? 'https://www.youtube.com/'
                 : 'https://www.gstatic.com/generate_204',
@@ -88,14 +102,68 @@ Map<String, dynamic> wdttFallbackConfig(
             'lazy': false,
           },
     ],
-    'rules': [
-      if (googleByeDpi) ...[
-        'GEOSITE,youtube,YouTube [$profileId]',
-        'GEOSITE,google,Google [$profileId]',
-      ],
-      'MATCH,$route',
-    ],
   };
+}
+
+void applyWdttRouting(
+  Map<dynamic, dynamic> config,
+  int profileId, {
+  required String whitelistPath,
+  bool standalone = false,
+  bool googleByeDpi = false,
+}) {
+  final providers = config['rule-providers'] as Map? ?? const {};
+  if (providers.containsKey(wdttWhitelistName)) {
+    throw const FormatException('Reserved WDTT whitelist provider name');
+  }
+  config['rule-providers'] = {
+    ...providers,
+    wdttWhitelistName: {
+      'type': 'http',
+      'behavior': 'domain',
+      'format': 'text',
+      'url': wdttWhitelistUrl,
+      'path': whitelistPath,
+      'interval': 86400,
+      'size-limit': 1048576,
+    },
+  };
+  final directRules = [
+    'RULE-SET,$wdttWhitelistName,DIRECT',
+    'MATCH,${standalone ? 'WDTT' : wdttTransportName(profileId)}',
+  ];
+  if (standalone) {
+    config['rules'] = directRules;
+  } else {
+    final subRules = config['sub-rules'] as Map? ?? const {};
+    if (subRules.containsKey(vlessRulesName(profileId)) ||
+        subRules.containsKey(wdttRulesName(profileId))) {
+      throw const FormatException('Reserved WDTT sub-rule name');
+    }
+    config['sub-rules'] = {
+      ...subRules,
+      vlessRulesName(profileId): [
+        'AND,((IN-TYPE,INNER),(DOMAIN,raw.githubusercontent.com)),${vlessTransportName(profileId)}',
+        if (googleByeDpi) ...[
+          'GEOSITE,youtube,YouTube [$profileId]',
+          'GEOSITE,google,Google [$profileId]',
+        ],
+        ...config['rules'] as List,
+        'MATCH,${vlessTransportName(profileId)}',
+      ],
+      wdttRulesName(profileId): directRules,
+    };
+    config['rules'] = ['MATCH,${wdttRouteGroupName(profileId)}'];
+  }
+  final dns = Map<String, dynamic>.from(config['dns'] as Map? ?? {});
+  dns['direct-nameserver'] = ['system'];
+  dns['direct-nameserver-follow-policy'] = false;
+  dns['nameserver-policy'] = {
+    'rule-set:$wdttWhitelistName': ['system'],
+    ...?dns['nameserver-policy'] as Map?,
+  };
+  config['dns'] = dns;
+  config['mode'] = 'rule';
 }
 
 /// Parsed parameters of a `wdtt://connect?...` tunnel link.

@@ -192,12 +192,16 @@ func handleChangeProxy(params *ChangeProxyParams) *ChangeProxyResult {
 		return &ChangeProxyResult{Message: err.Error()}
 	}
 	before := selector.Now()
+	routingBefore := wdttRoutingTarget()
 	if params.ProxyName == "" {
 		selector.ForceSet(params.ProxyName)
 	} else if err := selector.Set(params.ProxyName); err != nil {
 		return &ChangeProxyResult{Message: err.Error()}
 	}
 	changed := selector.Now() != before
+	if routingAfter := wdttRoutingTarget(); routingBefore != "" && routingAfter != routingBefore {
+		handleCloseConnections()
+	}
 	refreshRouteLocked(routeUnchanged)
 	return &ChangeProxyResult{Changed: changed}
 }

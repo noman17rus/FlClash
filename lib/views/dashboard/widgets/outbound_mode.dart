@@ -295,9 +295,7 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
     final (status, tone) = !active
         ? (l10n.notRunning, DashboardChipTone.idle)
         : exits.any(
-            (exit) => exit.startsWith(
-              '"${WdttRouteMode.wdtt.proxyName(id)}" Socks5 ',
-            ),
+            (exit) => exit.startsWith('"${wdttTransportName(id)}" Socks5 '),
           )
         ? ('WDTT', DashboardChipTone.ok)
         : exits.any(_vlessExit.hasMatch)

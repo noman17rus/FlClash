@@ -53,6 +53,9 @@ func lookupExternalProvider(name string) (cp.Provider, bool) {
 }
 
 func toExternalProvider(p cp.Provider) (*ExternalProvider, error) {
+	if whitelist, ok := p.(*wdttWhitelistProvider); ok {
+		p = whitelist.RuleSetProvider
+	}
 	switch typed := p.(type) {
 	case *provider.ProxySetProvider:
 		return &ExternalProvider{
@@ -79,6 +82,9 @@ func toExternalProvider(p cp.Provider) (*ExternalProvider, error) {
 }
 
 func sideUpdateExternalProvider(p cp.Provider, data []byte) error {
+	if whitelist, ok := p.(*wdttWhitelistProvider); ok {
+		p = whitelist.RuleSetProvider
+	}
 	switch typed := p.(type) {
 	case *provider.ProxySetProvider:
 		_, _, err := typed.SideUpdate(data)

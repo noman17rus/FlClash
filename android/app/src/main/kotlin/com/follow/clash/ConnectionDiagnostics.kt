@@ -43,7 +43,7 @@ internal object ConnectionDiagnostics {
             set("vless", if (profileId == null || ServiceController.runtime == null) "unavailable" else {
                 if (probe {
                     val response = invokeFailoverMethod("proxy.testDelay", mapOf(
-                        "proxy-name" to "VLESS [$profileId]",
+                        "proxy-name" to "VLESS transport [$profileId]",
                         "test-url" to "https://www.gstatic.com/generate_204",
                         "timeout" to 5_000,
                     ))

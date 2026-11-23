@@ -320,6 +320,13 @@ Android deliberately keeps Flutter requests optimistic and the native layer auth
   Network revisions invalidate in-flight probes and allow four seconds to stabilize. Offline periods pause probes and
   retries, preserving WDTT for fifteen seconds before stopping it. A changed network restarts a needed WDTT client once.
   Repeat starts of the same runtime preserve its identity and failover job. Core RPC failures never count as proxy failures.
+- The combined profile's visible VLESS/WDTT choices resolve to `rematch` adapters. The VLESS sub-rule keeps the final
+  profile rules, including added rules and optional ByeDPI; the WDTT sub-rule sends only the managed whitelist directly.
+  Failover and diagnostics probe `VLESS transport`, never the rematch adapter. Core selection closes existing connections
+  when the effective routing scheme changes, including connections whose previous route was DIRECT.
+  `core/wdtt_whitelist.go` wraps Mihomo's HTTP rule provider with domain validation, atomic cache writes and an embedded
+  offline seed. Mihomo owns its daily refresh and retries. Provider downloads follow the active routing scheme, with
+  GitHub's internal requests explicitly using VLESS transport in the primary scheme. Standalone WDTT uses the same list.
 - A start that does not bring the service up gives its intent back and takes down whatever it left running, unless a
   newer request has claimed the service. A failed start therefore always ends in `STOPPED`, whichever step refused it.
   The one start that mints no request is a repeat on a settled run of the same kind, which Flutter sends every time it
