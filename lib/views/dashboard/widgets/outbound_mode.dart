@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/widgets.dart';
 
 import 'card.dart';
+import 'bye_dpi_toggle.dart';
 import 'wdtt_status.dart';
 
 Glyph _glyphOf(Mode mode) => switch (mode) {
@@ -357,6 +358,10 @@ class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
             leading: [indicator],
           ),
           controls,
+          DashboardByeDpiToggle(
+            profileId: id,
+            unavailable: failover?['byeDpiUnavailable'] == true,
+          ),
           if (active)
             DefaultTextStyle(
               style: AppTextStyle.footnote.of(context),

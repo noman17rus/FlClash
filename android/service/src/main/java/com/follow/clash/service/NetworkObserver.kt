@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class UnderlyingNetworkState(val id: Long? = null, val revision: Long = 0)
+data class UnderlyingNetworkState(val id: Long? = null, val revision: Long = 0, val cellular: Boolean = false)
 
 private data class NetworkInfo(
     @Volatile var losingUntilMillis: Long = 0,
@@ -143,8 +143,10 @@ object NetworkObserver {
             Core.updateDNS(dnsList.joinToString(","))
         }
         val network = preferred?.key
-        if (currentNetwork != network) {
-            mutableState.value = UnderlyingNetworkState(network?.networkHandle, mutableState.value.revision + 1)
+        val cellular = network?.let { connectivity?.getNetworkCapabilities(it) }
+            ?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+        if (currentNetwork != network || mutableState.value.cellular != cellular) {
+            mutableState.value = UnderlyingNetworkState(network?.networkHandle, mutableState.value.revision + 1, cellular)
         }
         // Sockets protected onto the network we left stay bound to it; closing
         // them makes apps reconnect now instead of after a TCP timeout.

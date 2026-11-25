@@ -109,6 +109,7 @@ android {
         getByName("main").jniLibs.srcDir(byeDpiJni.get().asFile)
         // Unit tests live under android/tests/ instead of each module's src/test.
         getByName("test").java.setSrcDirs(listOf("../tests/app"))
+        getByName("test").kotlin.setSrcDirs(listOf("../tests/app"))
     }
 }
 

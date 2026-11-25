@@ -113,6 +113,9 @@ extension MitmListL10n on MitmList {
       MitmList.headerRewrite => appLocalizations.headerRewrite,
       MitmList.bodyRewrite => appLocalizations.bodyRewrite,
       MitmList.mapLocal => appLocalizations.mapLocal,
+      MitmList.requestBodyMock => appLocalizations.requestBodyMock,
+      MitmList.clientSourceAddress => appLocalizations.clientSourceAddress,
+      MitmList.skipVerifyHostname => appLocalizations.skipVerifyHostname,
       MitmList.script => appLocalizations.script,
     };
   }
@@ -150,7 +153,7 @@ extension LocaleL10n on Locale {
       'ja' => appLocalizations.ja,
       'ko' => appLocalizations.ko,
       'ru' => appLocalizations.ru,
-      'zh_CN' => appLocalizations.zhCN,
+      'zh' => appLocalizations.zhCN,
       final code => code,
     };
   }
@@ -182,6 +185,17 @@ extension RecordGroupingL10n on RecordGrouping {
       RecordGrouping.host => appLocalizations.host,
       RecordGrouping.rule => appLocalizations.rule,
       RecordGrouping.exit => appLocalizations.outboundExit,
+    };
+  }
+}
+
+extension ServiceStartFailureL10n on ServiceStartFailure {
+  String get label {
+    final appLocalizations = currentAppLocalizations;
+    return switch (this) {
+      ServiceStartFailure.vpnPermission =>
+        appLocalizations.vpnPermissionNotGranted,
+      ServiceStartFailure.service => appLocalizations.vpnServiceStartFailed,
     };
   }
 }

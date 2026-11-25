@@ -10,6 +10,31 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WdttFailoverTest {
+    @Test
+    fun `mobile ByeDPI selection follows measured VLESS failure and recovery`() = runTest {
+        val f = Fixture()
+        f.fail()
+        assertTrue(f.monitor.status.byeDpiUnavailable(true, 1))
+        assertFalse(f.monitor.status.byeDpiUnavailable(false, 1))
+        assertFalse(f.monitor.status.byeDpiUnavailable(true, 2))
+        f.healthy = true
+        f.tick(44_000)
+        assertFalse(f.monitor.status.byeDpiUnavailable(true, 1))
+    }
+
+    @Test
+    fun `manual VLESS reports availability from checks rather than the selected route`() = runTest {
+        val f = Fixture()
+        f.mode = "VLESS [1]"
+        f.tick(0)
+        assertFalse(f.monitor.status.byeDpiUnavailable(true, 1))
+        f.tick(4_000)
+        assertTrue(f.monitor.status.byeDpiUnavailable(true, 1))
+        f.healthy = true
+        f.tick(20_000)
+        assertFalse(f.monitor.status.byeDpiUnavailable(true, 1))
+    }
+
     private class Fixture {
         var now = 0L
         var connectionMode = ConnectionMode.balanced

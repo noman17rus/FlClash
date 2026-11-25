@@ -5,7 +5,21 @@ internal class WdttFailoverStatus(private val wallClock: () -> Long = System::cu
     private var phase = "checking"
     private var route: String? = null
     private var switchedAt: Long? = null
+    private var vlessAvailable: Boolean? = null
+    private var measuredRevision: Long? = null
+    private var measuredGroup: String? = null
     private val events = ArrayDeque<Map<String, Any>>()
+
+    @Synchronized
+    fun primaryMeasured(available: Boolean, revision: Long, profileGroup: String? = group) {
+        vlessAvailable = available
+        measuredRevision = revision
+        measuredGroup = profileGroup
+    }
+
+    @Synchronized
+    fun byeDpiUnavailable(cellular: Boolean, revision: Long): Boolean =
+        cellular && measuredRevision == revision && measuredGroup == group && vlessAvailable == false
 
     @Synchronized
     fun update(group: String? = this.group, phase: String, route: String? = this.route) {

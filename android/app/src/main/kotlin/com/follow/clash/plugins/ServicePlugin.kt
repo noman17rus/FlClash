@@ -2,11 +2,13 @@ package com.follow.clash.plugins
 
 import com.follow.clash.ServiceController
 import com.follow.clash.ByeDpi
+import com.follow.clash.ByeDpiAutoSelect
 import com.follow.clash.ByeDpiCatalog
 import com.follow.clash.ByeDpiRoutes
 import com.follow.clash.ConnectionMode
 import com.follow.clash.ConnectionDiagnostics
 import com.follow.clash.ServiceState
+import com.follow.clash.StartFailure
 import com.follow.clash.common.Components
 import com.follow.clash.common.GlobalState
 import com.follow.clash.core.Core
@@ -24,8 +26,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -40,16 +40,6 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        scope.launch {
-            ByeDpi.strategy.collectLatest { strategy ->
-                if (strategy != null) while (true) {
-                    try { ByeDpiCatalog.load(true, automatic = true) }
-                    catch (error: CancellationException) { throw error }
-                    catch (_: Exception) { GlobalState.log("ByeDPI catalog update unavailable") }
-                    delay(86_400_000)
-                }
-            }
-        }
         // The main thread is also Flutter's UI thread, where "init" would load it.
         scope.launch {
             runCatching { Core.load() }
@@ -98,7 +88,12 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         val value: Any = when (call.method) {
                             "byeDpiCatalog" -> ByeDpiCatalog.load(call.argument<Boolean>("refresh") == true,
                                 call.argument<Boolean>("automatic") == true)
-                            "byeDpiValidate" -> ByeDpi.validate(requireNotNull(call.argument<String>("strategy")))
+                            "byeDpiValidate" -> {
+                                val line = requireNotNull(call.argument<String>("strategy"))
+                                ByeDpi.validate(line)
+                                ByeDpiAutoSelect.manualSelection(line)
+                                true
+                            }
                             else -> ByeDpi.measure(requireNotNull(call.argument<String>("strategy")),
                                 requireNotNull(call.argument<Number>("revision")).toLong())
                         }
@@ -214,10 +209,13 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     // Read on the platform thread, where start and stop arrive: revision and intent are one instant.
-    fun notifyStopped() {
+    internal fun notifyStopped(failure: StartFailure?) {
         scope.launch(Dispatchers.Main) {
             if (!ServiceState.isRunRequested) {
-                channel.invokeMethod("stopped", commandRevision)
+                channel.invokeMethod(
+                    "stopped",
+                    mapOf("revision" to commandRevision, "failure" to failure?.code),
+                )
             }
         }
     }

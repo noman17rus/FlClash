@@ -95,8 +95,11 @@ internal class WdttFailover(
             if (now >= nextProbe && policy.canProbe(now)) {
                 val group = proxies.getAsJsonObject(primaryTransport)
                 try {
-                    probe(primaryTransport, group.getAsJsonArray("all").map { it.asString }, group.get("testUrl").asString) {
+                    val healthy = probe(primaryTransport, group.getAsJsonArray("all").map { it.asString }, group.get("testUrl").asString) {
                         networkState() == network && connectionMode() == modeSetting
+                    }
+                    if (networkState() == network && connectionMode() == modeSetting) {
+                        status.primaryMeasured(healthy, network.revision, route)
                     }
                 } finally {
                     nextProbe = clock() + modeSetting.primaryInterval
@@ -123,6 +126,7 @@ internal class WdttFailover(
                 if (latest != network || connectionMode() != modeSetting) return
                 val current = call("proxy.list").asJsonObject.getAsJsonObject("proxies")
                 if (networkState() != network || current.getAsJsonObject(route)?.get("now")?.asString != mode) return
+                status.primaryMeasured(healthy, network.revision, route)
                 policy.sample(healthy, clock())
                 nextProbe = clock() + when {
                     policy.backup && !healthy -> modeSetting.backupInterval

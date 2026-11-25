@@ -17,6 +17,7 @@ import kotlin.concurrent.thread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,9 +81,10 @@ internal object ByeDpi {
         check(input.readUnsignedShort() == 0x0500)
     }
 
-    suspend fun monitor() {
+    suspend fun monitor(): Unit = coroutineScope {
+        launch { ByeDpiAutoSelect.monitor() }
         var working: String? = null
-        combine(strategy, NetworkObserver.state) { line, network -> line to network.id }.collectLatest { (line, network) ->
+        combine(ByeDpiAutoSelect.effectiveStrategy, NetworkObserver.state) { line, network -> line to network.id }.collectLatest { (line, network) ->
             if (line == null) { working = null; return@collectLatest }
             if (network == null) return@collectLatest
             var candidate: String = line

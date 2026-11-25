@@ -1,9 +1,28 @@
 package com.follow.clash
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WdttFailoverStatusTest {
+    @Test
+    fun `ByeDPI is unavailable only after a failed VLESS check on the current cellular network`() {
+        val status = WdttFailoverStatus { 0L }
+        assertFalse(status.byeDpiUnavailable(true, 1))
+        status.primaryMeasured(false, 1)
+        assertTrue(status.byeDpiUnavailable(true, 1))
+        assertFalse(status.byeDpiUnavailable(false, 1))
+        assertFalse(status.byeDpiUnavailable(true, 2))
+        status.primaryMeasured(true, 1)
+        assertFalse(status.byeDpiUnavailable(true, 1))
+        status.update("VLESS / WDTT [1]", "backup", "WDTT")
+        status.primaryMeasured(false, 1, "VLESS / WDTT [1]")
+        assertTrue(status.byeDpiUnavailable(true, 1))
+        status.update("VLESS / WDTT [2]", "manualWdtt", "WDTT")
+        assertFalse(status.byeDpiUnavailable(true, 1))
+    }
+
     @Test
     fun `recovery updates preserve route transition time and suppress duplicate events`() {
         var now = 100L

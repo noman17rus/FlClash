@@ -55,7 +55,11 @@ object ServiceController {
     @Volatile
     private var failover: WdttFailover? = null
 
-    fun failoverStatus(): Map<String, Any?>? = failover?.status?.snapshot()
+    fun failoverStatus(): Map<String, Any?>? {
+        val status = failover?.status ?: return null
+        val network = NetworkObserver.state.value
+        return status.snapshot() + ("byeDpiUnavailable" to status.byeDpiUnavailable(network.cellular, network.revision))
+    }
     private var wdttRetryAt = 0L
     private var binding: ManagedServiceBinding? = null
 
