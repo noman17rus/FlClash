@@ -4197,6 +4197,28 @@ class AppLocalizationsRu extends AppLocalizations {
       'Если соединение сорвётся, приложение само переключится на резервный маршрут.';
 
   @override
+  String get warpTitle => 'WARP';
+
+  @override
+  String get warpHint =>
+      'Трафик пойдёт через WARP на сервере. Настройка не нужна.';
+
+  @override
+  String get warpWorking => 'WARP работает';
+
+  @override
+  String get warpNotWorking => 'WARP не работает';
+
+  @override
+  String get warpChecking => 'Проверяем WARP…';
+
+  @override
+  String get warpCheckFailed => 'Не удалось проверить WARP';
+
+  @override
+  String get warpRetry => 'Повторить проверку';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI — другой способ смотреть YouTube и при рабочем VLESS. Загрузка может быть медленнее. Отсутствие рекламы не гарантируется. При мобильных белых списках используйте WDTT. Автоподбор — раз в сутки с включёнными VPN и ByeDPI.';
 

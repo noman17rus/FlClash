@@ -60,17 +60,25 @@ class Request {
     return FlClashHttpOverrides.findProxyForReader(read, uri);
   }
 
-  Future<Response<T>> _download<T>(String url, ResponseType responseType) {
+  Future<Response<T>> _download<T>(
+    String url,
+    ResponseType responseType, {
+    Duration? timeout,
+    Map<String, String>? headers,
+  }) {
     final target = downloadTarget(url);
     final cancelToken = CancelToken();
     return _clashDio
         .getUri<T>(
           target.uri,
-          options: Options(responseType: responseType, headers: target.headers),
+          options: Options(
+            responseType: responseType,
+            headers: {...target.headers, ...?headers},
+          ),
           cancelToken: cancelToken,
         )
         .timeout(
-          downloadTimeoutDuration,
+          timeout ?? downloadTimeoutDuration,
           onTimeout: () {
             cancelToken.cancel();
             throw DioException.receiveTimeout(
@@ -81,9 +89,16 @@ class Request {
         );
   }
 
-  Future<Response<Uint8List>> getFileResponseForUrl(String url) async {
+  Future<Response<Uint8List>> getFileResponseForUrl(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
     try {
-      return await _download<Uint8List>(url, ResponseType.bytes);
+      return await _download<Uint8List>(
+        url,
+        ResponseType.bytes,
+        headers: headers,
+      );
     } catch (e) {
       commonPrint.log(
         'getFileResponseForUrl error ${compactError(e)}',
@@ -93,9 +108,12 @@ class Request {
     }
   }
 
-  Future<Response<String>> getTextResponseForUrl(String url) async {
+  Future<Response<String>> getTextResponseForUrl(
+    String url, {
+    Duration? timeout,
+  }) async {
     try {
-      return await _download<String>(url, ResponseType.plain);
+      return await _download<String>(url, ResponseType.plain, timeout: timeout);
     } catch (e) {
       commonPrint.log(
         'getTextResponseForUrl error ${compactError(e)}',

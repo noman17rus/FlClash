@@ -78,6 +78,29 @@ void main() {
     );
   });
 
+  test('adds a hidden WARP group without changing automatic failover', () {
+    final config = wdttFallbackConfig([
+      {'name': 'Primary', 'type': 'vless'},
+      {'name': 'WARP', 'type': 'vless'},
+    ], 17);
+    final groups = (config['proxy-groups'] as List).cast<Map>();
+    final route = groups.first;
+    final automatic = groups[1];
+    final vless = groups[3];
+    final warp = groups[2];
+    expect(route['proxies'], [
+      'Auto [17]',
+      'VLESS [17]',
+      'WDTT [17]',
+      'WARP [17]',
+    ]);
+    expect(automatic['proxies'], ['VLESS [17]', 'WDTT [17]']);
+    expect(vless['proxies'], ['Primary']);
+    expect(warp['name'], 'WARP [17]');
+    expect(warp['type'], 'select');
+    expect(warp['proxies'], ['WARP']);
+  });
+
   test('standalone WDTT ignores broad direct overrides and updates daily', () {
     final config = <String, dynamic>{
       'mode': 'global',

@@ -4081,6 +4081,28 @@ class AppLocalizationsKo extends AppLocalizations {
       'If the connection drops, the app switches to the backup route automatically.';
 
   @override
+  String get warpTitle => 'WARP';
+
+  @override
+  String get warpHint =>
+      'Traffic will go through WARP on the server. No setup needed.';
+
+  @override
+  String get warpWorking => 'WARP is working';
+
+  @override
+  String get warpNotWorking => 'WARP is not working';
+
+  @override
+  String get warpChecking => 'Checking WARP…';
+
+  @override
+  String get warpCheckFailed => 'Could not check WARP';
+
+  @override
+  String get warpRetry => 'Check again';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI는 YouTube를 보는 또 다른 연결 방식으로, VLESS가 작동할 때도 사용할 수 있습니다. 로딩이 느릴 수 있으며 광고 없는 재생은 보장되지 않습니다. 모바일 네트워크에서 허용된 사이트만 접속할 수 있다면 WDTT를 사용하세요. VPN과 ByeDPI가 켜져 있으면 하루에 한 번 연결 방식을 자동으로 선택합니다.';
 

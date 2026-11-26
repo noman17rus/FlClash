@@ -202,7 +202,10 @@ extension ProfileExtension on Profile {
   Future<Profile> _downloadSubscription({
     required ValidateConfig validate,
   }) async {
-    final response = await request.getFileResponseForUrl(url);
+    final response = await request.getFileResponseForUrl(
+      url,
+      headers: isManaged ? const {'X-EverensProx-Features': 'warp'} : null,
+    );
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
     return copyWith(

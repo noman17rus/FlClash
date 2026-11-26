@@ -5,6 +5,9 @@ enum WdttRouteMode { automatic, vless, wdtt }
 const wdttWhitelistName = 'FlClash WDTT whitelist';
 const wdttWhitelistUrl =
     'https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/main/whitelist.txt';
+const warpProxyName = 'WARP';
+
+String warpRouteGroupName(int profileId) => 'WARP [$profileId]';
 
 String wdttTransportName(int profileId) => 'WDTT transport [$profileId]';
 String vlessTransportName(int profileId) => 'VLESS transport [$profileId]';
@@ -75,9 +78,13 @@ Map<String, dynamic> wdttFallbackConfig(
 }) {
   final route = wdttRouteGroupName(profileId);
   final wdtt = WdttRouteMode.wdtt.proxyName(profileId);
+  final hasWarp = proxies.any(
+    (proxy) => proxy['name'] == warpProxyName && proxy['type'] == 'vless',
+  );
   final primary = [
     for (final proxy in proxies)
-      if (proxy['type'] == 'vless') proxy['name'],
+      if (proxy['type'] == 'vless' && proxy['name'] != warpProxyName)
+        proxy['name'],
   ];
   Map<String, dynamic> fallback(List<dynamic> members) => {
     'name': vlessTransportName(profileId),
@@ -116,6 +123,7 @@ Map<String, dynamic> wdttFallbackConfig(
         'hidden': true,
         'proxies': [
           for (final mode in WdttRouteMode.values) mode.proxyName(profileId),
+          if (hasWarp) warpRouteGroupName(profileId),
         ],
       },
       {
@@ -124,6 +132,13 @@ Map<String, dynamic> wdttFallbackConfig(
         'hidden': true,
         'proxies': [WdttRouteMode.vless.proxyName(profileId), wdtt],
       },
+      if (hasWarp)
+        {
+          'name': warpRouteGroupName(profileId),
+          'type': 'select',
+          'hidden': true,
+          'proxies': [warpProxyName],
+        },
       fallback(primary),
       if (googleByeDpi)
         for (final service in ['YouTube', 'Google'])

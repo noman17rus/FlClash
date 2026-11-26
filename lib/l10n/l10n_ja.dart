@@ -4008,6 +4008,28 @@ class AppLocalizationsJa extends AppLocalizations {
       'If the connection drops, the app switches to the backup route automatically.';
 
   @override
+  String get warpTitle => 'WARP';
+
+  @override
+  String get warpHint =>
+      'Traffic will go through WARP on the server. No setup needed.';
+
+  @override
+  String get warpWorking => 'WARP is working';
+
+  @override
+  String get warpNotWorking => 'WARP is not working';
+
+  @override
+  String get warpChecking => 'Checking WARP…';
+
+  @override
+  String get warpCheckFailed => 'Could not check WARP';
+
+  @override
+  String get warpRetry => 'Check again';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI は YouTube を見るための別の接続方法で、VLESS が使える場合も利用できます。読み込みが遅くなる場合があり、広告が表示されない保証はありません。モバイル回線で許可されたサイトしか使えない場合は WDTT を使用してください。VPN と ByeDPI がオンの間、接続方法を1日1回自動で選びます。';
 

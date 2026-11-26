@@ -7368,6 +7368,48 @@ abstract class AppLocalizations {
   /// **'If the connection drops, the app switches to the backup route automatically.'**
   String get simpleRouteHint;
 
+  /// No description provided for @warpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WARP'**
+  String get warpTitle;
+
+  /// No description provided for @warpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic will go through WARP on the server. No setup needed.'**
+  String get warpHint;
+
+  /// No description provided for @warpWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'WARP is working'**
+  String get warpWorking;
+
+  /// No description provided for @warpNotWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'WARP is not working'**
+  String get warpNotWorking;
+
+  /// No description provided for @warpChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking WARP…'**
+  String get warpChecking;
+
+  /// No description provided for @warpCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not check WARP'**
+  String get warpCheckFailed;
+
+  /// No description provided for @warpRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get warpRetry;
+
   /// No description provided for @byeDpiDescription.
   ///
   /// In en, this message translates to:

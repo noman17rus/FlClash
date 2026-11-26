@@ -225,8 +225,72 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
   late final OutboundIpProbe _probe;
   Timer? _refresh;
   Timer? _statusRefresh;
+  Timer? _warpRefresh;
   Map<Object?, Object?>? _failoverStatus;
   bool _loadingStatus = false;
+  bool _warpChecking = false;
+  bool _warpCheckScheduled = false;
+  bool? _warpWorking;
+  DateTime? _warpCheckedAt;
+
+  String get _warpGroup => warpRouteGroupName(widget.profileId);
+
+  Future<void> _checkWarp() async {
+    if (_warpChecking || !mounted) return;
+    final selected = ref.read(currentProfileProvider)?.selectedMap[_warpGroup];
+    if (selected != _warpGroup ||
+        !ref.read(isStartProvider) ||
+        ref.read(suspendProvider) ||
+        !ref.read(appVisibleProvider)) {
+      if (_warpWorking != null) setState(() => _warpWorking = null);
+      return;
+    }
+    setState(() => _warpChecking = true);
+    try {
+      final response = await request.getTextResponseForUrl(
+        'https://www.cloudflare.com/cdn-cgi/trace',
+        timeout: const Duration(seconds: 5),
+      );
+      final working = RegExp(
+        r'^warp=(?:on|plus)\s*$',
+        multiLine: true,
+      ).hasMatch(response.data ?? '');
+      if (!mounted) return;
+      setState(() {
+        _warpWorking = working;
+        _warpChecking = false;
+        _warpCheckedAt = DateTime.now();
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _warpWorking = false;
+        _warpChecking = false;
+        _warpCheckedAt = DateTime.now();
+      });
+    }
+  }
+
+  void _scheduleWarpCheck() {
+    if (_warpCheckScheduled || _warpChecking) return;
+    _warpCheckScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _warpCheckScheduled = false;
+      _checkWarp();
+    });
+  }
+
+  void _checkWarpIfSelected() {
+    if (!mounted || !ref.read(appVisibleProvider)) return;
+    final selected = ref.read(currentProfileProvider)?.selectedMap[_warpGroup];
+    if (selected == _warpGroup &&
+        ref.read(isStartProvider) &&
+        !ref.read(suspendProvider)) {
+      _checkWarp();
+    } else if (_warpWorking != null) {
+      setState(() => _warpWorking = null);
+    }
+  }
 
   Future<void> _loadStatus() async {
     if (_loadingStatus || !ref.read(appVisibleProvider)) return;
@@ -251,6 +315,9 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
     _statusRefresh = Timer.periodic(const Duration(seconds: 2), (_) {
       _loadStatus();
     });
+    _warpRefresh = Timer.periodic(const Duration(seconds: 30), (_) {
+      _checkWarpIfSelected();
+    });
     _probe = ref.read(outboundIpProbeProvider.notifier)..watch(routedOutbound);
     _refresh = Timer.periodic(const Duration(seconds: 20), (_) {
       if (ref.read(appVisibleProvider) &&
@@ -265,6 +332,7 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
   void dispose() {
     _refresh?.cancel();
     _statusRefresh?.cancel();
+    _warpRefresh?.cancel();
     _probe.unwatch(routedOutbound);
     super.dispose();
   }
@@ -281,6 +349,22 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
         ) ??
         WdttRouteMode.automatic.proxyName(id);
     final active = ref.watch(isStartProvider) && !ref.watch(suspendProvider);
+    final warpGroup = warpRouteGroupName(id);
+    final hasWarp =
+        ref
+            .watch(proxyGroupsProvider(id))
+            .value
+            ?.any((group) => group.name == warpGroup) ??
+        false;
+    final warpSelected = selected == warpGroup;
+    if (warpSelected &&
+        active &&
+        !_warpChecking &&
+        (_warpCheckedAt == null ||
+            DateTime.now().difference(_warpCheckedAt!) >
+                const Duration(seconds: 10))) {
+      _scheduleWarpCheck();
+    }
     final entry = ref.watch(
       outboundIpProbeProvider.select((state) => state.entryOf(routedOutbound)),
     );
@@ -320,6 +404,22 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
       label: nativeRoute ?? status,
       tone: nativeRoute != null ? DashboardChipTone.ok : tone,
     );
+    final warpIndicator = warpSelected && active
+        ? DashboardChip(
+            label: _warpChecking
+                ? l10n.warpChecking
+                : _warpWorking == true
+                ? l10n.warpWorking
+                : _warpWorking == false
+                ? l10n.warpNotWorking
+                : l10n.warpChecking,
+            tone: _warpChecking || _warpWorking == null
+                ? DashboardChipTone.idle
+                : _warpWorking == true
+                ? DashboardChipTone.ok
+                : DashboardChipTone.warn,
+          )
+        : null;
     final controls = DashboardConnectedGroup(
       children: [
         for (final (index, mode) in WdttRouteMode.values.indexed)
@@ -332,9 +432,17 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
               inner: 12,
               background: DashboardColors.of(context).tone,
               semanticLabel: _label(mode, l10n.auto),
-              onTap: () => ref
-                  .read(proxiesActionProvider.notifier)
-                  .changeProxyDebounce(group, mode.proxyName(id)),
+              onTap: () {
+                ref
+                    .read(proxiesActionProvider.notifier)
+                    .changeProxyDebounce(group, mode.proxyName(id));
+                if (_warpWorking != null) {
+                  setState(() {
+                    _warpWorking = null;
+                    _warpCheckedAt = null;
+                  });
+                }
+              },
               builder: (color) => SizedBox(
                 height: 44,
                 child: Center(
@@ -357,7 +465,7 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
           DashboardCardHeader(
             glyph: AppGlyphs.split,
             title: widget.simple ? l10n.routeSimple : l10n.outboundMode,
-            leading: [indicator],
+            leading: [indicator, ?warpIndicator],
           ),
           controls,
           DashboardByeDpiToggle(
@@ -365,12 +473,48 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
             unavailable: failover?['byeDpiUnavailable'] == true,
             simple: widget.simple,
           ),
+          if (hasWarp) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.warpTitle,
+                    style: AppTextStyle.body.of(context),
+                  ),
+                ),
+                Switch(
+                  value: warpSelected,
+                  onChanged: (value) {
+                    ref
+                        .read(proxiesActionProvider.notifier)
+                        .changeProxyDebounce(
+                          group,
+                          value
+                              ? warpGroup
+                              : WdttRouteMode.automatic.proxyName(id),
+                        );
+                    setState(() {
+                      _warpWorking = null;
+                      _warpCheckedAt = null;
+                    });
+                    if (value) _scheduleWarpCheck();
+                  },
+                ),
+              ],
+            ),
+            Text(
+              l10n.warpHint,
+              style: AppTextStyle.footnote
+                  .of(context)
+                  .copyWith(color: context.colorScheme.onSurfaceVariant),
+            ),
+          ],
           if (widget.simple)
             Text(
               l10n.simpleRouteHint,
-              style: AppTextStyle.footnote.of(context).copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
+              style: AppTextStyle.footnote
+                  .of(context)
+                  .copyWith(color: context.colorScheme.onSurfaceVariant),
             )
           else if (active)
             DefaultTextStyle(

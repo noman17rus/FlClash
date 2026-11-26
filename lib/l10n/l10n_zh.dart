@@ -3956,6 +3956,28 @@ class AppLocalizationsZh extends AppLocalizations {
       'If the connection drops, the app switches to the backup route automatically.';
 
   @override
+  String get warpTitle => 'WARP';
+
+  @override
+  String get warpHint =>
+      'Traffic will go through WARP on the server. No setup needed.';
+
+  @override
+  String get warpWorking => 'WARP is working';
+
+  @override
+  String get warpNotWorking => 'WARP is not working';
+
+  @override
+  String get warpChecking => 'Checking WARP…';
+
+  @override
+  String get warpCheckFailed => 'Could not check WARP';
+
+  @override
+  String get warpRetry => 'Check again';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI 是观看 YouTube 的另一种方式，VLESS 正常时也可使用。加载可能较慢，不能保证没有广告。如果移动网络只允许访问白名单网站，请使用 WDTT。VPN 和 ByeDPI 开启时，每天会自动选择一次连接方式。';
 
