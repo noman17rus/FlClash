@@ -159,13 +159,26 @@ class Request {
     CancelToken? cancelToken,
   }) async {
     final checksums = updateChecksumsName(tag);
+    final token = cancelToken ?? CancelToken();
+    final checksumsUri = releaseAssetUri(tag, checksums);
     final sums = await _releaseFile(
       checksums,
-      () => releaseDio.getUri<String>(
-        releaseAssetUri(tag, checksums),
-        options: Options(responseType: ResponseType.plain),
-        cancelToken: cancelToken,
-      ),
+      () => releaseDio
+          .getUri<String>(
+            checksumsUri,
+            options: Options(responseType: ResponseType.plain),
+            cancelToken: token,
+          )
+          .timeout(
+            downloadTimeoutDuration,
+            onTimeout: () {
+              token.cancel();
+              throw DioException.receiveTimeout(
+                timeout: downloadTimeoutDuration,
+                requestOptions: RequestOptions(path: checksumsUri.toString()),
+              );
+            },
+          ),
     );
     final expected = releaseChecksum(sums.data ?? '', name);
     if (expected == null) {
@@ -180,14 +193,14 @@ class Request {
           path,
           title: name,
           onReceiveProgress: onReceiveProgress ?? (_, _) {},
-          cancelToken: cancelToken ?? CancelToken(),
+          cancelToken: token,
         );
       } else {
         await releaseDio.downloadUri(
           uri,
           path,
           onReceiveProgress: onReceiveProgress,
-          cancelToken: cancelToken,
+          cancelToken: token,
         );
       }
     });

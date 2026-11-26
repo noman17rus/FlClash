@@ -22,10 +22,16 @@ import '../helpers/test_app.dart';
 import '../helpers/host_scaffold.dart';
 
 class _ReleaseAdapter implements HttpClientAdapter {
-  _ReleaseAdapter({required this.sums, required this.asset});
+  _ReleaseAdapter({
+    required this.sums,
+    required this.asset,
+    this.stallChecksums = false,
+  });
 
   final String sums;
   final ResponseBody Function() asset;
+  final bool stallChecksums;
+  bool cancelled = false;
 
   @override
   Future<ResponseBody> fetch(
@@ -34,6 +40,10 @@ class _ReleaseAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     if (options.uri.path.endsWith('/${updateChecksumsName('v0.8.96')}')) {
+      if (stallChecksums) {
+        unawaited(cancelFuture?.then((_) => cancelled = true));
+        return Completer<ResponseBody>().future;
+      }
       return ResponseBody.fromString(sums, 200);
     }
     return asset();
@@ -234,6 +244,40 @@ void main() {
       await shown;
       return container;
     }
+
+    testWidgets('a stalled checksum request offers manual download', (
+      tester,
+    ) async {
+      var requestedAsset = false;
+      final stalled = _ReleaseAdapter(
+        sums: '',
+        stallChecksums: true,
+        asset: () {
+          requestedAsset = true;
+          return ResponseBody.fromBytes(package, 200);
+        },
+      );
+      request.releaseDio.httpClientAdapter = stalled;
+
+      final container = await startUpdate(tester);
+      await settleUntil(tester, () => shows('Update failed'));
+      expect(shows('Update failed'), isFalse);
+      await tester.pump(downloadTimeoutDuration);
+      await settleUntil(tester, () => shows('Update failed'));
+      await tester.pumpAndSettle();
+
+      expect(shows('Update failed'), isTrue);
+      expect(container.read(updateDownloadStateProvider), isNull);
+      expect(stalled.cancelled, isTrue);
+      expect(requestedAsset, isFalse);
+      await tester.tap(
+        find.widgetWithText(TextButton, currentAppLocalizations.goDownload),
+      );
+      await tester.pumpAndSettle();
+      expect(launched, [
+        Uri.parse('https://github.com/$repository/releases/latest'),
+      ]);
+    });
 
     testWidgets('reports a file that fails its check', (tester) async {
       request.releaseDio.httpClientAdapter = _ReleaseAdapter(
