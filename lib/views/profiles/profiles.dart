@@ -361,12 +361,16 @@ class ProfileItem extends ConsumerWidget {
       profile.type == ProfileType.url ? profile.subscriptionInfo : null;
 
   String _subtitle(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    final login = profile.overrides.managedLogin;
+    if (profile.isManaged && login.isNotEmpty) {
+      return '${appLocalizations.provisioningLogin}: $login';
+    }
     final info = _subscriptionInfo;
     if (info != null && info.usage != null) {
       final used = info.upload + info.download;
       return '${used.traffic.show} / ${info.total.traffic.show}';
     }
-    final appLocalizations = context.appLocalizations;
     return switch (profile.type) {
       ProfileType.url => appLocalizations.remote,
       ProfileType.file => appLocalizations.local,
@@ -441,6 +445,31 @@ class ProfileItem extends ConsumerWidget {
     final appLocalizations = context.appLocalizations;
     final isUrl = profile.type == ProfileType.url;
     final isCustom = profile.type == ProfileType.custom;
+    if (ref.watch(simpleModeProvider)) {
+      return [
+        PopupMenuItem(
+          glyph: AppGlyphs.edit,
+          label: appLocalizations.edit,
+          onPressed: () => _handleEdit(context),
+        ),
+        if (isUrl)
+          PopupMenuItem(
+            glyph: AppGlyphs.sync,
+            label: appLocalizations.sync,
+            onPressed: () {
+              updateProfile(ref);
+            },
+          ),
+        PopupMenuItem(
+          danger: true,
+          glyph: AppGlyphs.delete,
+          label: appLocalizations.delete,
+          onPressed: () {
+            _handleDeleteProfile(context, ref);
+          },
+        ),
+      ];
+    }
     return [
       PopupMenuItem(
         glyph: AppGlyphs.edit,

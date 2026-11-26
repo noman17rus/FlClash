@@ -4,6 +4,7 @@ import 'package:fl_clash/manager/app_manager.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/onboarding.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -23,28 +24,30 @@ class HomePage extends ConsumerWidget {
     if (!hasViewSize) {
       return ColoredBox(color: SurfaceLevel.page.colorOf(context.colorScheme));
     }
-    return HomeBackScopeContainer(
-      child: AppSidebarContainer(
-        child: _HomeShell(
-          child: Consumer(
-            builder: (_, ref, _) {
-              final navigationItems = ref
-                  .watch(currentNavigationItemsStateProvider)
-                  .value;
-              final isMobile = ref.watch(isMobileViewProvider);
-              return _HomePageView(
-                navigationItems: navigationItems,
-                pageBuilder: (_, index) {
-                  final navigationItem = navigationItems[index];
-                  return _NavigationPage(
-                    key: ValueKey(navigationItem.label),
-                    item: navigationItem,
-                    isMobile: isMobile,
-                    view: navigationItem.builder(context),
-                  );
-                },
-              );
-            },
+    return UxGate(
+      child: HomeBackScopeContainer(
+        child: AppSidebarContainer(
+          child: _HomeShell(
+            child: Consumer(
+              builder: (_, ref, _) {
+                final navigationItems = ref
+                    .watch(currentNavigationItemsStateProvider)
+                    .value;
+                final isMobile = ref.watch(isMobileViewProvider);
+                return _HomePageView(
+                  navigationItems: navigationItems,
+                  pageBuilder: (_, index) {
+                    final navigationItem = navigationItems[index];
+                    return _NavigationPage(
+                      key: ValueKey(navigationItem.label),
+                      item: navigationItem,
+                      isMobile: isMobile,
+                      view: navigationItem.builder(context),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

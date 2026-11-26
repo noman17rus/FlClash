@@ -135,7 +135,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Dashboard'**
+  /// **'Home'**
   String get dashboard;
 
   /// No description provided for @proxies.
@@ -153,13 +153,13 @@ abstract class AppLocalizations {
   /// No description provided for @profiles.
   ///
   /// In en, this message translates to:
-  /// **'Profiles'**
+  /// **'Access'**
   String get profiles;
 
   /// No description provided for @tools.
   ///
   /// In en, this message translates to:
-  /// **'Tools'**
+  /// **'More'**
   String get tools;
 
   /// No description provided for @logs.
@@ -303,7 +303,7 @@ abstract class AppLocalizations {
   /// No description provided for @nullProfileDesc.
   ///
   /// In en, this message translates to:
-  /// **'Add a profile to get started'**
+  /// **'Add access with a login to get started'**
   String get nullProfileDesc;
 
   /// No description provided for @settings.
@@ -3501,7 +3501,7 @@ abstract class AppLocalizations {
   /// No description provided for @addProfile.
   ///
   /// In en, this message translates to:
-  /// **'Add profile'**
+  /// **'Add access'**
   String get addProfile;
 
   /// No description provided for @delayTest.
@@ -7479,13 +7479,13 @@ abstract class AppLocalizations {
   /// No description provided for @provisioningLogin.
   ///
   /// In en, this message translates to:
-  /// **'Name or email'**
+  /// **'Access login'**
   String get provisioningLogin;
 
   /// No description provided for @provisioningLoginInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter a name or email (1–254 characters, without control characters).'**
+  /// **'Enter the access login from your administrator.'**
   String get provisioningLoginInvalid;
 
   /// No description provided for @provisioningFailed.
@@ -7497,7 +7497,7 @@ abstract class AppLocalizations {
   /// No description provided for @provisioningDefaults.
   ///
   /// In en, this message translates to:
-  /// **'VLESS with WDTT backup. ByeDPI is off. Subscriptions update every hour.'**
+  /// **'Usually nothing needs to be changed.'**
   String get provisioningDefaults;
 
   /// No description provided for @provisioningOtherImports.
@@ -7505,6 +7505,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other import methods'**
   String get provisioningOtherImports;
+
+  /// No description provided for @continueText.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueText;
+
+  /// No description provided for @simpleNoAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No access yet'**
+  String get simpleNoAccessTitle;
+
+  /// No description provided for @simpleNoAccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add access with a login and the app will set everything up.'**
+  String get simpleNoAccessBody;
+
+  /// No description provided for @simpleDisconnectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN is off'**
+  String get simpleDisconnectedTitle;
+
+  /// No description provided for @simpleDisconnectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Connect to protect your traffic.'**
+  String get simpleDisconnectedBody;
+
+  /// No description provided for @simpleConnectingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get simpleConnectingTitle;
+
+  /// No description provided for @simpleConnectingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This usually takes a few seconds.'**
+  String get simpleConnectingBody;
+
+  /// No description provided for @simpleProtectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are protected'**
+  String get simpleProtectedTitle;
+
+  /// No description provided for @simpleProtectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic goes through the VPN. Use the internet as usual.'**
+  String get simpleProtectedBody;
+
+  /// No description provided for @simpleSuspendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN is paused'**
+  String get simpleSuspendedTitle;
+
+  /// No description provided for @simpleSuspendedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The connection is stopped. Tap Resume.'**
+  String get simpleSuspendedBody;
+
+  /// No description provided for @simpleConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get simpleConnect;
+
+  /// No description provided for @simpleDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get simpleDisconnect;
+
+  /// No description provided for @simpleResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get simpleResume;
+
+  /// No description provided for @simpleAddAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Add access'**
+  String get simpleAddAccess;
+
+  /// No description provided for @simpleChangeAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Change access'**
+  String get simpleChangeAccess;
+
+  /// No description provided for @simpleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get simpleHelp;
+
+  /// No description provided for @simpleHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get simpleHowTitle;
+
+  /// No description provided for @simpleHowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Open the app.\n2. Tap Connect.\n3. Done — traffic is protected.'**
+  String get simpleHowBody;
+
+  /// No description provided for @simpleMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple mode'**
+  String get simpleMode;
+
+  /// No description provided for @simpleModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the essentials: connection, access and help.'**
+  String get simpleModeDescription;
+
+  /// No description provided for @getAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Get access'**
+  String get getAccess;
+
+  /// No description provided for @accessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get accessName;
+
+  /// No description provided for @accessNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example, “Phone”'**
+  String get accessNameHint;
+
+  /// No description provided for @provisioningLoginHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The administrator gives you a login. It is the name or email you used when getting access.'**
+  String get provisioningLoginHelp;
+
+  /// No description provided for @provisioningLoginExample.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: ivan or ivan@example.com'**
+  String get provisioningLoginExample;
+
+  /// No description provided for @provisioningErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get provisioningErrorNetwork;
+
+  /// No description provided for @provisioningErrorTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The server did not answer in time. Try again.'**
+  String get provisioningErrorTimeout;
+
+  /// No description provided for @provisioningErrorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Wait a minute and try again.'**
+  String get provisioningErrorRateLimited;
+
+  /// No description provided for @provisioningErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The access server is temporarily unavailable. Try again later.'**
+  String get provisioningErrorServer;
+
+  /// No description provided for @provisioningErrorInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The login or server response is invalid. Check the login and try again.'**
+  String get provisioningErrorInvalid;
+
+  /// No description provided for @provisioningErrorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This login was not found. Check it or contact the administrator.'**
+  String get provisioningErrorNotFound;
+
+  /// No description provided for @provisioningErrorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not get access. Try again or contact the administrator.'**
+  String get provisioningErrorUnknown;
+
+  /// No description provided for @accessAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access added'**
+  String get accessAddedTitle;
+
+  /// No description provided for @accessAddedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile “{name}” is ready. Tap Connect on the home screen.'**
+  String accessAddedBody(String name);
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'This app gives you secure internet access. Setup takes a couple of steps.'**
+  String get onboardingIntro;
+
+  /// No description provided for @onboardingWhatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What you get'**
+  String get onboardingWhatTitle;
+
+  /// No description provided for @onboardingWhatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One connection for the whole phone: sites and apps use a protected channel.'**
+  String get onboardingWhatBody;
+
+  /// No description provided for @onboardingHaveLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a login'**
+  String get onboardingHaveLogin;
+
+  /// No description provided for @onboardingLoginLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Access login'**
+  String get onboardingLoginLabel;
+
+  /// No description provided for @onboardingLoginHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your login'**
+  String get onboardingLoginHint;
+
+  /// No description provided for @onboardingGetAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Get access'**
+  String get onboardingGetAccess;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardingBack;
+
+  /// No description provided for @help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get help;
+
+  /// No description provided for @helpIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A short guide to how everything works.'**
+  String get helpIntro;
+
+  /// No description provided for @helpConnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to connect'**
+  String get helpConnectTitle;
+
+  /// No description provided for @helpConnectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the home screen and tap Connect. If you have no access, add it with a login.'**
+  String get helpConnectBody;
+
+  /// No description provided for @helpStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the statuses mean'**
+  String get helpStatusTitle;
+
+  /// No description provided for @helpStatusBody.
+  ///
+  /// In en, this message translates to:
+  /// **'“You are protected” means the VPN is working. “Connecting” means it is starting. “VPN is off” means tap Connect.'**
+  String get helpStatusBody;
+
+  /// No description provided for @helpTrafficTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic and limits'**
+  String get helpTrafficTitle;
+
+  /// No description provided for @helpTrafficBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We do not limit traffic, speed or the number of devices. Counters are for information only.'**
+  String get helpTrafficBody;
+
+  /// No description provided for @helpErrorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If something fails'**
+  String get helpErrorsTitle;
+
+  /// No description provided for @helpErrorsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the internet, tap Retry and try again. If the error remains, contact the administrator and include the error text.'**
+  String get helpErrorsBody;
+
+  /// No description provided for @helpGlossaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Glossary'**
+  String get helpGlossaryTitle;
+
+  /// No description provided for @helpGlossaryAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Access — your login and connection profile.'**
+  String get helpGlossaryAccess;
+
+  /// No description provided for @helpGlossaryProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile — settings for one access.'**
+  String get helpGlossaryProfile;
+
+  /// No description provided for @helpGlossaryVless.
+  ///
+  /// In en, this message translates to:
+  /// **'VLESS — the main connection protocol.'**
+  String get helpGlossaryVless;
+
+  /// No description provided for @helpGlossaryWdtt.
+  ///
+  /// In en, this message translates to:
+  /// **'WDTT — the backup protocol when the main one is unavailable.'**
+  String get helpGlossaryWdtt;
+
+  /// No description provided for @helpGlossaryByeDpi.
+  ///
+  /// In en, this message translates to:
+  /// **'ByeDPI — bypass for individual blocked sites.'**
+  String get helpGlossaryByeDpi;
+
+  /// No description provided for @helpGlossarySubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription — a settings file the app updates automatically.'**
+  String get helpGlossarySubscription;
+
+  /// No description provided for @helpContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get helpContactTitle;
+
+  /// No description provided for @helpContactBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact the administrator. Do not send your password or access link.'**
+  String get helpContactBody;
 }
 
 class _AppLocalizationsDelegate

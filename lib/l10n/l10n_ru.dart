@@ -21,7 +21,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get direct => 'Прямой';
 
   @override
-  String get dashboard => 'Панель';
+  String get dashboard => 'Главная';
 
   @override
   String get proxies => 'Прокси';
@@ -30,10 +30,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profile => 'Профиль';
 
   @override
-  String get profiles => 'Профили';
+  String get profiles => 'Доступ';
 
   @override
-  String get tools => 'Инструменты';
+  String get tools => 'Ещё';
 
   @override
   String get logs => 'Логи';
@@ -105,7 +105,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get expireTime => 'Срок действия';
 
   @override
-  String get nullProfileDesc => 'Добавьте профиль, чтобы начать';
+  String get nullProfileDesc => 'Добавьте доступ по логину, чтобы начать';
 
   @override
   String get settings => 'Настройки';
@@ -1891,7 +1891,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get restoreAllData => 'Восстановить все данные';
 
   @override
-  String get addProfile => 'Добавить профиль';
+  String get addProfile => 'Добавить доступ';
 
   @override
   String get delayTest => 'Тест задержки';
@@ -4255,20 +4255,237 @@ class AppLocalizationsRu extends AppLocalizations {
       'Показаны цепочки активных соединений текущего профиля и объём полученных данных. Уже открытые соединения могут идти по прежнему маршруту.';
 
   @override
-  String get provisioningLogin => 'Имя или email';
+  String get provisioningLogin => 'Логин доступа';
 
   @override
   String get provisioningLoginInvalid =>
-      'Введите имя или email (1–254 символа, без управляющих символов).';
+      'Введите логин, который выдал администратор.';
 
   @override
   String get provisioningFailed =>
       'Не удалось получить подписки. Проверьте подключение и повторите попытку.';
 
   @override
-  String get provisioningDefaults =>
-      'VLESS с резервом WDTT. ByeDPI выключен. Подписки обновляются каждый час.';
+  String get provisioningDefaults => 'Обычно менять ничего не нужно.';
 
   @override
   String get provisioningOtherImports => 'Другие способы импорта';
+
+  @override
+  String get continueText => 'Продолжить';
+
+  @override
+  String get simpleNoAccessTitle => 'Пока нет доступа';
+
+  @override
+  String get simpleNoAccessBody =>
+      'Добавьте доступ по логину — и приложение настроит всё само.';
+
+  @override
+  String get simpleDisconnectedTitle => 'VPN выключен';
+
+  @override
+  String get simpleDisconnectedBody =>
+      'Нажмите «Подключиться», чтобы защитить трафик.';
+
+  @override
+  String get simpleConnectingTitle => 'Подключаемся…';
+
+  @override
+  String get simpleConnectingBody => 'Обычно это занимает несколько секунд.';
+
+  @override
+  String get simpleProtectedTitle => 'Вы защищены';
+
+  @override
+  String get simpleProtectedBody =>
+      'Трафик идёт через VPN. Можно пользоваться интернетом как обычно.';
+
+  @override
+  String get simpleSuspendedTitle => 'VPN приостановлен';
+
+  @override
+  String get simpleSuspendedBody =>
+      'Соединение остановлено. Нажмите «Возобновить».';
+
+  @override
+  String get simpleConnect => 'Подключиться';
+
+  @override
+  String get simpleDisconnect => 'Отключиться';
+
+  @override
+  String get simpleResume => 'Возобновить';
+
+  @override
+  String get simpleAddAccess => 'Добавить доступ';
+
+  @override
+  String get simpleChangeAccess => 'Сменить доступ';
+
+  @override
+  String get simpleHelp => 'Помощь';
+
+  @override
+  String get simpleHowTitle => 'Как это работает';
+
+  @override
+  String get simpleHowBody =>
+      '1. Откройте приложение.\n2. Нажмите «Подключиться».\n3. Готово — трафик защищён.';
+
+  @override
+  String get simpleMode => 'Простой режим';
+
+  @override
+  String get simpleModeDescription =>
+      'Только главное: подключение, доступ и помощь.';
+
+  @override
+  String get getAccess => 'Получить доступ';
+
+  @override
+  String get accessName => 'Название';
+
+  @override
+  String get accessNameHint => 'Например, «Телефон»';
+
+  @override
+  String get provisioningLoginHelp =>
+      'Логин выдаёт администратор. Это имя или email, которое вы указали при получении доступа.';
+
+  @override
+  String get provisioningLoginExample => 'Например: ivan или ivan@example.com';
+
+  @override
+  String get provisioningErrorNetwork =>
+      'Нет подключения к интернету. Проверьте сеть и повторите.';
+
+  @override
+  String get provisioningErrorTimeout =>
+      'Сервер не ответил вовремя. Попробуйте ещё раз.';
+
+  @override
+  String get provisioningErrorRateLimited =>
+      'Слишком много попыток. Подождите минуту и повторите.';
+
+  @override
+  String get provisioningErrorServer =>
+      'Сервер доступа временно недоступен. Попробуйте позже.';
+
+  @override
+  String get provisioningErrorInvalid =>
+      'Логин или ответ сервера не подходят. Проверьте логин и повторите.';
+
+  @override
+  String get provisioningErrorNotFound =>
+      'Логин не найден. Проверьте его или обратитесь к администратору.';
+
+  @override
+  String get provisioningErrorUnknown =>
+      'Не удалось получить доступ. Повторите или обратитесь к администратору.';
+
+  @override
+  String get accessAddedTitle => 'Доступ добавлен';
+
+  @override
+  String accessAddedBody(String name) {
+    return 'Профиль «$name» готов. На главной нажмите «Подключиться».';
+  }
+
+  @override
+  String get onboardingTitle => 'Добро пожаловать';
+
+  @override
+  String get onboardingIntro =>
+      'Это приложение для безопасного доступа в интернет. Настроим всё за пару шагов.';
+
+  @override
+  String get onboardingWhatTitle => 'Что вы получите';
+
+  @override
+  String get onboardingWhatBody =>
+      'Одно подключение для всего телефона: сайты и приложения работают через защищённый канал.';
+
+  @override
+  String get onboardingHaveLogin => 'У меня уже есть логин';
+
+  @override
+  String get onboardingLoginLabel => 'Логин доступа';
+
+  @override
+  String get onboardingLoginHint => 'Введите логин';
+
+  @override
+  String get onboardingGetAccess => 'Получить доступ';
+
+  @override
+  String get onboardingSkip => 'Пропустить';
+
+  @override
+  String get onboardingBack => 'Назад';
+
+  @override
+  String get help => 'Помощь';
+
+  @override
+  String get helpIntro => 'Коротко о том, как всё устроено.';
+
+  @override
+  String get helpConnectTitle => 'Как подключиться';
+
+  @override
+  String get helpConnectBody =>
+      'Откройте главный экран и нажмите «Подключиться». Если доступа нет — добавьте его по логину.';
+
+  @override
+  String get helpStatusTitle => 'Что означают статусы';
+
+  @override
+  String get helpStatusBody =>
+      '«Вы защищены» — VPN работает. «Подключаемся» — идёт запуск. «VPN выключен» — нажмите «Подключиться».';
+
+  @override
+  String get helpTrafficTitle => 'Трафик и ограничения';
+
+  @override
+  String get helpTrafficBody =>
+      'Мы не ограничиваем трафик, скорость или количество устройств. Счётчики нужны только для информации.';
+
+  @override
+  String get helpErrorsTitle => 'Если что-то не работает';
+
+  @override
+  String get helpErrorsBody =>
+      'Проверьте интернет, нажмите «Повторить» и попробуйте снова. Если ошибка остаётся — напишите администратору и приложите текст ошибки.';
+
+  @override
+  String get helpGlossaryTitle => 'Словарь';
+
+  @override
+  String get helpGlossaryAccess => 'Доступ — ваш логин и профиль подключения.';
+
+  @override
+  String get helpGlossaryProfile => 'Профиль — настройки одного доступа.';
+
+  @override
+  String get helpGlossaryVless => 'VLESS — основной протокол подключения.';
+
+  @override
+  String get helpGlossaryWdtt =>
+      'WDTT — резервный протокол, если основной недоступен.';
+
+  @override
+  String get helpGlossaryByeDpi =>
+      'ByeDPI — обход блокировок для отдельных сайтов.';
+
+  @override
+  String get helpGlossarySubscription =>
+      'Подписка — файл настроек, который приложение обновляет автоматически.';
+
+  @override
+  String get helpContactTitle => 'Поддержка';
+
+  @override
+  String get helpContactBody =>
+      'Напишите администратору. Не отправляйте пароль или ссылку доступа.';
 }

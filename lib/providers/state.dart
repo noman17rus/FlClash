@@ -26,6 +26,7 @@ import 'mitm.dart';
 part 'generated/state.g.dart';
 part 'state/proxies.dart';
 part 'state/navigation.dart';
+part 'state/simple_mode.dart';
 part 'state/system.dart';
 part 'state/theme.dart';
 part 'state/profile.dart';

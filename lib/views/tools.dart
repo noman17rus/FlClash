@@ -17,6 +17,7 @@ import 'config/advanced.dart';
 import 'developer.dart';
 import 'disclaimer.dart';
 import 'diagnostics.dart';
+import 'help.dart';
 import 'connection_mode.dart';
 import 'theme.dart';
 
@@ -55,6 +56,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: context.appLocalizations.other,
       items: [
+        const _HelpItem(),
         const _DisclaimerItem(),
         if (system.isAndroid)
           ListItem.open(
@@ -68,23 +70,26 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  Widget _getSettingList() {
+  Widget _getSettingList(bool simpleMode) {
     return generateSection(
       title: context.appLocalizations.settings,
       items: [
         const _LocaleItem(),
         const _ThemeItem(),
-        if (system.isDesktop) const _HotkeyItem(),
-        if (system.isAndroid) const _AccessItem(),
-        if (system.isAndroid)
+        const _SimpleModeItem(),
+        if (!simpleMode && system.isDesktop) const _HotkeyItem(),
+        if (!simpleMode && system.isAndroid) const _AccessItem(),
+        if (!simpleMode && system.isAndroid)
           ListItem.open(
             leading: const GlyphIcon(AppGlyphs.settings),
             title: Text(context.appLocalizations.connectionBalance),
             widget: const ConnectionModeView(),
           ),
-        const _BackupItem(),
-        const _AdvancedConfigItem(),
-        const _GeneralItem(),
+        if (!simpleMode) ...[
+          const _BackupItem(),
+          const _AdvancedConfigItem(),
+          const _GeneralItem(),
+        ],
       ],
     );
   }
@@ -94,6 +99,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     final developerMode = ref.watch(
       appSettingProvider.select((state) => state.developerMode),
     );
+    final simpleMode = ref.watch(simpleModeProvider);
     final items = [
       Consumer(
         builder: (_, ref, _) {
@@ -106,7 +112,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
           );
         },
       ),
-      _getSettingList(),
+      _getSettingList(simpleMode),
       _getOtherList(developerMode),
     ];
     return Scaffold(
@@ -171,6 +177,40 @@ class _ThemeItem extends StatelessWidget {
       leading: const GlyphIcon(AppGlyphs.paintbrush),
       title: Text(context.appLocalizations.theme),
       widget: const ThemeView(),
+    );
+  }
+}
+
+class _SimpleModeItem extends ConsumerWidget {
+  const _SimpleModeItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final enabled = ref.watch(simpleModeProvider);
+    return ListItem.toggle(
+      leading: const GlyphIcon(AppGlyphs.lock),
+      title: Text(l.simpleMode),
+      subtitle: Text(l.simpleModeDescription),
+      value: enabled,
+      onChanged: (value) {
+        ref
+            .read(appSettingProvider.notifier)
+            .update((state) => state.copyWith(simpleMode: value));
+      },
+    );
+  }
+}
+
+class _HelpItem extends StatelessWidget {
+  const _HelpItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const GlyphIcon(AppGlyphs.info),
+      title: Text(context.appLocalizations.help),
+      widget: const HelpView(),
     );
   }
 }

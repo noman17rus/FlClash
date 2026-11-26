@@ -12,6 +12,38 @@ const provisioningOrigin = String.fromEnvironment(
 
 String normalizeProvisioningLogin(String login) => login.trim().toLowerCase();
 
+enum ProvisioningError {
+  network,
+  timeout,
+  rateLimited,
+  unavailable,
+  invalid,
+  notFound,
+  unknown,
+}
+
+final class ProvisioningException implements Exception {
+  final ProvisioningError kind;
+
+  const ProvisioningException(this.kind);
+
+  @override
+  String toString() => 'ProvisioningException($kind)';
+}
+
+String provisioningErrorMessage(ProvisioningError kind) {
+  final l = currentAppLocalizations;
+  return switch (kind) {
+    ProvisioningError.network => l.provisioningErrorNetwork,
+    ProvisioningError.timeout => l.provisioningErrorTimeout,
+    ProvisioningError.rateLimited => l.provisioningErrorRateLimited,
+    ProvisioningError.unavailable => l.provisioningErrorServer,
+    ProvisioningError.invalid => l.provisioningErrorInvalid,
+    ProvisioningError.notFound => l.provisioningErrorNotFound,
+    ProvisioningError.unknown => l.provisioningErrorUnknown,
+  };
+}
+
 bool validProvisioningLogin(String login) {
   final value = login.trim();
   return value.isNotEmpty &&
@@ -94,7 +126,7 @@ class ProvisioningClient {
 
   Future<ProvisionedAccount> provision(String login) {
     if (Uri.parse(provisioningOrigin).scheme != 'https') {
-      throw MessageException(currentAppLocalizations.provisioningFailed);
+      throw const ProvisioningException(ProvisioningError.invalid);
     }
     return _read(
       () => _dio.post<Map<String, dynamic>>(
@@ -106,7 +138,7 @@ class ProvisioningClient {
 
   Future<ProvisionedAccount> refresh(String url) {
     if (!isProvisioningSubscription(url)) {
-      throw MessageException(currentAppLocalizations.provisioningFailed);
+      throw const ProvisioningException(ProvisioningError.invalid);
     }
     return _read(() => _dio.get<Map<String, dynamic>>('$url/metadata'));
   }
@@ -117,8 +149,31 @@ class ProvisioningClient {
     try {
       final response = await fetch();
       return ProvisionedAccount.fromJson(response.data!);
+    } on ProvisioningException {
+      rethrow;
+    } on DioException catch (error) {
+      final statusCode = error.response?.statusCode;
+      throw ProvisioningException(
+        statusCode != null
+            ? switch (statusCode) {
+                400 => ProvisioningError.invalid,
+                404 => ProvisioningError.notFound,
+                429 => ProvisioningError.rateLimited,
+                >= 500 => ProvisioningError.unavailable,
+                _ => ProvisioningError.unknown,
+              }
+            : switch (error.type) {
+                DioExceptionType.connectionTimeout ||
+                DioExceptionType.sendTimeout ||
+                DioExceptionType.receiveTimeout => ProvisioningError.timeout,
+                DioExceptionType.connectionError => ProvisioningError.network,
+                _ => ProvisioningError.unknown,
+              },
+      );
+    } on FormatException {
+      throw const ProvisioningException(ProvisioningError.invalid);
     } catch (_) {
-      throw MessageException(currentAppLocalizations.provisioningFailed);
+      throw const ProvisioningException(ProvisioningError.unknown);
     }
   }
 }

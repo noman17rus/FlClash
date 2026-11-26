@@ -3095,7 +3095,7 @@ final class CurrentNavigationItemsStateProvider
 }
 
 String _$currentNavigationItemsStateHash() =>
-    r'06fbdc194f4527b945695fe3b72b16e0585fa440';
+    r'1d87c43c6ebb3cf6ece87b8fb8eb1f923cf5e164';
 
 @ProviderFor(shownPageLabel)
 final shownPageLabelProvider = ShownPageLabelProvider._();
@@ -3267,7 +3267,7 @@ final class MoreToolsSelectorStateProvider
 }
 
 String _$moreToolsSelectorStateHash() =>
-    r'c47987547d0e59da10ec4bbd9c8cf1416f8477f3';
+    r'042bee3ebd760d28c5e77a767cae5169619d5306';
 
 @ProviderFor(overlayTopOffset)
 final overlayTopOffsetProvider = OverlayTopOffsetProvider._();
@@ -3309,6 +3309,54 @@ final class OverlayTopOffsetProvider
 }
 
 String _$overlayTopOffsetHash() => r'65469afec2a8ea45bddf916c8e61c7d6cbfc3c85';
+
+/// Null means the user has not chosen yet: a new Android install starts
+/// simple, while an install that already has access stays as it was.
+
+@ProviderFor(simpleMode)
+final simpleModeProvider = SimpleModeProvider._();
+
+/// Null means the user has not chosen yet: a new Android install starts
+/// simple, while an install that already has access stays as it was.
+
+final class SimpleModeProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Null means the user has not chosen yet: a new Android install starts
+  /// simple, while an install that already has access stays as it was.
+  SimpleModeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'simpleModeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$simpleModeHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return simpleMode(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$simpleModeHash() => r'6ab9fc9a287a40009021ed50f90897f3382585a2';
 
 @ProviderFor(profilesState)
 final profilesStateProvider = ProfilesStateProvider._();

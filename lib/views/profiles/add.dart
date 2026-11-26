@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/profiles/custom/custom.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'edit.dart';
 
 /// The ways to add a profile, in a menu out of the control [builder] makes.
 class AddProfileMenu extends ConsumerWidget {
@@ -151,9 +151,21 @@ class AddProfileMenu extends ConsumerWidget {
           context: context,
           builder: (_) => const ManagedProfileForm(),
         );
-        if (profile != null && context.mounted) {
-          await BaseNavigator.push(context, EditProfileView(profile: profile));
+        if (profile == null || !context.mounted) {
+          return;
         }
+        await dialogs.showMessage(
+          title: appLocalizations.accessAddedTitle,
+          message: TextSpan(
+            text: appLocalizations.accessAddedBody(profile.realLabel),
+          ),
+          confirmText: appLocalizations.continueText,
+        );
+        if (!context.mounted) return;
+        globalState.navigatorKey.currentState?.popUntil(
+          (route) => route.isFirst,
+        );
+        ref.read(currentPageLabelProvider.notifier).toPage(PageLabel.dashboard);
       });
     }
     return PopupAnchor(
@@ -208,10 +220,9 @@ class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
 
   Future<void> _save() async {
     if (_saving) return;
+    final l = context.appLocalizations;
     if (!validProvisioningLogin(_login.text)) {
-      setState(
-        () => _error = context.appLocalizations.provisioningLoginInvalid,
-      );
+      setState(() => _error = l.provisioningLoginInvalid);
       return;
     }
     setState(() {
@@ -223,9 +234,17 @@ class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
           .read(profilesActionProvider.notifier)
           .addManagedProfile(_login.text, label: _label.text);
       if (mounted) Navigator.of(context).pop(profile);
+    } on ProvisioningException catch (error) {
+      if (mounted) {
+        setState(() => _error = provisioningErrorMessage(error.kind));
+      }
+    } on MessageException catch (error) {
+      if (mounted) {
+        setState(() => _error = error.message);
+      }
     } catch (_) {
       if (mounted) {
-        setState(() => _error = context.appLocalizations.provisioningFailed);
+        setState(() => _error = l.provisioningErrorUnknown);
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -244,11 +263,16 @@ class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
     final l = context.appLocalizations;
     return FormPage(
       title: l.addProfile,
-      saveLabel: l.submit,
+      saveLabel: l.getAccess,
       onSave: _save,
       saving: _saving,
       error: _error,
       children: [
+        Text(
+          l.provisioningLoginHelp,
+          style: context.listCaptionStyle.copyWith(height: 1.45),
+        ),
+        const SizedBox(height: 12),
         generateSection(
           items: [
             FormRow(
@@ -256,16 +280,16 @@ class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
               trailing: FormRowTextField(
                 controller: _login,
                 autofocus: true,
-                hintText: l.required,
+                hintText: l.onboardingLoginHint,
                 textInputAction: TextInputAction.next,
                 inputFormatters: TextInputLimits.limit(254),
               ),
             ),
             FormRow(
-              title: l.name,
+              title: l.accessName,
               trailing: FormRowTextField(
                 controller: _label,
-                hintText: l.optional,
+                hintText: l.accessNameHint,
                 textInputAction: TextInputAction.done,
                 inputFormatters: TextInputLimits.limit(TextInputLimits.name),
                 onFieldSubmitted: (_) => _save(),
@@ -273,6 +297,8 @@ class _ManagedProfileFormState extends ConsumerState<ManagedProfileForm> {
             ),
           ],
         ),
+        Text(l.provisioningLoginExample, style: context.listCaptionStyle),
+        const SizedBox(height: 8),
         Text(l.provisioningDefaults, style: context.listCaptionStyle),
         AddProfileMenu(
           managedPrimary: false,

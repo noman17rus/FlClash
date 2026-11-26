@@ -41,6 +41,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late bool _wdttEnabled;
   Uint8List? _editedData;
   bool _attempted = false;
+  bool _advanced = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
   late SetupAction _setupAction;
   Uint8List? _fileData;
@@ -379,6 +380,25 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     final isWdtt = widget.profile.url.isWdttLink;
     final issue = _attempted ? _issue(appLocalizations) : null;
     final sections = [
+      if (widget.profile.isManaged)
+        generateSection(
+          title: appLocalizations.profiles,
+          items: [
+            ListItem(
+              leading: const GlyphIcon(AppGlyphs.key),
+              title: Text(appLocalizations.provisioningLogin),
+              subtitle: Text(
+                widget.profile.overrides.managedLogin.isEmpty
+                    ? appLocalizations.remote
+                    : widget.profile.overrides.managedLogin,
+              ),
+            ),
+            ListItem(
+              leading: const GlyphIcon(AppGlyphs.info),
+              title: Text(appLocalizations.provisioningDefaults),
+            ),
+          ],
+        ),
       generateSection(
         items: [
           _ProfileNameField(
@@ -387,33 +407,41 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             onChanged: _handleChanged,
           ),
           if (widget.profile.isManaged) ...[
-            FormRow(
-              title: 'VLESS',
-              trailing: Switch(
-                value: _vlessEnabled,
-                onChanged: (value) => setState(() {
-                  _vlessEnabled = value;
-                  if (!value) _wdttEnabled = true;
-                }),
+            ListItem.toggle(
+              leading: const GlyphIcon(AppGlyphs.settings),
+              title: Text(appLocalizations.additionalParameters),
+              value: _advanced,
+              onChanged: (value) => setState(() => _advanced = value),
+            ),
+            if (_advanced) ...[
+              FormRow(
+                title: 'VLESS',
+                trailing: Switch(
+                  value: _vlessEnabled,
+                  onChanged: (value) => setState(() {
+                    _vlessEnabled = value;
+                    if (!value) _wdttEnabled = true;
+                  }),
+                ),
               ),
-            ),
-            FormRow(
-              title: 'WDTT',
-              trailing: Switch(
-                value: _wdttEnabled,
-                onChanged: (value) => setState(() {
-                  _wdttEnabled = value;
-                  if (!value) {
-                    _vlessEnabled = true;
-                    _googleByeDpi = false;
-                  }
-                }),
+              FormRow(
+                title: 'WDTT',
+                trailing: Switch(
+                  value: _wdttEnabled,
+                  onChanged: (value) => setState(() {
+                    _wdttEnabled = value;
+                    if (!value) {
+                      _vlessEnabled = true;
+                      _googleByeDpi = false;
+                    }
+                  }),
+                ),
               ),
-            ),
-            Text(
-              appLocalizations.byeDpiRequiresWdtt,
-              style: context.listCaptionStyle,
-            ),
+              Text(
+                appLocalizations.byeDpiRequiresWdtt,
+                style: context.listCaptionStyle,
+              ),
+            ],
           ],
           if (!widget.profile.isManaged && (isUrl || isWdtt))
             _ProfileUrlField(
@@ -432,7 +460,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               invalid: issue?.field == _ProfileField.wdtt,
               onChanged: (_) => setState(() {}),
             ),
-          if (system.isAndroid && !isWdtt) ...[
+          if (system.isAndroid &&
+              !isWdtt &&
+              (!widget.profile.isManaged || _advanced)) ...[
             if (!_wdttController.text.isWdttLink)
               Text(appLocalizations.byeDpiRequiresWdtt),
             FormRow(
@@ -452,7 +482,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             _AgeSecretKeyField(controller: _ageSecretKeyController),
         ],
       ),
-      if (isUrl)
+      if (isUrl && (!widget.profile.isManaged || _advanced))
         generateSection(
           items: [
             FormRow(
@@ -468,15 +498,16 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               ),
           ],
         ),
-      generateSection(
-        items: [
-          _ProfileFileItem(
-            fileInfoNotifier: _fileInfoNotifier,
-            onEdit: _editProfileFile,
-            onUpload: _uploadProfileFile,
-          ),
-        ],
-      ),
+      if (!widget.profile.isManaged || _advanced)
+        generateSection(
+          items: [
+            _ProfileFileItem(
+              fileInfoNotifier: _fileInfoNotifier,
+              onEdit: _editProfileFile,
+              onUpload: _uploadProfileFile,
+            ),
+          ],
+        ),
     ];
     return FocusTraversalGroup(
       policy: PageTraversalPolicy(),

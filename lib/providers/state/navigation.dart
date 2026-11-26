@@ -24,6 +24,7 @@ NavigationItemsState navigationItemsState(Ref ref) {
 NavigationItemsState currentNavigationItemsState(Ref ref) {
   final viewWidth = ref.watch(viewWidthProvider);
   final navigationItemsState = ref.watch(navigationItemsStateProvider);
+  final simpleMode = ref.watch(simpleModeProvider);
   final navigationItemMode = switch (viewWidth <= maxMobileWidth) {
     true => NavigationItemMode.mobile,
     false => NavigationItemMode.desktop,
@@ -31,6 +32,13 @@ NavigationItemsState currentNavigationItemsState(Ref ref) {
   return NavigationItemsState(
     value: navigationItemsState.value
         .where((element) => element.modes.contains(navigationItemMode))
+        .where(
+          (element) =>
+              !simpleMode ||
+              element.label == PageLabel.dashboard ||
+              element.label == PageLabel.profiles ||
+              element.label == PageLabel.tools,
+        )
         .toList(),
   );
 }
@@ -83,6 +91,9 @@ DashboardState dashboardState(Ref ref) {
 
 @riverpod
 MoreToolsSelectorState moreToolsSelectorState(Ref ref) {
+  if (ref.watch(simpleModeProvider)) {
+    return const MoreToolsSelectorState(navigationItems: []);
+  }
   final viewMode = ref.watch(viewModeProvider);
   final navigationItems = ref
       .watch(

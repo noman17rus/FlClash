@@ -21,7 +21,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get direct => '直连';
 
   @override
-  String get dashboard => '仪表盘';
+  String get dashboard => '首页';
 
   @override
   String get proxies => '代理';
@@ -30,10 +30,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get profile => '配置';
 
   @override
-  String get profiles => '配置';
+  String get profiles => '访问';
 
   @override
-  String get tools => '工具';
+  String get tools => '更多';
 
   @override
   String get logs => '日志';
@@ -105,7 +105,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get expireTime => '到期时间';
 
   @override
-  String get nullProfileDesc => '添加一个配置文件后即可开始使用';
+  String get nullProfileDesc => '使用登录名添加访问即可开始';
 
   @override
   String get settings => '设置';
@@ -1791,7 +1791,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restoreAllData => '恢复所有数据';
 
   @override
-  String get addProfile => '添加配置';
+  String get addProfile => '添加访问';
 
   @override
   String get delayTest => '延迟测试';
@@ -4011,17 +4011,236 @@ class AppLocalizationsZh extends AppLocalizations {
   String get byeDpiRouteScope => '显示当前配置的活跃连接路径及已接收数据。现有连接可能仍使用之前的路由。';
 
   @override
-  String get provisioningLogin => '姓名或邮箱';
+  String get provisioningLogin => '访问登录名';
 
   @override
-  String get provisioningLoginInvalid => '请输入姓名或邮箱（1–254 个字符，不含控制字符）。';
+  String get provisioningLoginInvalid =>
+      'Enter a login (1–254 characters, without control characters).';
 
   @override
   String get provisioningFailed => '无法获取订阅。请检查网络连接并重试。';
 
   @override
-  String get provisioningDefaults => 'VLESS 使用 WDTT 备用。ByeDPI 默认关闭。订阅每小时更新。';
+  String get provisioningDefaults => 'Usually nothing needs to be changed.';
 
   @override
   String get provisioningOtherImports => '其他导入方式';
+
+  @override
+  String get continueText => 'Continue';
+
+  @override
+  String get simpleNoAccessTitle => 'No access yet';
+
+  @override
+  String get simpleNoAccessBody =>
+      'Add access with a login and the app will set everything up.';
+
+  @override
+  String get simpleDisconnectedTitle => 'VPN is off';
+
+  @override
+  String get simpleDisconnectedBody => 'Tap Connect to protect your traffic.';
+
+  @override
+  String get simpleConnectingTitle => 'Connecting…';
+
+  @override
+  String get simpleConnectingBody => 'This usually takes a few seconds.';
+
+  @override
+  String get simpleProtectedTitle => 'You are protected';
+
+  @override
+  String get simpleProtectedBody =>
+      'Traffic goes through the VPN. Use the internet as usual.';
+
+  @override
+  String get simpleSuspendedTitle => 'VPN is paused';
+
+  @override
+  String get simpleSuspendedBody => 'The connection is stopped. Tap Resume.';
+
+  @override
+  String get simpleConnect => 'Connect';
+
+  @override
+  String get simpleDisconnect => 'Disconnect';
+
+  @override
+  String get simpleResume => 'Resume';
+
+  @override
+  String get simpleAddAccess => 'Add access';
+
+  @override
+  String get simpleChangeAccess => 'Change access';
+
+  @override
+  String get simpleHelp => 'Help';
+
+  @override
+  String get simpleHowTitle => 'How it works';
+
+  @override
+  String get simpleHowBody =>
+      '1. Open the app.\n2. Tap Connect.\n3. Done — traffic is protected.';
+
+  @override
+  String get simpleMode => 'Simple mode';
+
+  @override
+  String get simpleModeDescription =>
+      'Only the essentials: connection, access and help.';
+
+  @override
+  String get getAccess => 'Get access';
+
+  @override
+  String get accessName => 'Name';
+
+  @override
+  String get accessNameHint => 'For example, “Phone”';
+
+  @override
+  String get provisioningLoginHelp =>
+      'The administrator gives you a login. It is the name or email you used when getting access.';
+
+  @override
+  String get provisioningLoginExample =>
+      'For example: ivan or ivan@example.com';
+
+  @override
+  String get provisioningErrorNetwork =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get provisioningErrorTimeout =>
+      'The server did not answer in time. Try again.';
+
+  @override
+  String get provisioningErrorRateLimited =>
+      'Too many attempts. Wait a minute and try again.';
+
+  @override
+  String get provisioningErrorServer =>
+      'The access server is temporarily unavailable. Try again later.';
+
+  @override
+  String get provisioningErrorInvalid =>
+      'The login or server response is invalid. Check the login and try again.';
+
+  @override
+  String get provisioningErrorNotFound =>
+      'This login was not found. Check it or contact the administrator.';
+
+  @override
+  String get provisioningErrorUnknown =>
+      'Could not get access. Try again or contact the administrator.';
+
+  @override
+  String get accessAddedTitle => 'Access added';
+
+  @override
+  String accessAddedBody(String name) {
+    return 'Profile “$name” is ready. Tap Connect on the home screen.';
+  }
+
+  @override
+  String get onboardingTitle => 'Welcome';
+
+  @override
+  String get onboardingIntro =>
+      'This app gives you secure internet access. Setup takes a couple of steps.';
+
+  @override
+  String get onboardingWhatTitle => 'What you get';
+
+  @override
+  String get onboardingWhatBody =>
+      'One connection for the whole phone: sites and apps use a protected channel.';
+
+  @override
+  String get onboardingHaveLogin => 'I already have a login';
+
+  @override
+  String get onboardingLoginLabel => 'Access login';
+
+  @override
+  String get onboardingLoginHint => 'Enter your login';
+
+  @override
+  String get onboardingGetAccess => 'Get access';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingBack => 'Back';
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get helpIntro => 'A short guide to how everything works.';
+
+  @override
+  String get helpConnectTitle => 'How to connect';
+
+  @override
+  String get helpConnectBody =>
+      'Open the home screen and tap Connect. If you have no access, add it with a login.';
+
+  @override
+  String get helpStatusTitle => 'What the statuses mean';
+
+  @override
+  String get helpStatusBody =>
+      '“You are protected” means the VPN is working. “Connecting” means it is starting. “VPN is off” means tap Connect.';
+
+  @override
+  String get helpTrafficTitle => 'Traffic and limits';
+
+  @override
+  String get helpTrafficBody =>
+      'We do not limit traffic, speed or the number of devices. Counters are for information only.';
+
+  @override
+  String get helpErrorsTitle => 'If something fails';
+
+  @override
+  String get helpErrorsBody =>
+      'Check the internet, tap Retry and try again. If the error remains, contact the administrator and include the error text.';
+
+  @override
+  String get helpGlossaryTitle => 'Glossary';
+
+  @override
+  String get helpGlossaryAccess =>
+      'Access — your login and connection profile.';
+
+  @override
+  String get helpGlossaryProfile => 'Profile — settings for one access.';
+
+  @override
+  String get helpGlossaryVless => 'VLESS — the main connection protocol.';
+
+  @override
+  String get helpGlossaryWdtt =>
+      'WDTT — the backup protocol when the main one is unavailable.';
+
+  @override
+  String get helpGlossaryByeDpi =>
+      'ByeDPI — bypass for individual blocked sites.';
+
+  @override
+  String get helpGlossarySubscription =>
+      'Subscription — a settings file the app updates automatically.';
+
+  @override
+  String get helpContactTitle => 'Support';
+
+  @override
+  String get helpContactBody =>
+      'Contact the administrator. Do not send your password or access link.';
 }

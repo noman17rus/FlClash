@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 
 import 'edit.dart';
 import 'layout.dart';
+import 'simple_home.dart';
 import 'style.dart';
 import 'widget_registry.dart';
 import 'widgets/widgets.dart';
@@ -56,6 +57,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(simpleModeProvider)) {
+      return const SimpleHomeView();
+    }
     final platform = widget.platform ?? SupportPlatform.currentPlatform;
     final viewSize = ref.watch(viewSizeProvider);
     final sideWidth = ref.watch(sideWidthProvider);

@@ -46,6 +46,8 @@ _AppSettingProps _$AppSettingPropsFromJson(
       _readSidebarExpanded(json, 'sidebarExpanded') as bool? ?? true,
   acceptedDisclaimerVersion:
       (json['acceptedDisclaimerVersion'] as num?)?.toInt() ?? 0,
+  simpleMode: json['simpleMode'] as bool?,
+  onboardingCompleted: json['onboardingCompleted'] as bool? ?? false,
   minimizeOnExit: json['minimizeOnExit'] as bool? ?? true,
   hidden: json['hidden'] as bool? ?? false,
   developerMode: json['developerMode'] as bool? ?? false,
@@ -117,6 +119,8 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'autoCheckUpdate': instance.autoCheckUpdate,
       'sidebarExpanded': instance.sidebarExpanded,
       'acceptedDisclaimerVersion': instance.acceptedDisclaimerVersion,
+      'simpleMode': instance.simpleMode,
+      'onboardingCompleted': instance.onboardingCompleted,
       'minimizeOnExit': instance.minimizeOnExit,
       'hidden': instance.hidden,
       'developerMode': instance.developerMode,
