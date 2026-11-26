@@ -136,7 +136,7 @@ Map<String, dynamic> wdttFallbackConfig(
         {
           'name': warpRouteGroupName(profileId),
           'type': 'select',
-          'hidden': true,
+          'hidden': false,
           'proxies': [warpProxyName],
         },
       fallback(primary),

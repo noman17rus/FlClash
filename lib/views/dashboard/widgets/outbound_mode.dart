@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/service_probe.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/providers/ip_quality.dart';
 import 'package:fl_clash/providers/outbound_ip.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/providers/routed_probe.dart';
@@ -350,12 +351,9 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
         WdttRouteMode.automatic.proxyName(id);
     final active = ref.watch(isStartProvider) && !ref.watch(suspendProvider);
     final warpGroup = warpRouteGroupName(id);
-    final hasWarp =
-        ref
-            .watch(proxyGroupsProvider(id))
-            .value
-            ?.any((group) => group.name == warpGroup) ??
-        false;
+    final hasWarp = ref
+        .watch(proxiesTabStateProvider.select((state) => state.groups))
+        .any((group) => group.name == warpGroup);
     final warpSelected = selected == warpGroup;
     if (warpSelected &&
         active &&
@@ -404,20 +402,26 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
       label: nativeRoute ?? status,
       tone: nativeRoute != null ? DashboardChipTone.ok : tone,
     );
+    final ip = entry.value?.ip;
+    final quality = ip == null ? null : ref.watch(ipQualityProvider(ip)).value;
+    final warpByExit =
+        warpSelected &&
+        active &&
+        (quality?.organization?.toLowerCase().contains('cloudflare') ?? false);
+    final warpWorking = warpByExit || _warpWorking == true;
+    final warpFailed = !warpByExit && _warpWorking == false;
     final warpIndicator = warpSelected && active
         ? DashboardChip(
-            label: _warpChecking
-                ? l10n.warpChecking
-                : _warpWorking == true
+            label: warpWorking
                 ? l10n.warpWorking
-                : _warpWorking == false
+                : warpFailed
                 ? l10n.warpNotWorking
                 : l10n.warpChecking,
-            tone: _warpChecking || _warpWorking == null
-                ? DashboardChipTone.idle
-                : _warpWorking == true
+            tone: warpWorking
                 ? DashboardChipTone.ok
-                : DashboardChipTone.warn,
+                : warpFailed
+                ? DashboardChipTone.warn
+                : DashboardChipTone.idle,
           )
         : null;
     final controls = DashboardConnectedGroup(
