@@ -6,6 +6,8 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/views/dashboard/widgets/current_outbound.dart';
+import 'package:fl_clash/views/dashboard/widgets/outbound_mode.dart';
 import 'package:fl_clash/views/help.dart';
 import 'package:fl_clash/views/profiles/add.dart';
 import 'package:fl_clash/views/profiles/profiles.dart';
@@ -121,10 +123,18 @@ class SimpleHomeView extends ConsumerWidget {
             title: content.title,
             body: content.body,
             actionLabel: actionLabel,
+            hasAccess: profile != null,
+            running: ref.watch(isStartProvider),
+            suspended: ref.watch(suspendProvider),
             onPressed: state == _SimpleState.noAccess
                 ? () => _addAccess(context)
                 : () => _toggle(ref, state),
           ),
+          if (profile != null &&
+              profile.overrides.wdttFallbackLink.isWdttLink) ...[
+            const SizedBox(height: 12),
+            WdttRouteCard(profileId: profile.id, compact: true),
+          ],
           if (profile == null) ...[
             const SizedBox(height: 12),
             generateSection(
@@ -163,6 +173,9 @@ class _StatusCard extends StatelessWidget {
     required this.title,
     required this.body,
     required this.actionLabel,
+    required this.hasAccess,
+    required this.running,
+    required this.suspended,
     required this.onPressed,
   });
 
@@ -171,6 +184,9 @@ class _StatusCard extends StatelessWidget {
   final String title;
   final String body;
   final String actionLabel;
+  final bool hasAccess;
+  final bool running;
+  final bool suspended;
   final VoidCallback onPressed;
 
   @override
@@ -191,13 +207,31 @@ class _StatusCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(body, style: AppTextStyle.subheadline.of(context).toLighter),
             const SizedBox(height: 20),
-            SizedBox(
-              height: 52,
-              child: FilledButton(
-                onPressed: onPressed,
-                child: Text(actionLabel),
+            if (!hasAccess)
+              SizedBox(
+                height: 52,
+                child: FilledButton(
+                  onPressed: onPressed,
+                  child: Text(actionLabel),
+                ),
+              )
+            else ...[
+              Center(
+                child: StartToggle(
+                  size: 96,
+                  enabled: true,
+                  running: running,
+                  suspended: suspended,
+                  onTap: onPressed,
+                ),
               ),
-            ),
+              const SizedBox(height: 8),
+              Text(
+                actionLabel,
+                textAlign: TextAlign.center,
+                style: AppTextStyle.footnote.of(context).toLighter,
+              ),
+            ],
           ],
         ),
       ),

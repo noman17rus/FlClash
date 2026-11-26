@@ -39,7 +39,7 @@ class OutboundModeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final wdttProfile = _wdttProfileId(ref);
     if (wdttProfile != null) {
-      return _WdttRouteCard(key: ValueKey(wdttProfile), profileId: wdttProfile);
+      return WdttRouteCard(key: ValueKey(wdttProfile), profileId: wdttProfile);
     }
     final mode = ref.watch(
       patchClashConfigProvider.select((state) => state.mode),
@@ -109,7 +109,7 @@ class OutboundModeBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final wdttProfile = _wdttProfileId(ref);
     if (wdttProfile != null) {
-      return _WdttRouteCard(
+      return WdttRouteCard(
         key: ValueKey(wdttProfile),
         profileId: wdttProfile,
         compact: true,
@@ -204,8 +204,8 @@ int? _wdttProfileId(WidgetRef ref) => system.isAndroid
       )
     : null;
 
-class _WdttRouteCard extends ConsumerStatefulWidget {
-  const _WdttRouteCard({
+class WdttRouteCard extends ConsumerStatefulWidget {
+  const WdttRouteCard({
     super.key,
     required this.profileId,
     this.compact = false,
@@ -215,10 +215,10 @@ class _WdttRouteCard extends ConsumerStatefulWidget {
   final bool compact;
 
   @override
-  ConsumerState<_WdttRouteCard> createState() => _WdttRouteCardState();
+  ConsumerState<WdttRouteCard> createState() => _WdttRouteCardState();
 }
 
-class _WdttRouteCardState extends ConsumerState<_WdttRouteCard> {
+class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
   static final _vlessExit = RegExp(r'^"(?:[^"\\]|\\.)*" Vless ');
   late final OutboundIpProbe _probe;
   Timer? _refresh;

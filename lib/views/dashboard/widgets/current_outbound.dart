@@ -200,7 +200,7 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard> {
                 SizedBox(
                   width: metrics.buttonSlot,
                   child: Center(
-                    child: _StartToggle(
+                    child: StartToggle(
                       size: metrics.buttonSize,
                       enabled: hasProfile,
                       running: isStart,
@@ -701,24 +701,27 @@ double _morphTurn(double progress) => progress * 2 * math.pi / 9;
 
 /// A circle with a play glyph while stopped that grows the cookie-9 of a
 /// running tunnel, the way the M3 Expressive loader morphs between shapes.
-class _StartToggle extends ConsumerStatefulWidget {
-  const _StartToggle({
+class StartToggle extends ConsumerStatefulWidget {
+  const StartToggle({
+    super.key,
     required this.size,
     required this.enabled,
     required this.running,
     required this.suspended,
+    this.onTap,
   });
 
   final double size;
   final bool enabled;
   final bool running;
   final bool suspended;
+  final VoidCallback? onTap;
 
   @override
-  ConsumerState<_StartToggle> createState() => _StartToggleState();
+  ConsumerState<StartToggle> createState() => _StartToggleState();
 }
 
-class _StartToggleState extends ConsumerState<_StartToggle>
+class _StartToggleState extends ConsumerState<StartToggle>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
@@ -745,7 +748,7 @@ class _StartToggleState extends ConsumerState<_StartToggle>
       : 0;
 
   @override
-  void didUpdateWidget(_StartToggle oldWidget) {
+  void didUpdateWidget(StartToggle oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.running != widget.running) {
       widget.running ? _controller.forward() : _controller.reverse();
@@ -760,6 +763,11 @@ class _StartToggleState extends ConsumerState<_StartToggle>
   }
 
   void _toggle() {
+    final onTap = widget.onTap;
+    if (onTap != null) {
+      onTap();
+      return;
+    }
     ref.read(commonActionProvider.notifier).toggleRunning();
   }
 
