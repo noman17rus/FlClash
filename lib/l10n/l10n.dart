@@ -7515,7 +7515,7 @@ abstract class AppLocalizations {
   /// No description provided for @provisioningLoginInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter the access login from your administrator.'**
+  /// **'Enter a login or email (up to 254 characters).'**
   String get provisioningLoginInvalid;
 
   /// No description provided for @provisioningFailed.
@@ -7683,7 +7683,7 @@ abstract class AppLocalizations {
   /// No description provided for @provisioningLoginHelp.
   ///
   /// In en, this message translates to:
-  /// **'The administrator gives you a login. It is the name or email you used when getting access.'**
+  /// **'Choose a login or use your email. The app creates access automatically — no password needed.'**
   String get provisioningLoginHelp;
 
   /// No description provided for @provisioningLoginExample.
@@ -7725,13 +7725,13 @@ abstract class AppLocalizations {
   /// No description provided for @provisioningErrorNotFound.
   ///
   /// In en, this message translates to:
-  /// **'This login was not found. Check it or contact the administrator.'**
+  /// **'No access found for this login. Check it and try again.'**
   String get provisioningErrorNotFound;
 
   /// No description provided for @provisioningErrorUnknown.
   ///
   /// In en, this message translates to:
-  /// **'Could not get access. Try again or contact the administrator.'**
+  /// **'Could not get access. Check your internet and try again.'**
   String get provisioningErrorUnknown;
 
   /// No description provided for @accessAddedTitle.
@@ -7773,7 +7773,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHaveLogin.
   ///
   /// In en, this message translates to:
-  /// **'I already have a login'**
+  /// **'Enter a login or email'**
   String get onboardingHaveLogin;
 
   /// No description provided for @onboardingLoginLabel.
@@ -7785,7 +7785,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingLoginHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter your login'**
+  /// **'Login or email'**
   String get onboardingLoginHint;
 
   /// No description provided for @onboardingGetAccess.
@@ -7863,7 +7863,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpErrorsBody.
   ///
   /// In en, this message translates to:
-  /// **'Check the internet, tap Retry and try again. If the error remains, contact the administrator and include the error text.'**
+  /// **'Check the internet, tap Retry and try again. If the error remains, contact support and include the error text.'**
   String get helpErrorsBody;
 
   /// No description provided for @helpGlossaryTitle.
@@ -7917,7 +7917,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpContactBody.
   ///
   /// In en, this message translates to:
-  /// **'Contact the administrator. Do not send your password or access link.'**
+  /// **'Contact support. Do not send your password or access link.'**
   String get helpContactBody;
 }
 

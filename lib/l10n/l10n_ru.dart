@@ -4277,7 +4277,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get provisioningLoginInvalid =>
-      'Введите логин, который выдал администратор.';
+      'Введите логин или email (до 254 символов).';
 
   @override
   String get provisioningFailed =>
@@ -4369,7 +4369,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get provisioningLoginHelp =>
-      'Логин выдаёт администратор. Это имя или email, которое вы указали при получении доступа.';
+      'Придумайте логин или используйте свой email. Приложение создаст доступ автоматически — пароль не нужен.';
 
   @override
   String get provisioningLoginExample => 'Например: ivan или ivan@example.com';
@@ -4396,11 +4396,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get provisioningErrorNotFound =>
-      'Логин не найден. Проверьте его или обратитесь к администратору.';
+      'Доступ с таким логином не найден. Проверьте логин и повторите.';
 
   @override
   String get provisioningErrorUnknown =>
-      'Не удалось получить доступ. Повторите или обратитесь к администратору.';
+      'Не удалось получить доступ. Проверьте интернет и повторите.';
 
   @override
   String get accessAddedTitle => 'Доступ добавлен';
@@ -4425,13 +4425,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Одно подключение для всего телефона: сайты и приложения работают через защищённый канал.';
 
   @override
-  String get onboardingHaveLogin => 'У меня уже есть логин';
+  String get onboardingHaveLogin => 'Введите логин или email';
 
   @override
   String get onboardingLoginLabel => 'Логин доступа';
 
   @override
-  String get onboardingLoginHint => 'Введите логин';
+  String get onboardingLoginHint => 'Логин или email';
 
   @override
   String get onboardingGetAccess => 'Получить доступ';
@@ -4474,7 +4474,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get helpErrorsBody =>
-      'Проверьте интернет, нажмите «Повторить» и попробуйте снова. Если ошибка остаётся — напишите администратору и приложите текст ошибки.';
+      'Проверьте интернет, нажмите «Повторить» и попробуйте снова. Если ошибка остаётся — напишите в поддержку и приложите текст ошибки.';
 
   @override
   String get helpGlossaryTitle => 'Словарь';
@@ -4505,5 +4505,5 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get helpContactBody =>
-      'Напишите администратору. Не отправляйте пароль или ссылку доступа.';
+      'Напишите в поддержку. Не отправляйте пароль или ссылку доступа.';
 }

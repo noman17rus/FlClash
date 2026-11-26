@@ -4159,7 +4159,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get provisioningLoginInvalid =>
-      'Enter a login (1–254 characters, without control characters).';
+      'Enter a login or email (up to 254 characters).';
 
   @override
   String get provisioningFailed => '구독을 가져오지 못했습니다. 연결을 확인한 후 다시 시도하세요.';
@@ -4248,7 +4248,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get provisioningLoginHelp =>
-      'The administrator gives you a login. It is the name or email you used when getting access.';
+      'Choose a login or use your email. The app creates access automatically — no password needed.';
 
   @override
   String get provisioningLoginExample =>
@@ -4276,11 +4276,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get provisioningErrorNotFound =>
-      'This login was not found. Check it or contact the administrator.';
+      'No access found for this login. Check it and try again.';
 
   @override
   String get provisioningErrorUnknown =>
-      'Could not get access. Try again or contact the administrator.';
+      'Could not get access. Check your internet and try again.';
 
   @override
   String get accessAddedTitle => 'Access added';
@@ -4305,13 +4305,13 @@ class AppLocalizationsKo extends AppLocalizations {
       'One connection for the whole phone: sites and apps use a protected channel.';
 
   @override
-  String get onboardingHaveLogin => 'I already have a login';
+  String get onboardingHaveLogin => 'Enter a login or email';
 
   @override
   String get onboardingLoginLabel => 'Access login';
 
   @override
-  String get onboardingLoginHint => 'Enter your login';
+  String get onboardingLoginHint => 'Login or email';
 
   @override
   String get onboardingGetAccess => 'Get access';
@@ -4354,7 +4354,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get helpErrorsBody =>
-      'Check the internet, tap Retry and try again. If the error remains, contact the administrator and include the error text.';
+      'Check the internet, tap Retry and try again. If the error remains, contact support and include the error text.';
 
   @override
   String get helpGlossaryTitle => 'Glossary';
@@ -4386,5 +4386,5 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get helpContactBody =>
-      'Contact the administrator. Do not send your password or access link.';
+      'Contact support. Do not send your password or access link.';
 }
