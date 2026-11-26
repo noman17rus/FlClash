@@ -1218,7 +1218,7 @@
   "byeDpiCatalogError": "戦略リストを読み込めませんでした",
   "byeDpiAddress": "ByeDPI の使用中、サービスにはこのネットワークの公開 IP が表示されます。",
   "byeDpiRequiresWdtt": "Google と YouTube に ByeDPI を使用するには、上の欄に WDTT バックアップリンクを追加してください。",
-  "byeDpiAutoSelect": "戦略を自動選択",
+  "byeDpiAutoSelect": "Find and enable",
   "byeDpiTestStrategy": "戦略をテスト",
   "byeDpiYouTubeAvailable": "YouTube サイトに接続可能",
   "byeDpiYouTubeUnconfirmed": "YouTube · 確認できませんでした",

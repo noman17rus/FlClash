@@ -4038,7 +4038,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'Google と YouTube に ByeDPI を使用するには、上の欄に WDTT バックアップリンクを追加してください。';
 
   @override
-  String get byeDpiAutoSelect => '戦略を自動選択';
+  String get byeDpiAutoSelect => 'Find and enable';
 
   @override
   String get byeDpiTestStrategy => '戦略をテスト';

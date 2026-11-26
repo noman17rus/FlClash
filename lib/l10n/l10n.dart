@@ -7425,7 +7425,7 @@ abstract class AppLocalizations {
   /// No description provided for @byeDpiAutoSelect.
   ///
   /// In en, this message translates to:
-  /// **'Find strategies automatically'**
+  /// **'Find and enable'**
   String get byeDpiAutoSelect;
 
   /// No description provided for @byeDpiTestStrategy.

@@ -3986,7 +3986,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '请在上方添加 WDTT 备用链接，以启用 Google 和 YouTube 的 ByeDPI 路由。';
 
   @override
-  String get byeDpiAutoSelect => '自动查找策略';
+  String get byeDpiAutoSelect => 'Find and enable';
 
   @override
   String get byeDpiTestStrategy => '测试策略';

@@ -4275,7 +4275,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Añada arriba un enlace de respaldo WDTT para activar Google y YouTube mediante ByeDPI.';
 
   @override
-  String get byeDpiAutoSelect => 'Buscar estrategias automáticamente';
+  String get byeDpiAutoSelect => 'Find and enable';
 
   @override
   String get byeDpiTestStrategy => 'Probar estrategia';

@@ -4282,7 +4282,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ajoutez ci-dessus un lien de secours WDTT pour activer Google et YouTube via ByeDPI.';
 
   @override
-  String get byeDpiAutoSelect => 'Trouver automatiquement des stratégies';
+  String get byeDpiAutoSelect => 'Find and enable';
 
   @override
   String get byeDpiTestStrategy => 'Tester la stratégie';

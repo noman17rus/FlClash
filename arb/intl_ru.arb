@@ -1218,7 +1218,7 @@
   "byeDpiCatalogError": "Не удалось загрузить список стратегий",
   "byeDpiAddress": "При работе через ByeDPI сервисы видят внешний IP этой сети.",
   "byeDpiRequiresWdtt": "Чтобы включить Google и YouTube через ByeDPI, добавьте ссылку резервного WDTT в поле выше.",
-  "byeDpiAutoSelect": "Автоподбор стратегий",
+  "byeDpiAutoSelect": "Подобрать и включить",
   "byeDpiTestStrategy": "Проверить стратегию",
   "byeDpiYouTubeAvailable": "Сайт YouTube доступен",
   "byeDpiYouTubeUnconfirmed": "YouTube · проверка не пройдена",

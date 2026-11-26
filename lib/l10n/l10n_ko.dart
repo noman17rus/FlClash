@@ -4111,7 +4111,7 @@ class AppLocalizationsKo extends AppLocalizations {
       'Google 및 YouTube에 ByeDPI를 사용하려면 위에 WDTT 백업 링크를 추가하세요.';
 
   @override
-  String get byeDpiAutoSelect => '전략 자동 검색';
+  String get byeDpiAutoSelect => 'Find and enable';
 
   @override
   String get byeDpiTestStrategy => '전략 테스트';

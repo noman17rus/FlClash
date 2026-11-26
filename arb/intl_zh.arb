@@ -1218,7 +1218,7 @@
   "byeDpiCatalogError": "无法加载策略列表",
   "byeDpiAddress": "使用 ByeDPI 时，服务会看到当前网络的公网 IP。",
   "byeDpiRequiresWdtt": "请在上方添加 WDTT 备用链接，以启用 Google 和 YouTube 的 ByeDPI 路由。",
-  "byeDpiAutoSelect": "自动查找策略",
+  "byeDpiAutoSelect": "Find and enable",
   "byeDpiTestStrategy": "测试策略",
   "byeDpiYouTubeAvailable": "YouTube 网站可访问",
   "byeDpiYouTubeUnconfirmed": "YouTube · 检查未确认",

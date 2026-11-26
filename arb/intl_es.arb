@@ -1218,7 +1218,7 @@
   "byeDpiCatalogError": "No se pudo cargar la lista de estrategias",
   "byeDpiAddress": "Con ByeDPI, los servicios ven la IP pública de esta red.",
   "byeDpiRequiresWdtt": "Añada arriba un enlace de respaldo WDTT para activar Google y YouTube mediante ByeDPI.",
-  "byeDpiAutoSelect": "Buscar estrategias automáticamente",
+  "byeDpiAutoSelect": "Find and enable",
   "byeDpiTestStrategy": "Probar estrategia",
   "byeDpiYouTubeAvailable": "Sitio de YouTube accesible",
   "byeDpiYouTubeUnconfirmed": "YouTube · prueba no concluyente",

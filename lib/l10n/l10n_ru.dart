@@ -4229,7 +4229,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Чтобы включить Google и YouTube через ByeDPI, добавьте ссылку резервного WDTT в поле выше.';
 
   @override
-  String get byeDpiAutoSelect => 'Автоподбор стратегий';
+  String get byeDpiAutoSelect => 'Подобрать и включить';
 
   @override
   String get byeDpiTestStrategy => 'Проверить стратегию';

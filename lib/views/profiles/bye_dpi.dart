@@ -130,6 +130,7 @@ class _ByeDpiViewState extends State<ByeDpiView> {
       _error = null;
     });
     bool current() => mounted && _generation == generation;
+    String? autoApply;
     try {
       final revision = await _service.byeDpiNetwork();
       if (!current()) return;
@@ -156,7 +157,10 @@ class _ByeDpiViewState extends State<ByeDpiView> {
           mergeSort(choices, compare: _compare);
           _ranked = choices;
           final best = _ranked.first;
-          if (_results[best]?['YouTube'] != null) _selected = best;
+          if (_results[best]?['YouTube'] != null) {
+            _selected = best;
+            autoApply = best;
+          }
         });
       }
     } on PlatformException catch (e) {
@@ -177,6 +181,9 @@ class _ByeDpiViewState extends State<ByeDpiView> {
           _scanning = false;
           _testing = null;
         });
+        if (autoApply != null) {
+          await _apply(autoApply!);
+        }
       }
     }
   }
