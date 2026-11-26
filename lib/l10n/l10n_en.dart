@@ -4184,6 +4184,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get byeDpiGoogle => 'Google and YouTube via ByeDPI';
 
   @override
+  String get routeSimple => 'Route';
+
+  @override
+  String get byeDpiSimpleTitle => 'YouTube bypass';
+
+  @override
+  String get byeDpiSimpleHint =>
+      'Turn on if YouTube does not open. No setup needed — the app chooses everything automatically.';
+
+  @override
+  String get byeDpiSimpleUnavailable =>
+      'Bypass is unavailable on mobile data. Switch to Wi-Fi.';
+
+  @override
+  String get simpleRouteHint =>
+      'If the connection drops, the app switches to the backup route automatically.';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI is another way to watch YouTube, including when VLESS works. Loading may be slower. Ad-free playback is not guaranteed. If mobile data only allows approved sites, use WDTT. With VPN and ByeDPI on, connection methods are selected automatically once a day.';
 
@@ -4480,7 +4498,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpGlossaryByeDpi =>
-      'ByeDPI — bypass for individual blocked sites.';
+      'YouTube bypass — turn on the switch on the main screen if YouTube does not open. No setup needed.';
 
   @override
   String get helpGlossarySubscription =>

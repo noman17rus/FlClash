@@ -4063,6 +4063,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get byeDpiGoogle => 'Google 및 YouTube에 ByeDPI 사용';
 
   @override
+  String get routeSimple => 'Route';
+
+  @override
+  String get byeDpiSimpleTitle => 'YouTube bypass';
+
+  @override
+  String get byeDpiSimpleHint =>
+      'Turn on if YouTube does not open. No setup needed — the app chooses everything automatically.';
+
+  @override
+  String get byeDpiSimpleUnavailable =>
+      'Bypass is unavailable on mobile data. Switch to Wi-Fi.';
+
+  @override
+  String get simpleRouteHint =>
+      'If the connection drops, the app switches to the backup route automatically.';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI는 YouTube를 보는 또 다른 연결 방식으로, VLESS가 작동할 때도 사용할 수 있습니다. 로딩이 느릴 수 있으며 광고 없는 재생은 보장되지 않습니다. 모바일 네트워크에서 허용된 사이트만 접속할 수 있다면 WDTT를 사용하세요. VPN과 ByeDPI가 켜져 있으면 하루에 한 번 연결 방식을 자동으로 선택합니다.';
 
@@ -4357,7 +4375,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get helpGlossaryByeDpi =>
-      'ByeDPI — bypass for individual blocked sites.';
+      'YouTube bypass — turn on the switch on the main screen if YouTube does not open. No setup needed.';
 
   @override
   String get helpGlossarySubscription =>

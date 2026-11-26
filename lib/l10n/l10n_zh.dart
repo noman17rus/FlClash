@@ -3938,6 +3938,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get byeDpiGoogle => 'Google 和 YouTube 使用 ByeDPI';
 
   @override
+  String get routeSimple => 'Route';
+
+  @override
+  String get byeDpiSimpleTitle => 'YouTube bypass';
+
+  @override
+  String get byeDpiSimpleHint =>
+      'Turn on if YouTube does not open. No setup needed — the app chooses everything automatically.';
+
+  @override
+  String get byeDpiSimpleUnavailable =>
+      'Bypass is unavailable on mobile data. Switch to Wi-Fi.';
+
+  @override
+  String get simpleRouteHint =>
+      'If the connection drops, the app switches to the backup route automatically.';
+
+  @override
   String get byeDpiDescription =>
       'ByeDPI 是观看 YouTube 的另一种方式，VLESS 正常时也可使用。加载可能较慢，不能保证没有广告。如果移动网络只允许访问白名单网站，请使用 WDTT。VPN 和 ByeDPI 开启时，每天会自动选择一次连接方式。';
 
@@ -4231,7 +4249,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get helpGlossaryByeDpi =>
-      'ByeDPI — bypass for individual blocked sites.';
+      'YouTube bypass — turn on the switch on the main screen if YouTube does not open. No setup needed.';
 
   @override
   String get helpGlossarySubscription =>

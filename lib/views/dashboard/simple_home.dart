@@ -133,7 +133,11 @@ class SimpleHomeView extends ConsumerWidget {
           if (profile != null &&
               profile.overrides.wdttFallbackLink.isWdttLink) ...[
             const SizedBox(height: 12),
-            WdttRouteCard(profileId: profile.id, compact: true),
+            WdttRouteCard(
+              profileId: profile.id,
+              compact: true,
+              simple: true,
+            ),
           ],
           if (profile == null) ...[
             const SizedBox(height: 12),

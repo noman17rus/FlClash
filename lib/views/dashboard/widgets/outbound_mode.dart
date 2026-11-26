@@ -209,10 +209,12 @@ class WdttRouteCard extends ConsumerStatefulWidget {
     super.key,
     required this.profileId,
     this.compact = false,
+    this.simple = false,
   });
 
   final int profileId;
   final bool compact;
+  final bool simple;
 
   @override
   ConsumerState<WdttRouteCard> createState() => _WdttRouteCardState();
@@ -354,15 +356,23 @@ class _WdttRouteCardState extends ConsumerState<WdttRouteCard> {
         children: [
           DashboardCardHeader(
             glyph: AppGlyphs.split,
-            title: l10n.outboundMode,
+            title: widget.simple ? l10n.routeSimple : l10n.outboundMode,
             leading: [indicator],
           ),
           controls,
           DashboardByeDpiToggle(
             profileId: id,
             unavailable: failover?['byeDpiUnavailable'] == true,
+            simple: widget.simple,
           ),
-          if (active)
+          if (widget.simple)
+            Text(
+              l10n.simpleRouteHint,
+              style: AppTextStyle.footnote.of(context).copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            )
+          else if (active)
             DefaultTextStyle(
               style: AppTextStyle.footnote.of(context),
               child: failover != null

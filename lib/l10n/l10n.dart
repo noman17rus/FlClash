@@ -7338,6 +7338,36 @@ abstract class AppLocalizations {
   /// **'Google and YouTube via ByeDPI'**
   String get byeDpiGoogle;
 
+  /// No description provided for @routeSimple.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get routeSimple;
+
+  /// No description provided for @byeDpiSimpleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube bypass'**
+  String get byeDpiSimpleTitle;
+
+  /// No description provided for @byeDpiSimpleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on if YouTube does not open. No setup needed — the app chooses everything automatically.'**
+  String get byeDpiSimpleHint;
+
+  /// No description provided for @byeDpiSimpleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Bypass is unavailable on mobile data. Switch to Wi-Fi.'**
+  String get byeDpiSimpleUnavailable;
+
+  /// No description provided for @simpleRouteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If the connection drops, the app switches to the backup route automatically.'**
+  String get simpleRouteHint;
+
   /// No description provided for @byeDpiDescription.
   ///
   /// In en, this message translates to:
@@ -7869,7 +7899,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpGlossaryByeDpi.
   ///
   /// In en, this message translates to:
-  /// **'ByeDPI — bypass for individual blocked sites.'**
+  /// **'YouTube bypass — turn on the switch on the main screen if YouTube does not open. No setup needed.'**
   String get helpGlossaryByeDpi;
 
   /// No description provided for @helpGlossarySubscription.

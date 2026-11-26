@@ -10,10 +10,12 @@ class DashboardByeDpiToggle extends ConsumerWidget {
     super.key,
     required this.profileId,
     this.unavailable = false,
+    this.simple = false,
   });
 
   final int profileId;
   final bool unavailable;
+  final bool simple;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +25,15 @@ class DashboardByeDpiToggle extends ConsumerWidget {
         !unavailable &&
         profile.overrides.wdttFallbackLink.isWdttLink &&
         (!profile.isManaged || profile.overrides.wdttEnabled);
-    final label = context.appLocalizations.byeDpiGoogle;
+    final l10n = context.appLocalizations;
+    final label = simple ? l10n.byeDpiSimpleTitle : l10n.byeDpiGoogle;
+    final description = simple
+        ? unavailable
+              ? l10n.byeDpiSimpleUnavailable
+              : l10n.byeDpiSimpleHint
+        : unavailable
+        ? l10n.byeDpiUnavailableMobile
+        : l10n.byeDpiDescription;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 6,
@@ -58,9 +68,7 @@ class DashboardByeDpiToggle extends ConsumerWidget {
           ],
         ),
         Text(
-          unavailable
-              ? context.appLocalizations.byeDpiUnavailableMobile
-              : context.appLocalizations.byeDpiDescription,
+          description,
           style: AppTextStyle.footnote
               .of(context)
               .copyWith(color: context.colorScheme.onSurfaceVariant),
