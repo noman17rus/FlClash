@@ -120,7 +120,7 @@ class _ProfilesViewState extends ConsumerState<ProfilesView> {
           body: NullStatusSwitcher(
             isEmpty: state.profiles.isEmpty,
             nullStatus: NullStatus(
-              label: appLocalizations.nullTip(appLocalizations.profiles),
+              label: appLocalizations.simpleNoAccessTitle,
               description: appLocalizations.nullProfileDesc,
               illustration: NullStatusIllustration.profile,
               action: AddProfileMenu(
